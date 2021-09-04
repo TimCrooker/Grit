@@ -16,7 +16,7 @@ export const pathExists = async (path: string): Promise<boolean> => {
 export const copy = async (
 	sourcePath: string,
 	destinationPath: string,
-	{ overwrite = true, directoryMode } = {}
+	{ overwrite = true, directoryMode = undefined } = {}
 ): Promise<void> => {
 	if (!sourcePath || !destinationPath) {
 		throw new TypeError('`sourcePath` and `destinationPath` required')
@@ -32,14 +32,10 @@ export const copy = async (
 	})
 
 	try {
-		await fsP.rename(sourcePath, destinationPath)
-	} catch (error) {
-		if (error.code === 'EXDEV') {
-			await fsP.copyFile(sourcePath, destinationPath)
-			await fsP.unlink(sourcePath)
-		} else {
-			throw error
-		}
+		await fsP.copyFile(sourcePath, destinationPath)
+	} catch (error: any) {
+		await fsP.unlink(sourcePath)
+		throw error
 	}
 }
 

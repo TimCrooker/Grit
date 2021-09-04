@@ -6,7 +6,7 @@ import isBinaryPath from 'is-binary-path'
 import { logger } from './logger'
 import { getGlobPatterns } from './utils/get-glob-patterns'
 import { GeneratorConfig } from './generator-config'
-import { move } from './utils/fs'
+import { copy, move } from './utils/fs'
 import { SAO } from './'
 
 export const runActions = async (
@@ -168,7 +168,7 @@ export const runActions = async (
 							context.outDir,
 							action.patterns[pattern]
 						)
-						await move(from, to, {
+						await copy(from, to, {
 							overwrite: true,
 						})
 						logger.fileMoveAction(from, to)
