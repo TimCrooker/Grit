@@ -2,10 +2,6 @@
   "name": "perfectsao",
   "version": "2.0.0-beta.1",
   "description": "Futuristic scaffolding tool ⚔",
-  "repository": {
-    "url": "https://github.com/saojs/sao.git",
-    "type": "git"
-  },
   "main": "dist/index.js",
   "bin": "cli.js",
   "types": "dist/index.d.ts",
@@ -23,7 +19,6 @@
     "typedoc.g": "typedoc src/index.ts --readme none --mode file --out docs/typedoc --excludePrivate --excludeNotExported --theme minimal",
     "release": "shipjs prepare"
   },
-  "author": "egoist <0x142857@gmail.com>",
   "license": "MIT",
   "engines": {
     "node": ">=12"
