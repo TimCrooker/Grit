@@ -2,19 +2,19 @@ import os from 'os'
 import { parseGenerator, ParsedGenerator } from './parse-generator'
 
 const parse = (name: string): ParsedGenerator => {
-  const result = parseGenerator(name)
-  return {
-    ...result,
-    path: result.path
-      .replace(os.homedir(), '~')
-      // Replace back slashes with slashes (for Windows)
-      .replace(/\\/g, '/'),
-  }
+	const result = parseGenerator(name)
+	return {
+		...result,
+		path: result.path
+			.replace(os.homedir(), '~')
+			// Replace back slashes with slashes (for Windows)
+			.replace(/\\/g, '/'),
+	}
 }
 
 test('parseGenerator', () => {
-  // GitHub repo
-  expect(parse(`egoist/poi`)).toMatchInlineSnapshot(`
+	// GitHub repo
+	expect(parse(`egoist/poi`)).toMatchInlineSnapshot(`
     Object {
       "hash": "e66c30fe",
       "path": "~/.sao/V2/repos/e66c30fe",
@@ -26,8 +26,8 @@ test('parseGenerator', () => {
       "version": "master",
     }
   `)
-  // GitHub repo with version
-  expect(parse(`egoist/poi#v1.0.0`)).toMatchInlineSnapshot(`
+	// GitHub repo with version
+	expect(parse(`egoist/poi#v1.0.0`)).toMatchInlineSnapshot(`
     Object {
       "hash": "6e0c0844",
       "path": "~/.sao/V2/repos/6e0c0844",
@@ -39,8 +39,8 @@ test('parseGenerator', () => {
       "version": "v1.0.0",
     }
   `)
-  // Npm package
-  expect(parse(`nm`)).toMatchInlineSnapshot(`
+	// Npm package
+	expect(parse(`nm`)).toMatchInlineSnapshot(`
     Object {
       "hash": "096eb1e0",
       "name": "sao-nm",
@@ -51,8 +51,8 @@ test('parseGenerator', () => {
       "version": "latest",
     }
   `)
-  // Npm package with version
-  expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
+	// Npm package with version
+	expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
     Object {
       "hash": "545f7d07",
       "name": "sao-nm",
@@ -63,8 +63,8 @@ test('parseGenerator', () => {
       "version": "2.0.1",
     }
   `)
-  // Scoped Npm package
-  expect(parse(`@egoist/nm`)).toMatchInlineSnapshot(`
+	// Scoped Npm package
+	expect(parse(`@egoist/nm`)).toMatchInlineSnapshot(`
     Object {
       "hash": "427e6ec2",
       "name": "@egoist/sao-nm",
@@ -75,8 +75,8 @@ test('parseGenerator', () => {
       "version": "latest",
     }
   `)
-  // Scoped Npm package with version
-  expect(parse(`@egoist/nm@2.0.1`)).toMatchInlineSnapshot(`
+	// Scoped Npm package with version
+	expect(parse(`@egoist/nm@2.0.1`)).toMatchInlineSnapshot(`
     Object {
       "hash": "5ff93739",
       "name": "@egoist/sao-nm",
@@ -87,8 +87,8 @@ test('parseGenerator', () => {
       "version": "2.0.1",
     }
   `)
-  // prefix
-  expect(parse(`gitlab:egoist/poi`)).toMatchInlineSnapshot(`
+	// prefix
+	expect(parse(`gitlab:egoist/poi`)).toMatchInlineSnapshot(`
     Object {
       "hash": "766eaa60",
       "path": "~/.sao/V2/repos/766eaa60",
@@ -100,8 +100,8 @@ test('parseGenerator', () => {
       "version": "master",
     }
   `)
-  // Remove sao- pefix
-  expect(parse(`sao-nm`)).toMatchInlineSnapshot(`
+	// Remove sao- pefix
+	expect(parse(`sao-nm`)).toMatchInlineSnapshot(`
     Object {
       "hash": "096eb1e0",
       "name": "sao-nm",
