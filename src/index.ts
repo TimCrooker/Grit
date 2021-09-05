@@ -67,7 +67,7 @@ export interface Options {
 				[k: string]: any
 		  }
 	appName?: string
-	extras: Extras
+	extras?: Extras
 }
 
 const EMPTY_ANSWERS = Symbol()

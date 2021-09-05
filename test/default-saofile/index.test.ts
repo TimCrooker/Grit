@@ -1,5 +1,5 @@
 import path from 'path'
-import { SAO } from '../../'
+import { SAO } from '../../src'
 
 test('use default saofile', async () => {
 	const sao = new SAO({

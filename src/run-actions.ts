@@ -6,9 +6,15 @@ import isBinaryPath from 'is-binary-path'
 import { logger } from './logger'
 import { getGlobPatterns } from './utils/get-glob-patterns'
 import { GeneratorConfig } from './generator-config'
-import { copy, move } from './utils/fs'
+import { move } from './utils/fs'
 import { SAO } from './'
 
+/**
+ * Extracts and runs the actions from the generator congig supplied by the cli
+ *
+ * @param config the generator config
+ * @param context the SAO instance for the supplied generator
+ */
 export const runActions = async (
 	config: GeneratorConfig,
 	context: SAO
@@ -55,6 +61,7 @@ export const runActions = async (
 				typeof action.transform === 'boolean'
 					? action.transform
 					: config.transform !== false
+			// use EJS to transform files with action.data variables availiable
 			if (shouldTransform) {
 				stream.use(({ files }) => {
 					let fileList = Object.keys(stream.files)
@@ -144,31 +151,6 @@ export const runActions = async (
 							action.patterns[pattern]
 						)
 						await move(from, to, {
-							overwrite: true,
-						})
-						logger.fileMoveAction(from, to)
-					}
-				})
-			)
-		} else if (action.type === 'copy' && action.patterns) {
-			await Promise.all(
-				Object.keys(action.patterns).map(async (pattern) => {
-					const files = await glob(pattern, {
-						cwd: context.outDir,
-						absolute: true,
-						onlyFiles: false,
-					})
-					if (files.length > 1) {
-						throw new Error(
-							'"copy" pattern can only match one file!'
-						)
-					} else if (files.length === 1) {
-						const from = files[0]
-						const to = path.join(
-							context.outDir,
-							action.patterns[pattern]
-						)
-						await copy(from, to, {
 							overwrite: true,
 						})
 						logger.fileMoveAction(from, to)
