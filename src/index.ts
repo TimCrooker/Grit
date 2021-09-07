@@ -33,6 +33,7 @@ interface Paths {
 	templateDir?: string
 }
 interface Extras {
+	stack: unknown
 	debug: boolean
 	paths: Paths
 	projectType?: string
