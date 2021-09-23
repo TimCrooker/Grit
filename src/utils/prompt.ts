@@ -1,5 +1,6 @@
 import Enquirer from 'enquirer'
 import { SAOError } from '../error'
+import { logger } from '../logger'
 
 /**
  * The state of current running prompt
@@ -126,6 +127,15 @@ function validatePrompt(prompt: PromptOptions, index: number): void {
 	}
 }
 
+const getChoiceIndex = (choices: string[] | Choice[], value: any): number => {
+	return choices.findIndex((c: string | Choice) => {
+		if (typeof c === 'string') {
+			return c === value
+		}
+		return typeof c === 'object' && c.name === value
+	})
+}
+
 export const prompt = async (
 	prompts: PromptOptions[],
 	userSuppliedAnswers?: string | boolean | { [k: string]: any },
@@ -137,13 +147,34 @@ export const prompt = async (
 		userSuppliedAnswers = JSON.parse(userSuppliedAnswers)
 	}
 
+	logger.debug(
+		'User supplied answers in generator options',
+		userSuppliedAnswers
+	)
+
 	enquirer.on('prompt', (prompt) => {
 		prompt.once('run', async () => {
 			if (typeof userSuppliedAnswers === 'object') {
 				const value = userSuppliedAnswers[prompt.name]
 				if (value !== undefined) {
-					for (const char of String(value).split('')) {
-						await prompt.keypress(char)
+					if (typeof value === 'string') {
+						const choices = prompt.choices
+						if (choices) {
+							const index = getChoiceIndex(choices, value)
+							await prompt.keypress(index)
+						}
+					} else if (Array.isArray(value)) {
+						const choices = prompt.choices
+						if (choices) {
+							value.map(async (item: string) => {
+								const index = getChoiceIndex(choices, item)
+								await prompt.keypress(index)
+							})
+						}
+					} else {
+						for (const char of String(value).split('')) {
+							await prompt.keypress(char)
+						}
 					}
 				}
 				if (mock || value !== undefined) {
@@ -200,15 +231,7 @@ export const prompt = async (
 						choices = choices.call(this.state, this.state)
 					}
 					if (choices) {
-						const index = choices.findIndex(
-							(c: string | Choice) => {
-								if (typeof c === 'string') {
-									return c === value
-								}
-								return typeof c === 'object' && c.name === value
-							}
-						)
-						return index
+						return getChoiceIndex(choices, value)
 					}
 					return value === undefined ? '' : value
 				},
@@ -228,6 +251,5 @@ export const prompt = async (
 			}
 		})
 	)
-
 	return answers
 }

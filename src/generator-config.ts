@@ -32,6 +32,7 @@ export interface AddAction {
 
 type DataFunction = (this: SAO, context: SAO) => object
 
+/** This is the move action */
 export interface MoveAction {
 	type: 'move'
 	patterns: {
@@ -47,8 +48,11 @@ export interface CopyAction {
 }
 
 export interface ModifyAction {
+	/** Identify this action as the modify type */
 	type: 'modify'
+	/** Glob patterns to identify items inside of the project directory */
 	files: string | string[]
+	/**  */
 	handler: (data: any, filepath: string) => any
 }
 

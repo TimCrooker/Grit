@@ -28,16 +28,6 @@ import {
 	installPackages,
 } from './install-packages'
 import { GeneratorList, generatorList } from './utils/generator-list'
-interface Paths {
-	sourcePath: string
-	templateDir?: string
-}
-interface Extras {
-	stack: unknown
-	debug: boolean
-	paths: Paths
-	projectType?: string
-}
 export interface Options {
 	outDir?: string
 	logLevel?: number
@@ -68,7 +58,6 @@ export interface Options {
 				[k: string]: any
 		  }
 	appName?: string
-	extras?: Extras
 }
 
 const EMPTY_ANSWERS = Symbol()
