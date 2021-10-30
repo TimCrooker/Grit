@@ -26,7 +26,7 @@ import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
 import { logger, colors } from './utils/logger'
 import { spinner } from './utils/spinner'
 import { isLocalPath } from './config'
-import { pathExists, readFile } from 'utils/files'
+import { pathExists, readFile } from './utils/files'
 import { generatorStore, GeneratorStore } from './store/generatorStore'
 import { updater } from './updater'
 
