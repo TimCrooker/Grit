@@ -1,4 +1,4 @@
-import { SAO } from '@/index'
+import { SAO } from '../../src/index'
 import path from 'path'
 
 describe('prompts', () => {
