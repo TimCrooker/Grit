@@ -9,6 +9,10 @@ test('use default saofile', async () => {
 
 	await sao.run()
 
-	expect(await sao.getOutputFiles()).toMatchInlineSnapshot()
+	expect(await sao.getOutputFiles()).toMatchInlineSnapshot(`
+    Array [
+      "foo.txt",
+    ]
+  `)
 	expect(await sao.readOutputFile('foo.txt')).toBe('foo\n')
 })
