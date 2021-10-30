@@ -1,6 +1,6 @@
 {
 	"name": "projenerator",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": "cli.js",
@@ -13,15 +13,17 @@
 	"scripts": {
 		"test": "jest",
 		"build": "rimraf dist && tsup src/index.ts --dts",
+		"prepublishOnly": "npm run build",
 		"lint": "eslint . --fix",
 		"dev": "ts-node cli.js",
-		"release": "shipjs prepare"
+		"release": "dotenv release-it --only-version"
 	},
 	"license": "MIT",
 	"engines": {
 		"node": ">=12"
 	},
 	"dependencies": {
+		"release-it": "^14.11.6",
 		"rimraf": "^3.0.2",
 		"update-notifier": "^5.1.0"
 	},
@@ -39,6 +41,7 @@
 		"@types/ini": "^1.3.30",
 		"@types/jest": "^25.2.2",
 		"@types/micromatch": "^4.0.1",
+		"@types/mkdirp": "^1.0.2",
 		"@types/move-file": "^1.1.0",
 		"@types/node": "^16.7.10",
 		"@types/parse-package-name": "^0.1.0",
@@ -56,9 +59,11 @@
 		"cross-spawn": "^7.0.3",
 		"cz-conventional-changelog": "3.2.0",
 		"dot-prop": "^5.2.0",
+		"dotenv-cli": "^4.0.0",
 		"ejs": "^3.1.2",
 		"enquirer": "^2.3.6",
 		"env-paths": "^2.2.0",
+		"esbuild": "^0.13.10",
 		"eslint": "^7.32.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
@@ -79,7 +84,6 @@
 		"prettier": "^2.3.2",
 		"resolve-from": "^5.0.0",
 		"rollup": "^2.34.0",
-		"shipjs": "0.20.1",
 		"text-table": "^0.2.0",
 		"ts-jest": "^26.0.0",
 		"ts-node": "^8.10.2",

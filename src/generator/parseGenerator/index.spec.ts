@@ -1,5 +1,5 @@
 import os from 'os'
-import { parseGenerator, ParsedGenerator } from '.'
+import { parseGenerator, ParsedGenerator } from './'
 
 const parse = (name: string): ParsedGenerator => {
 	const result = parseGenerator(name)
