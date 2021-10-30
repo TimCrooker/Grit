@@ -3,7 +3,7 @@ import { pathExists } from '../../../src/utils/files'
 
 describe('File Utilities', () => {
 	it('Path should exist', async () => {
-		const filePath = path.resolve(__dirname, 'fixtures')
+		const filePath = path.resolve(__dirname, 'fixtures', 'foo.txt')
 		expect(await pathExists(filePath)).toBeTruthy()
 	})
 
