@@ -1,6 +1,7 @@
 import Enquirer from 'enquirer'
+import { Answers } from 'index'
 import { SAOError } from '../error'
-import { logger } from '../logger'
+import { logger } from './logger'
 
 /**
  * The state of current running prompt
@@ -136,26 +137,32 @@ const getChoiceIndex = (choices: string[] | Choice[], value: any): number => {
 	})
 }
 
+/** Use enquirer to get answers to the prompts from the user */
 export const prompt = async (
 	prompts: PromptOptions[],
-	userSuppliedAnswers?: string | boolean | { [k: string]: any },
+	injectedAnswers?: string | boolean | Answers,
 	mock?: boolean
-): Promise<{ [k: string]: any }> => {
+): Promise<Answers> => {
 	const enquirer = new Enquirer()
 
-	if (typeof userSuppliedAnswers === 'string') {
-		userSuppliedAnswers = JSON.parse(userSuppliedAnswers)
+	if (typeof injectedAnswers === 'string') {
+		injectedAnswers = JSON.parse(injectedAnswers)
 	}
 
-	logger.debug(
-		'User supplied answers in generator options',
-		userSuppliedAnswers
-	)
+	logger.debug('Generator injected answers:', injectedAnswers)
 
+	/**
+	 *  Runs when prompt event is triggered
+	 *
+	 * 	This event callback is responsible for ensuring
+	 * injected answers are mapped to the proper choice/choices
+	 */
 	enquirer.on('prompt', (prompt) => {
 		prompt.once('run', async () => {
-			if (typeof userSuppliedAnswers === 'object') {
-				const value = userSuppliedAnswers[prompt.name]
+			if (typeof injectedAnswers === 'object') {
+				// Check for generator injected answer for this prompt
+				const value = injectedAnswers[prompt.name]
+
 				if (value !== undefined) {
 					if (typeof value === 'string') {
 						const choices = prompt.choices
@@ -180,7 +187,7 @@ export const prompt = async (
 				if (mock || value !== undefined) {
 					await prompt.submit()
 				}
-			} else if (userSuppliedAnswers === true || mock) {
+			} else if (injectedAnswers === true || mock) {
 				await prompt.submit()
 			}
 			if (mock) {

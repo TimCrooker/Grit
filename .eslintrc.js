@@ -6,7 +6,6 @@ module.exports = {
 		node: true,
 	},
 	extends: [
-		'eslint:recommended',
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'prettier',
@@ -30,7 +29,7 @@ module.exports = {
 				singleQuote: true,
 				semi: false,
 				printWidth: 80,
-				tabWidth: 4,
+				tabWidth: 2,
 				useTabs: true,
 			},
 		],

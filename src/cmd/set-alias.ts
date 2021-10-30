@@ -1,6 +1,6 @@
 import { store } from '../store'
-import { escapeDots } from '../utils/common'
-import { logger } from '../logger'
+import { escapeDots } from '../utils/glob'
+import { logger } from '../utils/logger'
 
 export const setAlias =
 	() =>

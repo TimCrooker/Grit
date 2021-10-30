@@ -1,8 +1,8 @@
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
-import { spinner } from './spinner'
-import { logger } from './logger'
 import { SAOError } from './error'
+import { logger } from './utils/logger'
+import { spinner } from './utils/spinner'
 
 export type NPM_CLIENT = 'npm' | 'yarn' | 'pnpm'
 
@@ -27,10 +27,15 @@ export function getNpmClient(): NPM_CLIENT {
 }
 
 export interface InstallOptions {
+	/** Install directory */
 	cwd: string
+	/** Package manager being used */
 	npmClient?: NPM_CLIENT
+	/** Package manager install CLI options */
 	installArgs?: string[]
+	/** Names of additional packages to install */
 	packages?: string[]
+	/** Run install as devDependencies */
 	saveDev?: boolean
 	registry?: string
 }

@@ -1,7 +1,7 @@
 {
 	"name": "projenerator",
-	"version": "2.0.3",
-	"description": "Futuristic scaffolding tool ⚔",
+	"version": "0.0.3",
+	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": "cli.js",
 	"types": "dist/index.d.ts",
@@ -11,12 +11,10 @@
 		"!**/*.test.ts"
 	],
 	"scripts": {
-		"test": "npm run lint && npm run build && jest",
+		"test": "jest",
 		"build": "rimraf dist && tsup src/index.ts --dts",
 		"lint": "eslint . --fix",
-		"prepublishOnly": "npm run build",
-		"sao": "ts-node src/cli-engine.ts",
-		"typedoc.g": "typedoc src/index.ts --readme none --mode file --out docs/typedoc --excludePrivate --excludeNotExported --theme minimal",
+		"dev": "ts-node cli.js",
 		"release": "shipjs prepare"
 	},
 	"license": "MIT",
@@ -24,9 +22,15 @@
 		"node": ">=12"
 	},
 	"dependencies": {
+		"rimraf": "^3.0.2",
 		"update-notifier": "^4.1.0"
 	},
 	"devDependencies": {
+		"@babel/cli": "^7.14.8",
+		"@babel/core": "^7.15.5",
+		"@babel/plugin-transform-runtime": "^7.15.0",
+		"@babel/preset-env": "^7.15.4",
+		"@babel/preset-typescript": "^7.15.0",
 		"@egoist/extract-zip": "^2.0.1",
 		"@types/cross-spawn": "^6.0.2",
 		"@types/ejs": "^3.0.4",
@@ -38,11 +42,14 @@
 		"@types/move-file": "^1.1.0",
 		"@types/node": "^16.7.10",
 		"@types/parse-package-name": "^0.1.0",
+		"@types/rimraf": "^3.0.2",
 		"@types/text-table": "^0.2.1",
 		"@types/update-notifier": "^4.1.0",
 		"@typescript-eslint/eslint-plugin": "^2.33.0",
 		"@typescript-eslint/parser": "^2.33.0",
 		"axios": "^0.19.2",
+		"babel-jest": "^27.1.0",
+		"babel-plugin-module-resolver": "^4.1.0",
 		"cac": "^6.5.13",
 		"chalk": "^4.1.0",
 		"cli-table3": "^0.6.0",
@@ -76,9 +83,8 @@
 		"text-table": "^0.2.0",
 		"ts-jest": "^26.0.0",
 		"ts-node": "^8.10.2",
-		"tsup": "^3.10.1",
+		"tsup": "^5.5.0",
 		"type-fest": "^0.20.2",
-		"typedoc": "^0.19.2",
 		"typescript": "^4.1.2",
 		"yarn-global": "^1.2.0"
 	},
@@ -88,14 +94,11 @@
 		}
 	},
 	"keywords": [
-		"sao",
 		"generator",
-		"egoist",
 		"yeoman",
 		"template",
 		"scaffold",
 		"automation",
-		"kirito",
 		"simple",
 		"easy",
 		"workflow"

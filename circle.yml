@@ -12,7 +12,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
-          name: install dependences
+          name: install dependencies
           command: yarn
       - save_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}

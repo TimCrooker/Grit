@@ -1,6 +1,6 @@
+import { escapeDots } from '../utils/glob'
 import { cac } from 'cac'
 import { store } from '../store'
-import { escapeDots } from '../utils/common'
 
 export const getAlias =
 	(cli: ReturnType<typeof cac>) =>

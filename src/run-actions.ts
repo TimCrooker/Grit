@@ -3,27 +3,19 @@ import matcher from 'micromatch'
 import { glob, majo, remove } from 'majo'
 import ejs from 'ejs'
 import isBinaryPath from 'is-binary-path'
-import { logger } from './logger'
-import { getGlobPatterns } from './utils/get-glob-patterns'
-import { GeneratorConfig } from './generator-config'
-import { move } from './utils/fs'
-import { SAO } from './'
+import { getGlobPatterns } from 'utils/glob'
+import { logger } from 'utils/logger'
+import { move } from 'utils/files'
+import { GeneratorConfig, SAO } from 'index'
 
-/**
- * Extracts and runs the actions from the generator congig supplied by the cli
- *
- * @param config the generator config
- * @param context the SAO instance for the supplied generator
- */
 export const runActions = async (
-	config: GeneratorConfig,
-	context: SAO
+	context: SAO,
+	config: GeneratorConfig
 ): Promise<void> => {
 	const actions =
 		typeof config.actions === 'function'
 			? await config.actions.call(context, context)
 			: config.actions
-
 	if (!actions) return
 
 	for (const action of actions) {
@@ -46,10 +38,7 @@ export const runActions = async (
 
 				if (excludedPatterns.length > 0) {
 					stream.use(() => {
-						const excludedFiles = matcher(
-							stream.fileList,
-							excludedPatterns
-						)
+						const excludedFiles = matcher(stream.fileList, excludedPatterns)
 						for (const file of excludedFiles) {
 							stream.deleteFile(file)
 						}
@@ -69,14 +58,12 @@ export const runActions = async (
 					// Exclude binary path
 					fileList = fileList.filter((fp) => !isBinaryPath(fp))
 
+					// Change transform behavior
 					if (action.transformInclude) {
 						fileList = matcher(fileList, action.transformInclude)
 					}
 					if (action.transformExclude) {
-						fileList = matcher.not(
-							fileList,
-							action.transformExclude
-						)
+						fileList = matcher.not(fileList, action.transformExclude)
 					}
 
 					fileList.forEach((relativePath) => {
@@ -85,14 +72,13 @@ export const runActions = async (
 						const actionData =
 							typeof action.data === 'object'
 								? action.data
-								: action.data &&
-								  action.data.call(context, context)
+								: action.data && action.data.call(context, context)
 						stream.writeContents(
 							relativePath,
 							ejs.render(
 								contents,
 								Object.assign({}, context.answers, actionData, {
-									context,
+									context: context,
 								})
 							)
 						)
@@ -102,10 +88,10 @@ export const runActions = async (
 			stream.onWrite = (_, targetPath): void => {
 				logger.fileAction('magenta', 'Created', targetPath)
 			}
-			await stream.dest(context.outDir)
+			await stream.dest(context.opts.outDir)
 		} else if (action.type === 'modify' && action.handler) {
 			const stream = majo()
-			stream.source(action.files, { baseDir: context.outDir })
+			stream.source(action.files, { baseDir: context.opts.outDir })
 			stream.use(async ({ files }) => {
 				await Promise.all(
 					// eslint-disable-next-line array-callback-return
@@ -115,10 +101,7 @@ export const runActions = async (
 						if (isJson) {
 							contents = JSON.parse(contents)
 						}
-						let result = await action.handler(
-							contents,
-							relativePath
-						)
+						let result = await action.handler(contents, relativePath)
 						if (isJson) {
 							result = JSON.stringify(result, null, 2)
 						}
@@ -126,32 +109,47 @@ export const runActions = async (
 						logger.fileAction(
 							'yellow',
 							'Modified',
-							path.join(context.outDir, relativePath)
+							path.join(context.opts.outDir, relativePath)
 						)
 					})
 				)
 			})
-			await stream.dest(context.outDir)
+			await stream.dest(context.opts.outDir)
 		} else if (action.type === 'move' && action.patterns) {
 			await Promise.all(
 				Object.keys(action.patterns).map(async (pattern) => {
 					const files = await glob(pattern, {
-						cwd: context.outDir,
+						cwd: context.opts.outDir,
 						absolute: true,
 						onlyFiles: false,
 					})
 					if (files.length > 1) {
-						throw new Error(
-							'"move" pattern can only match one file!'
-						)
+						throw new Error('"move" pattern can only match one file!')
 					} else if (files.length === 1) {
 						const from = files[0]
-						const to = path.join(
-							context.outDir,
-							action.patterns[pattern]
-						)
+						const to = path.join(context.opts.outDir, action.patterns[pattern])
 						await move(from, to, {
 							overwrite: true,
+						})
+						logger.fileMoveAction(from, to)
+					}
+				})
+			)
+		} else if (action.type === 'copy' && action.patterns) {
+			await Promise.all(
+				Object.keys(action.patterns).map(async (pattern) => {
+					const files = await glob(pattern, {
+						cwd: context.opts.outDir,
+						absolute: true,
+						onlyFiles: false,
+					})
+					if (files.length > 1) {
+						throw new Error('"copy" pattern can only match one file!')
+					} else if (files.length === 1) {
+						const from = files[0]
+						const to = path.join(context.opts.outDir, action.patterns[pattern])
+						await move(from, to, {
+							overwrite: false,
 						})
 						logger.fileMoveAction(from, to)
 					}
@@ -168,7 +166,7 @@ export const runActions = async (
 				patterns = getGlobPatterns(action.files, context.data)
 			}
 			const files = await glob(patterns, {
-				cwd: context.outDir,
+				cwd: context.opts.outDir,
 				absolute: true,
 				onlyFiles: false,
 			})

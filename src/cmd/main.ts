@@ -4,7 +4,7 @@ import { Options, SAO } from '..'
 import { handleError } from '../error'
 import { getRepoGeneratorName } from './utils'
 import { prompt } from '../utils/prompt'
-import { generatorList } from '../utils/generator-list'
+import { generatorStore } from '../store/generatorStore'
 
 export const main =
 	(cli: CAC) =>
@@ -15,7 +15,7 @@ export const main =
 		}
 
 		if (!generator) {
-			const generatorsMap = generatorList.groupedGenerators
+			const generatorsMap = generatorStore.groupedGenerators
 
 			if (generatorsMap.size === 0) {
 				cli.outputHelp()
@@ -39,9 +39,7 @@ export const main =
 						return !generators || generators.length < 2
 					},
 					choices({ answers: { name } }): string[] {
-						return (
-							generatorsMap.get(name)?.map((g) => g.version) || []
-						)
+						return generatorsMap.get(name)?.map((g) => g.version) || []
 					},
 				},
 			])

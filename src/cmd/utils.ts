@@ -1,13 +1,15 @@
 import Table from 'cli-table3'
-import { RepoGenerator, NpmGenerator } from '../parse-generator'
-import { generatorList } from '../utils/generator-list'
+import { generatorStore } from '../store/generatorStore'
+import { RepoGenerator, NpmGenerator } from '../generator/parseGenerator'
 
-export function getRepoGeneratorName(g: RepoGenerator): string {
-	return `${g.prefix === 'github' ? '' : `${g.prefix}:`}${g.user}/${g.repo}`
+export function getRepoGeneratorName(generator: RepoGenerator): string {
+	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${
+		generator.user
+	}/${generator.repo}`
 }
 
-export function getNpmGeneratorName(g: NpmGenerator): string {
-	return g.name.replace('sao-', '')
+export function getNpmGeneratorName(generator: NpmGenerator): string {
+	return generator.name.replace('sao-', '')
 }
 
 export function printGenerators(): void {
@@ -15,7 +17,7 @@ export function printGenerators(): void {
 		head: ['Name', 'Versions'],
 	})
 
-	for (const [name, generators] of generatorList.groupedGenerators) {
+	for (const [name, generators] of generatorStore.groupedGenerators) {
 		table.push([name, generators.map((g) => `${g.version}`).join(', ')])
 	}
 

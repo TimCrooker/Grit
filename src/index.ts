@@ -1,42 +1,48 @@
+import { exec } from 'child_process'
+import spawn from 'cross-spawn'
+import { glob } from 'majo'
 import { tmpdir } from 'os'
 import path from 'path'
-import { SetRequired } from 'type-fest'
 import resolveFrom from 'resolve-from'
-import { glob } from 'majo'
-import spawn from 'cross-spawn'
-import { loadGeneratorConfig, GeneratorConfig } from './generator-config'
-import { logger } from './logger'
-import { isLocalPath } from './utils/is-local-path'
-import { SAOError, handleError } from './error'
-import { parseGenerator, ParsedGenerator } from './parse-generator'
-import { updateCheck } from './update-check'
-import { store } from './store'
+import { SetRequired } from 'type-fest'
+import { promisify } from 'util'
+import { getGitUser, GitUser } from './utils/git-user'
+import { defautSaoFile } from './default-generator'
+import { handleError, SAOError } from './error'
 import {
-	ensureRepo,
-	ensurePackage,
-	ensureLocal,
-} from './utils/ensure-generator'
-import { defautSaoFile } from './default-saofile'
-import { readFile, pathExists } from './utils/fs'
-import { spinner } from './spinner'
-import { colors } from './utils/colors'
-import { GitUser, getGitUser } from './utils/git-user'
-import {
-	NPM_CLIENT,
 	getNpmClient,
 	InstallOptions,
 	installPackages,
+	NPM_CLIENT,
 } from './install-packages'
-import { GeneratorList, generatorList } from './utils/generator-list'
-export interface Options {
+import { store } from './store'
+import {
+	ensureLocal,
+	ensurePackage,
+	ensureRepo,
+} from './generator/validateGenerator'
+import { GeneratorConfig, loadConfig } from './generator/generator'
+import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
+import { logger, colors } from './utils/logger'
+import { spinner } from './utils/spinner'
+import { isLocalPath } from 'config'
+import { pathExists, readFile } from 'utils/files'
+import {
+	generatorStore,
+	GeneratorStore,
+} from './store/generatorStore'
+import { updater } from 'updater'
+
+export interface Options<T = { [k: string]: any }> {
 	outDir?: string
 	logLevel?: number
 	debug?: boolean
 	/** Least amount of logging to the console */
 	quiet?: boolean
+	/** Path to generator can be local dir, repo, or npm package */
 	generator: string
 	/** Update cached generator before running */
-	update?: boolean
+	updateGenerator?: boolean
 	/** Use `git clone` to download repo */
 	clone?: boolean
 	/** Use a custom npm registry */
@@ -44,7 +50,7 @@ export interface Options {
 	/** Check for sao/generator updates */
 	updateCheck?: boolean
 	/**
-	 *  Mock git info, prompts etc
+	 * Mock git info, prompts etc
 	 * Additionally, Set ENV variable NODE_ENV to test to enable this
 	 */
 	mock?: boolean
@@ -57,23 +63,29 @@ export interface Options {
 		| {
 				[k: string]: any
 		  }
-	appName?: string
+	/** Extra data payload to provide the generator at runtime */
+	extras?: T
 }
 
 const EMPTY_ANSWERS = Symbol()
 const EMPTY_DATA = Symbol()
+
+export type Answers = { [k: string]: any }
+export type Data = { [k: string]: any }
 
 export class SAO {
 	opts: SetRequired<Options, 'outDir' | 'logLevel'>
 	spinner = spinner
 	colors = colors
 	logger = logger
+	updater = updater
 
-	private _answers: { [k: string]: any } | symbol = EMPTY_ANSWERS
-	private _data: { [k: string]: any } | symbol = EMPTY_DATA
+	/** Prompt answers provided by the user */
+	private _answers: Answers | symbol = EMPTY_ANSWERS
+	private _data: Data | symbol = EMPTY_DATA
 
 	parsedGenerator: ParsedGenerator
-	generatorList: GeneratorList
+	generatorList: GeneratorStore
 
 	constructor(opts: Options) {
 		this.opts = {
@@ -86,29 +98,39 @@ export class SAO {
 					: process.env.NODE_ENV === 'test',
 		}
 
+		// Set log level from run mode
 		if (opts.debug) {
 			this.opts.logLevel = 4
 		} else if (opts.quiet) {
 			this.opts.logLevel = 1
 		}
 
+		// configure logger
 		logger.setOptions({
 			logLevel: this.opts.logLevel,
 			mock: this.opts.mock,
 		})
 
+		// configure Updater
+		updater.setOptions({
+			updateSelf: this.opts.updateCheck,
+			updateGenerator: this.opts.updateGenerator,
+		})
+
+		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
 			this.opts.outDir = path.join(tmpdir(), `sao-out/${Date.now()}/out`)
 		}
 
+		// Use default answers when mock mode is enabled and no answers are explicitly provided
 		if (this.opts.mock && typeof this.opts.answers === 'undefined') {
 			this.opts.answers = true
 		}
 
-		this.generatorList = generatorList
+		this.generatorList = generatorStore
 		this.parsedGenerator = parseGenerator(this.opts.generator)
 
-		// Sub generator can only be used in an existing
+		// Sub generator can only be used in already executed generator outdir
 		if (this.parsedGenerator.subGenerator && !this.opts.mock) {
 			logger.debug(
 				`Setting out directory to process.cwd() since it's a sub generator`
@@ -142,9 +164,10 @@ export class SAO {
 		generator: ParsedGenerator = this.parsedGenerator,
 		hasParent?: boolean
 	): Promise<{ generator: ParsedGenerator; config: GeneratorConfig }> {
+		// TODO find out what these do
 		if (generator.type === 'repo') {
 			await ensureRepo(generator, {
-				update: this.opts.update,
+				update: this.opts.updateGenerator,
 				clone: this.opts.clone,
 				registry: this.opts.registry,
 			})
@@ -154,28 +177,21 @@ export class SAO {
 			await ensureLocal(generator)
 		}
 
+		// store generator in generator cache
 		if (!hasParent) {
 			this.generatorList.add(generator)
 		}
 
-		logger.debug(`Loaded generator from ${generator.path}`)
-
-		const loaded = await loadGeneratorConfig(generator.path)
+		// load actual generator from generator path
+		logger.debug(`Loading generator from ${generator.path}`)
+		const loadedConfig = await loadConfig(generator.path)
 		const config: GeneratorConfig =
-			loaded.path && loaded.data ? loaded.data : defautSaoFile
+			loadedConfig.path && loadedConfig.data ? loadedConfig.data : defautSaoFile
 
 		// Only run following code for root generator
 		if (!hasParent) {
 			if (this.opts.updateCheck) {
-				updateCheck({
-					generator,
-					checkGenerator:
-						config.updateCheck !== false &&
-						generator.type === 'npm',
-					// Don't show the notifier after updated the generator
-					// Since the notifier is for the older version
-					showNotifier: !this.opts.update,
-				})
+				this.updater.checkGenerator(generator, config.updateCheck)
 			}
 			// Keep the generator info
 			store.set(`generators.${generator.hash}`, generator)
@@ -192,9 +208,7 @@ export class SAO {
 					: resolveFrom(generator.path, generatorPath)
 				return this.getGenerator(parseGenerator(generatorPath), true)
 			}
-			throw new SAOError(
-				`No such sub generator in generator ${generator.path}`
-			)
+			throw new SAOError(`No such sub generator in generator ${generator.path}`)
 		}
 
 		return {
@@ -211,13 +225,16 @@ export class SAO {
 			logger.status('green', 'Generator', config.description)
 		}
 
+		// Run generator prepare
 		if (typeof config.prepare === 'function') {
 			await config.prepare.call(this, this)
 		}
 
+		// Run generator supplied prompts
 		if (config.prompts) {
 			const { runPrompts } = await import('./run-prompts')
-			await runPrompts(config, this)
+
+			this._answers = await runPrompts(this, config)
 		} else {
 			this._answers = {}
 		}
@@ -226,7 +243,8 @@ export class SAO {
 
 		if (config.actions) {
 			const { runActions } = await import('./run-actions')
-			await runActions(config, this)
+
+			await runActions(this, config)
 		}
 
 		if (!this.opts.mock && config.completed) {
@@ -327,6 +345,28 @@ export class SAO {
 		}
 	}
 
+	async gitCommit(commitMessage?: string): Promise<void> {
+		if (this.opts.mock) return
+
+		const outDir = this.outDir
+
+		try {
+			// add
+			await promisify(exec)(
+				`git --git-dir="${outDir}"/.git/ --work-tree="${outDir}"/ add -A`
+			)
+			// commit
+			await promisify(exec)(
+				`git --git-dir="${outDir}"/.git/ --work-tree="${outDir}"/ commit -m "${
+					commitMessage || 'Commit'
+				}"`
+			)
+			logger.success('created a git commit.')
+		} catch (err) {
+			logger.debug('An error occured while creating git commit', err)
+		}
+	}
+
 	/**
 	 * Run `npm install` in output directory
 	 */
@@ -367,14 +407,11 @@ export class SAO {
 	 * Get file list of output directory
 	 */
 	async getOutputFiles(): Promise<string[]> {
-		const files = await glob(
-			['**/*', '!**/node_modules/**', '!**/.git/**'],
-			{
-				cwd: this.opts.outDir,
-				dot: true,
-				onlyFiles: true,
-			}
-		)
+		const files = await glob(['**/*', '!**/node_modules/**', '!**/.git/**'], {
+			cwd: this.opts.outDir,
+			dot: true,
+			onlyFiles: true,
+		})
 		return files.sort()
 	}
 
@@ -382,7 +419,7 @@ export class SAO {
 	 * Check if a file exists in output directory
 	 */
 	async hasOutputFile(file: string): Promise<boolean> {
-		return pathExists(path.join(this.opts.outDir, file))
+		return await pathExists(path.join(this.opts.outDir, file))
 	}
 
 	/**
@@ -390,10 +427,9 @@ export class SAO {
 	 * @param file file path
 	 */
 	async readOutputFile(file: string): Promise<string> {
-		return readFile(path.join(this.opts.outDir, file), 'utf8')
+		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}
 }
 
-export { GeneratorConfig, handleError, store, generatorList }
-
 export { runCLI } from './cli-engine'
+export { GeneratorConfig, handleError, store, GeneratorStore }

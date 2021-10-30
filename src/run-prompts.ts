@@ -1,22 +1,22 @@
 import resolveFrom from 'resolve-from'
-import { logger } from './logger'
 import { store } from './store'
-import { GeneratorConfig } from './generator-config'
 import { prompt } from './utils/prompt'
-import { SAO } from '.'
+import { Answers, GeneratorConfig, SAO } from '.'
+
+import { logger } from 'utils/logger'
 
 export const runPrompts = async (
-	config: GeneratorConfig,
-	context: SAO
-): Promise<void> => {
+	context: SAO,
+	config: GeneratorConfig
+): Promise<Answers> => {
+	// Gets prompts from the generator config
 	const prompts =
 		typeof config.prompts === 'function'
 			? await config.prompts.call(context, context)
 			: config.prompts
 
 	if (!prompts || prompts.length === 0) {
-		context.answers = {}
-		return
+		return {}
 	}
 
 	const pkgPath = resolveFrom.silent(
@@ -25,31 +25,29 @@ export const runPrompts = async (
 	)
 	const pkgVersion = pkgPath ? require(pkgPath).version : ''
 	const STORED_ANSWERS_ID = `answers.${
-		context.parsedGenerator.hash +
-		'__npm__' +
-		pkgVersion.replace(/\./g, '\\.')
+		context.parsedGenerator.hash + pkgVersion.replace(/\./g, '\\.')
 	}`
+
+	// get cached answers
 	const storedAnswers = store.get(STORED_ANSWERS_ID) || {}
 
-	const { mock } = context.opts
+	const { mock, answers: injectedAnswers } = context.opts
+
 	if (!mock) {
-		logger.debug('Reusing cached answers:', storedAnswers)
+		logger.debug('Loading cached answers:', storedAnswers)
 	}
 
-	if (context.opts.answers === true) {
+	if (injectedAnswers === true) {
 		logger.warn(
 			`The yes flag has been set. This will automatically answer default value to all questions, which may have security implications.`
 		)
 	}
 
-	const answers = await prompt(
-		prompts,
-		context.opts.answers,
-		context.opts.mock
-	)
-
+	// Run enquirer on the prompts supplied by the generator
+	const answers = await prompt(prompts, injectedAnswers, mock)
 	logger.debug(`Retrived answers:`, answers)
 
+	// cache answers
 	const answersToStore: { [k: string]: any } = {}
 	for (const p of prompts) {
 		if (!Object.prototype.hasOwnProperty.call(answers, p.name)) {
@@ -64,5 +62,5 @@ export const runPrompts = async (
 		logger.debug('Cached prompt answers:', answersToStore)
 	}
 
-	context.answers = answers
+	return answers
 }

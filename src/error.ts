@@ -1,6 +1,6 @@
-import { logger } from './logger'
-import { spinner } from './spinner'
-import { colors } from './utils/colors'
+import { logger } from './utils/logger'
+import { spinner } from './utils/spinner'
+import { colors } from './utils/logger'
 
 export class SAOError extends Error {
 	sao: boolean
