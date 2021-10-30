@@ -14,5 +14,5 @@ module.exports = {
 			},
 		],
 	],
-	ignore: ['**/*.(spec|test).js', '**/fixtures/**'],
+	ignore: ['**/*.(spec|test).js'],
 }
