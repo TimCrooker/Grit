@@ -3,7 +3,7 @@ import { store } from './store'
 import { prompt } from './utils/prompt'
 import { Answers, GeneratorConfig, SAO } from '.'
 
-import { logger } from 'utils/logger'
+import { logger } from './utils/logger'
 
 export const runPrompts = async (
 	context: SAO,
