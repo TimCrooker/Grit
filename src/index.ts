@@ -25,13 +25,10 @@ import { GeneratorConfig, loadConfig } from './generator/generator'
 import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
 import { logger, colors } from './utils/logger'
 import { spinner } from './utils/spinner'
-import { isLocalPath } from 'config'
+import { isLocalPath } from './config'
 import { pathExists, readFile } from 'utils/files'
-import {
-	generatorStore,
-	GeneratorStore,
-} from './store/generatorStore'
-import { updater } from 'updater'
+import { generatorStore, GeneratorStore } from './store/generatorStore'
+import { updater } from './updater'
 
 export interface Options<T = { [k: string]: any }> {
 	outDir?: string
