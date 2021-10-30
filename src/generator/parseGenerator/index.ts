@@ -46,10 +46,7 @@ export type GeneratorPrefix = 'npm' | 'github' | 'gitlab' | 'bitbucket'
 export const GENERATOR_PREFIX_RE = /^(npm|github|bitbucket|gitlab):/
 
 /** Infer prefix for naked generator name (without prefix) */
-function inferGeneratorPrefix(
-	GENERATOR_PREFIX_RE: RegExp,
-	generator: string
-): string {
+export function inferGeneratorPrefix(generator: string): string {
 	if (!GENERATOR_PREFIX_RE.test(generator)) {
 		if (generator.startsWith('@')) {
 			generator = `npm:${generator.replace(/\/(sao-)?/, '/sao-')}`
@@ -62,7 +59,7 @@ function inferGeneratorPrefix(
 	return generator
 }
 
-function HandleLocalGenerator(generator: string): LocalGenerator {
+export function HandleLocalGenerator(generator: string): LocalGenerator {
 	let subGenerator: string | undefined
 	if (removeLocalPathPrefix(generator).includes(':')) {
 		subGenerator = generator.slice(generator.lastIndexOf(':') + 1)
@@ -78,7 +75,7 @@ function HandleLocalGenerator(generator: string): LocalGenerator {
 	}
 }
 
-function HandleNpmGenerator(generator: string): NpmGenerator {
+export function HandleNpmGenerator(generator: string): NpmGenerator {
 	const hasSubGenerator = generator.indexOf(':') !== -1
 	const slug = generator.slice(
 		0,
@@ -99,7 +96,7 @@ function HandleNpmGenerator(generator: string): NpmGenerator {
 	}
 }
 
-function HandleRepoGenerator(
+export function HandleRepoGenerator(
 	generator: string,
 	prefix: GeneratorPrefix
 ): RepoGenerator {
@@ -125,12 +122,11 @@ function HandleRepoGenerator(
 	}
 }
 
-function getGeneratorPrefix(generator: string): GeneratorPrefix {
+export function getGeneratorPrefix(generator: string): GeneratorPrefix {
 	let prefix: GeneratorPrefix = 'npm'
 	let m: RegExpExecArray | null = null
 	if ((m = GENERATOR_PREFIX_RE.exec(generator))) {
 		prefix = m[1] as GeneratorPrefix
-		generator = generator.replace(GENERATOR_PREFIX_RE, '')
 	}
 	return prefix
 }
@@ -140,9 +136,7 @@ export function parseGenerator(generator: string): ParsedGenerator {
 	// Handle user cached generators with aliases
 	if (generator.startsWith('alias:')) {
 		const alias = generator.slice(6)
-		const url = store.get(`alias.${escapeDots(alias)}`) as
-			| string
-			| undefined
+		const url = store.get(`alias.${escapeDots(alias)}`) as string | undefined
 		if (!url) {
 			throw new SAOError(`Cannot find alias '${alias}'`)
 		}
@@ -154,10 +148,12 @@ export function parseGenerator(generator: string): ParsedGenerator {
 		return HandleLocalGenerator(generator)
 	}
 
-	generator = inferGeneratorPrefix(GENERATOR_PREFIX_RE, generator)
+	generator = inferGeneratorPrefix(generator)
 
 	// Get generator type, e.g. `npm` or `github`
 	const prefix: GeneratorPrefix = getGeneratorPrefix(generator)
+	// Remove prefix from generator to process
+	generator = generator.replace(GENERATOR_PREFIX_RE, '')
 
 	// Generator is an npm package
 	if (prefix === 'npm') {

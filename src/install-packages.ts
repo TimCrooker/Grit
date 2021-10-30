@@ -55,9 +55,7 @@ export const installPackages = async ({
 	return new Promise((resolve, reject) => {
 		// `npm/pnpm/yarn add <packages>`
 		// `npm/pnpm/yarn install`
-		const args = [packages ? 'add' : 'install'].concat(
-			packages ? packages : []
-		)
+		const args = [packages ? 'add' : 'install'].concat(packages ? packages : [])
 		if (saveDev) {
 			args.push(npmClient === 'npm' ? '-D' : '--dev')
 		}
@@ -125,9 +123,7 @@ export const installPackages = async ({
 				logger.success(`Installed ${packageName}`)
 				resolve({ code })
 			} else {
-				reject(
-					new SAOError(`Failed to install ${packageName} in ${cwd}`)
-				)
+				reject(new SAOError(`Failed to install ${packageName} in ${cwd}`))
 			}
 		})
 

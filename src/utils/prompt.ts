@@ -110,21 +110,15 @@ interface EnquirerContext {
 
 function validatePrompt(prompt: PromptOptions, index: number): void {
 	if (!prompt.type) {
-		throw new SAOError(
-			`Missing property "type" on prompt (index: ${index})`
-		)
+		throw new SAOError(`Missing property "type" on prompt (index: ${index})`)
 	}
 
 	if (!prompt.message) {
-		throw new SAOError(
-			`Missing property "message" on prompt (index: ${index})`
-		)
+		throw new SAOError(`Missing property "message" on prompt (index: ${index})`)
 	}
 
 	if (!prompt.name) {
-		throw new SAOError(
-			`Missing property "name" on prompt (index: ${index})`
-		)
+		throw new SAOError(`Missing property "name" on prompt (index: ${index})`)
 	}
 }
 
