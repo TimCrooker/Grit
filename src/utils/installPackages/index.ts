@@ -1,8 +1,8 @@
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
-import { ProjenError } from './utils/error'
-import { logger } from './utils/logger'
-import { spinner } from './utils/spinner'
+import { ProjenError } from '../error'
+import { logger } from '../logger'
+import { spinner } from '../spinner'
 
 export type NPM_CLIENT = 'npm' | 'yarn' | 'pnpm'
 

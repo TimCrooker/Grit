@@ -151,7 +151,7 @@ export const prompt = async (
 	 *  Runs when prompt event is triggered
 	 *
 	 * 	This event callback is responsible for ensuring
-	 * injected answers are mapped to the proper choice/choices
+	 * 	injected answers are mapped to the proper choice/choices
 	 */
 	enquirer.on('prompt', (prompt) => {
 		prompt.once('run', async () => {
@@ -165,6 +165,11 @@ export const prompt = async (
 						if (choices) {
 							const index = getChoiceIndex(choices, value)
 							await prompt.keypress(index)
+						} else {
+							// type the injected answer
+							for (const char of String(value).split('')) {
+								await prompt.keypress(char)
+							}
 						}
 					} else if (Array.isArray(value)) {
 						const choices = prompt.choices

@@ -1,6 +1,6 @@
 import { PACKAGES_CACHE_PATH } from '../../config'
 import { ProjenError } from '../../utils/error'
-import { installPackages } from '../../install-packages'
+import { installPackages } from '../../utils/installPackages'
 import { downloadRepo } from '../../utils/downloadRepo'
 import { pathExists, outputFile } from '../../utils/files'
 import { logger, colors } from '../../utils/logger'

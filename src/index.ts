@@ -14,7 +14,7 @@ import {
 	InstallOptions,
 	installPackages,
 	NPM_CLIENT,
-} from './install-packages'
+} from './utils/installPackages'
 import { store } from './store'
 import {
 	ensureLocal,
