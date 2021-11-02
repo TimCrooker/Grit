@@ -1,10 +1,11 @@
-import os from 'os'
 import {
-	parseGenerator,
 	ParsedGenerator,
+	parseGenerator,
 	getGeneratorPrefix,
 	inferGeneratorPrefix,
 } from './'
+import { COMMAND_NAME } from '../../config'
+import os from 'os'
 
 const parse = (name: string): ParsedGenerator => {
 	const result = parseGenerator(name)
@@ -23,7 +24,7 @@ describe('Parse generators', () => {
 		expect(result).toMatchInlineSnapshot(`
       Object {
         "hash": "e66c30fe",
-        "path": "~/.Projenerator/V2/repos/e66c30fe",
+        "path": "~/.projenerator/V2/generators/repos/e66c30fe",
         "prefix": "github",
         "repo": "poi",
         "subGenerator": undefined,
@@ -38,7 +39,7 @@ describe('Parse generators', () => {
 		expect(parse(`egoist/poi#v1.0.0`)).toMatchInlineSnapshot(`
       Object {
         "hash": "6e0c0844",
-        "path": "~/.Projenerator/V2/repos/6e0c0844",
+        "path": "~/.projenerator/V2/generators/repos/6e0c0844",
         "prefix": "github",
         "repo": "poi",
         "subGenerator": undefined,
@@ -52,10 +53,10 @@ describe('Parse generators', () => {
 	it('Npm package', () => {
 		expect(parse(`nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "096eb1e0",
-        "name": "sao-nm",
-        "path": "~/.Projenerator/V2/packages/096eb1e0/node_modules/sao-nm",
-        "slug": "sao-nm",
+        "hash": "872c3bbe",
+        "name": "projen-nm",
+        "path": "~/.projenerator/V2/generators/packages/872c3bbe/node_modules/projen-nm",
+        "slug": "projen-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -66,10 +67,10 @@ describe('Parse generators', () => {
 	it('Npm package with version', () => {
 		expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "545f7d07",
-        "name": "sao-nm",
-        "path": "~/.Projenerator/V2/packages/545f7d07/node_modules/sao-nm",
-        "slug": "sao-nm@2.0.1",
+        "hash": "e89b3150",
+        "name": "projen-nm",
+        "path": "~/.projenerator/V2/generators/packages/e89b3150/node_modules/projen-nm",
+        "slug": "projen-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
@@ -79,10 +80,10 @@ describe('Parse generators', () => {
 	it('Scoped Npm package', () => {
 		expect(parse(`@egoist/nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "427e6ec2",
-        "name": "@egoist/sao-nm",
-        "path": "~/.Projenerator/V2/packages/427e6ec2/node_modules/@egoist/sao-nm",
-        "slug": "@egoist/sao-nm",
+        "hash": "f048b5a2",
+        "name": "@egoist/projen-nm",
+        "path": "~/.projenerator/V2/generators/packages/f048b5a2/node_modules/@egoist/projen-nm",
+        "slug": "@egoist/projen-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -92,10 +93,10 @@ describe('Parse generators', () => {
 	it('Scoped Npm package with version', () => {
 		expect(parse(`@egoist/nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "5ff93739",
-        "name": "@egoist/sao-nm",
-        "path": "~/.Projenerator/V2/packages/5ff93739/node_modules/@egoist/sao-nm",
-        "slug": "@egoist/sao-nm@2.0.1",
+        "hash": "fbc5b034",
+        "name": "@egoist/projen-nm",
+        "path": "~/.projenerator/V2/generators/packages/fbc5b034/node_modules/@egoist/projen-nm",
+        "slug": "@egoist/projen-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
@@ -106,7 +107,7 @@ describe('Parse generators', () => {
 		expect(parse(`gitlab:egoist/poi`)).toMatchInlineSnapshot(`
       Object {
         "hash": "766eaa60",
-        "path": "~/.Projenerator/V2/repos/766eaa60",
+        "path": "~/.projenerator/V2/generators/repos/766eaa60",
         "prefix": "gitlab",
         "repo": "poi",
         "subGenerator": undefined,
@@ -119,10 +120,10 @@ describe('Parse generators', () => {
 	it('Remove sao- pefix', () => {
 		expect(parse(`sao-nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "096eb1e0",
-        "name": "sao-nm",
-        "path": "~/.Projenerator/V2/packages/096eb1e0/node_modules/sao-nm",
-        "slug": "sao-nm",
+        "hash": "4ae792e6",
+        "name": "projen-sao-nm",
+        "path": "~/.projenerator/V2/generators/packages/4ae792e6/node_modules/projen-sao-nm",
+        "slug": "projen-sao-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -159,20 +160,24 @@ describe('Infer prefix from naked generator', () => {
 	})
 
 	it('naked npm', () => {
-		expect(inferGeneratorPrefix('poi')).toBe('npm:sao-poi')
+		expect(inferGeneratorPrefix('poi')).toBe(`npm:${COMMAND_NAME}-poi`)
 	})
 
 	it('naked npm with version', () => {
-		expect(inferGeneratorPrefix('poi@2.0.1')).toBe('npm:sao-poi@2.0.1')
+		expect(inferGeneratorPrefix('poi@2.0.1')).toBe(
+			`npm:${COMMAND_NAME}-poi@2.0.1`
+		)
 	})
 
 	it('scoped npm', () => {
-		expect(inferGeneratorPrefix('@egoist/poi')).toBe('npm:@egoist/sao-poi')
+		expect(inferGeneratorPrefix('@egoist/poi')).toBe(
+			`npm:@egoist/${COMMAND_NAME}-poi`
+		)
 	})
 
 	it('scoped npm with version', () => {
 		expect(inferGeneratorPrefix('@egoist/poi@2.0.1')).toBe(
-			'npm:@egoist/sao-poi@2.0.1'
+			`npm:@egoist/${COMMAND_NAME}-poi@2.0.1`
 		)
 	})
 })

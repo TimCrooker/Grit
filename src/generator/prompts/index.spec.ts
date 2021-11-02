@@ -1,18 +1,18 @@
-import { SAO } from '../../src/index'
+import { Projen } from '../../index'
 import path from 'path'
 
 describe('prompts', () => {
 	test('Input prompts', async () => {
-		const sao = new SAO({
+		const projen = new Projen({
 			generator: path.join(__dirname, 'fixtures'),
 			mock: true,
 		})
 
-		await sao.run()
+		await projen.run()
 
-		expect(sao.answers).toEqual({
+		expect(projen.answers).toEqual({
 			name: 'my name',
-			age: '',
+			age: '28',
 		})
 	})
 })

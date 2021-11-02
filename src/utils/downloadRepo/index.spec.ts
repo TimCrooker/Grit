@@ -1,9 +1,8 @@
-import { RepoGenerator } from '../../../src/generator/parseGenerator'
 import path from 'path'
 import rimraf from 'rimraf'
-
-import { readDir } from '../../../src/utils/files'
-import { downloadRepo } from '../../../src/utils/downloadRepo'
+import { readDir } from '../files'
+import { downloadRepo } from './'
+import { RepoGenerator } from '../../generator/parseGenerator'
 
 const outDirPath = path.join(__dirname, 'fixtures')
 const repoGenerator: RepoGenerator = {
@@ -27,7 +26,7 @@ test('downloads repo files directly', async () => {
 	// jest breaking with axios request
 	// await downloadRepo(repoGenerator, { clone: false, outDir: outDirPath })
 	// const download = await readDir(path.join(outDirPath))
-	expect(1).toBeGreaterThan(0)
+	expect(true)
 })
 
 test('downloads repo files with git clone', async () => {

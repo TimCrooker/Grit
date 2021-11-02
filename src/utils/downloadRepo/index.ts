@@ -5,9 +5,10 @@ import spawn from 'cross-spawn'
 import axios from 'axios'
 import extractZip from '@egoist/extract-zip'
 import { RepoGenerator } from '../../generator/parseGenerator'
-import { SAOError } from '../../error'
+import { ProjenError } from '../error'
 import { move } from '../files'
 import { logger } from '../logger'
+import { APP_NAME } from '../../config'
 
 function getUrl(generator: RepoGenerator, clone?: boolean): string {
 	let url = ''
@@ -74,7 +75,7 @@ async function downloadFile(
 	outPath: string,
 	extract: boolean
 ): Promise<void> {
-	const tempFile = path.join(os.tmpdir(), `sao-${Date.now()}`)
+	const tempFile = path.join(os.tmpdir(), `${APP_NAME}-${Date.now()}`)
 	const writer = fs.createWriteStream(tempFile)
 
 	logger.debug(`Downloading file: ${url}`)
@@ -107,7 +108,7 @@ export async function downloadRepo(
 	if (clone) {
 		const cmd = spawn.sync('git', ['clone', url, outDir, '--depth=1'])
 		if (cmd.status !== 0) {
-			throw new SAOError(`Failed to download repo: ${cmd.output}`)
+			throw new ProjenError(`Failed to download repo: ${cmd.output}`)
 		}
 	} else {
 		await downloadFile(url, outDir, true)

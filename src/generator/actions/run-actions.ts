@@ -3,13 +3,13 @@ import matcher from 'micromatch'
 import { glob, majo, remove } from 'majo'
 import ejs from 'ejs'
 import isBinaryPath from 'is-binary-path'
-import { getGlobPatterns } from './utils/glob'
-import { logger } from './utils/logger'
-import { move } from './utils/files'
-import { GeneratorConfig, SAO } from './index'
+import { getGlobPatterns } from '../../utils/glob'
+import { logger } from '../../utils/logger'
+import { move } from '../../utils/files'
+import { GeneratorConfig, Projen } from '../../index'
 
 export const runActions = async (
-	context: SAO,
+	context: Projen,
 	config: GeneratorConfig
 ): Promise<void> => {
 	const actions =

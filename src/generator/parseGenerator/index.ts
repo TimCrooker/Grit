@@ -7,7 +7,7 @@ import {
 	REPOS_CACHE_PATH,
 	isLocalPath,
 } from '../../config'
-import { SAOError } from '../../error'
+import { ProjenError } from '../../utils/error'
 import { store } from '../../store'
 import { escapeDots } from '../../utils/glob'
 
@@ -49,11 +49,11 @@ export const GENERATOR_PREFIX_RE = /^(npm|github|bitbucket|gitlab):/
 export function inferGeneratorPrefix(generator: string): string {
 	if (!GENERATOR_PREFIX_RE.test(generator)) {
 		if (generator.startsWith('@')) {
-			generator = `npm:${generator.replace(/\/(sao-)?/, '/sao-')}`
+			generator = `npm:${generator.replace(/\/(projen-)?/, '/projen-')}`
 		} else if (generator.includes('/')) {
 			generator = `github:${generator}`
 		} else {
-			generator = `npm:${generator.replace(/^(sao-)?/, 'sao-')}`
+			generator = `npm:${generator.replace(/^(projen-)?/, 'projen-')}`
 		}
 	}
 	return generator
@@ -100,6 +100,12 @@ export function HandleRepoGenerator(
 	generator: string,
 	prefix: GeneratorPrefix
 ): RepoGenerator {
+	const PROTOCOL_RE = /^(http(s?):\/\/)(.+).com?(\/)?/
+
+	generator = generator.replace(PROTOCOL_RE, ``)
+
+	generator = generator.replace(/(\.git)/, ``)
+
 	const [, user, repo, version = 'master', subGenerator] =
 		/([^/]+)\/([^#:]+)(?:#(.+))?(?::(.+))?$/.exec(generator) || []
 	const hash = sum({
@@ -138,7 +144,7 @@ export function parseGenerator(generator: string): ParsedGenerator {
 		const alias = generator.slice(6)
 		const url = store.get(`alias.${escapeDots(alias)}`) as string | undefined
 		if (!url) {
-			throw new SAOError(`Cannot find alias '${alias}'`)
+			throw new ProjenError(`Cannot find alias '${alias}'`)
 		}
 		return parseGenerator(url)
 	}

@@ -2,16 +2,17 @@ import os from 'os'
 import path from 'path'
 
 export const APP_NAME = 'Projenerator'
+export const COMMAND_NAME = 'projen'
 
 const CACHE_VERSION = 2
 
 export const ROOT_CACHE_PATH = path.join(
 	os.homedir(),
-	`.${APP_NAME}/V${CACHE_VERSION}`
+	`.${APP_NAME.toLowerCase()}/V${CACHE_VERSION}`
 )
-export const REPOS_CACHE_PATH = path.join(ROOT_CACHE_PATH, 'repos')
-export const PACKAGES_CACHE_PATH = path.join(ROOT_CACHE_PATH, 'packages')
 export const GENERATORS_CACHE_PATH = path.join(ROOT_CACHE_PATH, 'generators')
+export const PACKAGES_CACHE_PATH = path.join(GENERATORS_CACHE_PATH, 'packages')
+export const REPOS_CACHE_PATH = path.join(GENERATORS_CACHE_PATH, 'repos')
 
 const RE = /^[./]|(^[a-zA-Z]:)/
 

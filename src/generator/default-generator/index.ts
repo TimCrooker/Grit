@@ -1,6 +1,6 @@
-import { GeneratorConfig } from '../generator/generator'
+import { GeneratorConfig } from '../generatorConfig/generator-config'
 
-export const defautSaoFile: GeneratorConfig = {
+export const defautGeneratorFile: GeneratorConfig = {
 	templateDir: '.',
 	actions: [
 		{

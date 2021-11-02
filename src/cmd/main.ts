@@ -1,10 +1,11 @@
 import { CAC } from 'cac'
 import textTable from 'text-table'
-import { Options, SAO } from '..'
-import { handleError } from '../error'
+import { Options, Projen } from '..'
+import { handleError } from '../utils/error'
 import { getRepoGeneratorName } from './utils'
-import { prompt } from '../utils/prompt'
+import { prompt } from '../generator/prompts'
 import { generatorStore } from '../store/generatorStore'
+import { APP_NAME } from '../config'
 
 export const main =
 	(cli: CAC) =>
@@ -66,13 +67,13 @@ export const main =
 			...cli.options,
 		}
 		try {
-			const sao = new SAO(options)
-			const g = sao.parsedGenerator
+			const projen = new Projen(options)
+			const g = projen.parsedGenerator
 			if (cli.options.help) {
-				const { config } = await sao.getGenerator()
+				const { config } = await projen.getGenerator()
 				const prompts =
 					typeof config.prompts === 'function'
-						? await config.prompts.call(sao, sao)
+						? await config.prompts.call(projen, projen)
 						: config.prompts
 				const answerFlags =
 					prompts &&
@@ -97,7 +98,7 @@ export const main =
 									g.type === 'local'
 										? g.path
 										: g.type === 'npm'
-										? g.name.replace('sao-', '')
+										? g.name.replace(`${APP_NAME}-`, '')
 										: getRepoGeneratorName(g)
 								)
 							}
@@ -131,7 +132,7 @@ export const main =
 				}
 				cli.outputHelp()
 			} else {
-				await sao.run()
+				await projen.run()
 			}
 		} catch (error) {
 			handleError(error)

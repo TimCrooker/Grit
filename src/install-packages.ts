@@ -1,6 +1,6 @@
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
-import { SAOError } from './error'
+import { ProjenError } from './utils/error'
 import { logger } from './utils/logger'
 import { spinner } from './utils/spinner'
 
@@ -123,7 +123,7 @@ export const installPackages = async ({
 				logger.success(`Installed ${packageName}`)
 				resolve({ code })
 			} else {
-				reject(new SAOError(`Failed to install ${packageName} in ${cwd}`))
+				reject(new ProjenError(`Failed to install ${packageName} in ${cwd}`))
 			}
 		})
 

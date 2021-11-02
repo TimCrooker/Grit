@@ -10,6 +10,7 @@ module.exports = {
 			name: 'age',
 			type: 'input',
 			message: 'input your age',
+			default: '28',
 		},
 	],
 }

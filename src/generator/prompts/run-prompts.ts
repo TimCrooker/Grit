@@ -1,12 +1,12 @@
 import resolveFrom from 'resolve-from'
-import { store } from './store'
-import { prompt } from './utils/prompt'
-import { Answers, GeneratorConfig, SAO } from '.'
+import { store } from '../../store'
+import { prompt } from './'
+import { Answers, GeneratorConfig, Projen } from '../..'
 
-import { logger } from './utils/logger'
+import { logger } from '../../utils/logger'
 
 export const runPrompts = async (
-	context: SAO,
+	context: Projen,
 	config: GeneratorConfig
 ): Promise<Answers> => {
 	// Gets prompts from the generator config

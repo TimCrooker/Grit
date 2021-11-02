@@ -1,7 +1,7 @@
 import Enquirer from 'enquirer'
-import { Answers } from 'index'
-import { SAOError } from '../error'
-import { logger } from './logger'
+import { Answers } from '../..'
+import { ProjenError } from '../../utils/error'
+import { logger } from '../../utils/logger'
 
 /**
  * The state of current running prompt
@@ -110,15 +110,17 @@ interface EnquirerContext {
 
 function validatePrompt(prompt: PromptOptions, index: number): void {
 	if (!prompt.type) {
-		throw new SAOError(`Missing property "type" on prompt (index: ${index})`)
+		throw new ProjenError(`Missing property "type" on prompt # ${index + 1})`)
 	}
 
 	if (!prompt.message) {
-		throw new SAOError(`Missing property "message" on prompt (index: ${index})`)
+		throw new ProjenError(
+			`Missing property "message" on prompt (index: ${index})`
+		)
 	}
 
 	if (!prompt.name) {
-		throw new SAOError(`Missing property "name" on prompt (index: ${index})`)
+		throw new ProjenError(`Missing property "name" on prompt (index: ${index})`)
 	}
 }
 

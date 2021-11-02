@@ -1,10 +1,11 @@
 import path from 'path'
 import fs from 'fs'
 import updateNotifier from 'update-notifier'
-import { colors } from './utils/logger'
+import { colors } from './logger'
 import yarnGlobal from 'yarn-global'
-import { logger } from './utils/logger'
-import { ParsedGenerator } from './generator/parseGenerator'
+import { logger } from './logger'
+import { APP_NAME } from '../config'
+import { ParsedGenerator } from '../generator/parseGenerator'
 
 export interface UpdaterOptions {
 	updateSelf?: boolean
@@ -37,15 +38,16 @@ export class Updater {
 			process.on('exit', () => {
 				if (!notifier.update) return
 				logger.warn(
-					`Your current version of SAO is out of date. The latest version is "${notifier.update.latest}", while you're on "${notifier.update.current}".`
+					`Your current version of ${APP_NAME} is out of date. The latest version is "${notifier.update.latest}", while you're on "${notifier.update.current}".`
 				)
 				const isPnpm = __dirname.includes('/pnpm-global/')
-				const isYarn = !isPnpm && yarnGlobal.hasDependency('sao')
+				const isYarn =
+					!isPnpm && yarnGlobal.hasDependency(APP_NAME.toLowerCase())
 				logger.tip(
-					`To upgrade SAO, run the following command:\n${colors.dim(
+					`To upgrade ${APP_NAME}, run the following command:\n${colors.dim(
 						isYarn
-							? '$ yarn global add sao'
-							: `$ ${isPnpm ? 'pnpm' : 'npm'} i -g sao`
+							? `$ yarn global add ${APP_NAME.toLowerCase()}`
+							: `$ ${isPnpm ? 'pnpm' : 'npm'} i -g ${APP_NAME.toLowerCase()}`
 					)}`
 				)
 			})
@@ -68,7 +70,7 @@ export class Updater {
 
 				logger.tip(
 					`To run the generator with an updated version, run the following command:\n${colors.dim(
-						'$ sao ' + process.argv.slice(2).join(' ') + ' --update'
+						`$${APP_NAME} ${process.argv.slice(2).join(' ')} --update`
 					)}`
 				)
 			})

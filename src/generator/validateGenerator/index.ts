@@ -1,13 +1,13 @@
 import { PACKAGES_CACHE_PATH } from '../../config'
-import { SAOError } from '../../error'
+import { ProjenError } from '../../utils/error'
 import { installPackages } from '../../install-packages'
 import { downloadRepo } from '../../utils/downloadRepo'
 import { pathExists, outputFile } from '../../utils/files'
 import { logger, colors } from '../../utils/logger'
 import { spinner } from '../../utils/spinner'
 import path from 'path'
-import { hasConfig } from '../generator'
 import { RepoGenerator, LocalGenerator, NpmGenerator } from '../parseGenerator'
+import { hasConfig } from '../generatorConfig/generator-config'
 
 /**
  * Ensure packages are installed in a generator
@@ -39,7 +39,7 @@ export async function ensureRepo(
 		if (err.host && err.path) {
 			message += '\n' + err.host + err.path
 		}
-		throw new SAOError(message)
+		throw new ProjenError(message)
 	}
 
 	// Only try to install dependencies for real generator
@@ -59,7 +59,7 @@ export async function ensureLocal(generator: LocalGenerator): Promise<void> {
 	const exists = await pathExists(generator.path)
 
 	if (!exists) {
-		throw new SAOError(
+		throw new ProjenError(
 			`Directory ${colors.underline(generator.path)} does not exist`
 		)
 	}

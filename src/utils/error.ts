@@ -1,14 +1,14 @@
-import { logger } from './utils/logger'
-import { spinner } from './utils/spinner'
-import { colors } from './utils/logger'
+import { logger } from './logger'
+import { spinner } from './spinner'
+import { colors } from './logger'
 
-export class SAOError extends Error {
-	sao: boolean
+export class ProjenError extends Error {
+	projen: boolean
 	cmdOutput?: string
 
 	constructor(message: string) {
 		super(message)
-		this.sao = true
+		this.projen = true
 		this.name = this.constructor.name
 		if (typeof Error.captureStackTrace === 'function') {
 			Error.captureStackTrace(this, this.constructor)
@@ -18,9 +18,9 @@ export class SAOError extends Error {
 	}
 }
 
-export function handleError(error: Error | SAOError): void {
+export function handleError(error: Error | ProjenError): void {
 	spinner.stop()
-	if (error instanceof SAOError) {
+	if (error instanceof ProjenError) {
 		if (error.cmdOutput) {
 			console.error(error.cmdOutput)
 		}

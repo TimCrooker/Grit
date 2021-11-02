@@ -27,7 +27,7 @@ export async function runCLI(): Promise<void> {
 			'Skip specific prompt and use provided answer instead'
 		)
 		.option('--debug', 'Display debug logs')
-		.option('--version', 'Display sao version')
+		.option('--version', `Display version`)
 		.option('-h, --help', 'Display CLI usages')
 
 	cli
@@ -55,7 +55,7 @@ export async function runCLI(): Promise<void> {
 		const pkg = JSON.parse(
 			readFileSync(join(__dirname, '../package.json'), 'utf8')
 		)
-		console.log(`sao: ${pkg.version}`)
+		console.log(`${APP_NAME}: ${pkg.version}`)
 		console.log(`node: ${process.versions.node}`)
 		console.log(`os: ${process.platform}`)
 	} else if (cli.matchedCommand?.name !== '' && cli.options.help) {
@@ -64,3 +64,6 @@ export async function runCLI(): Promise<void> {
 		await cli.runMatchedCommand()
 	}
 }
+
+// if running with ts-node this runs the cli so we dont have to recompile every time
+// if (__filename.includes('src')) runCLI()

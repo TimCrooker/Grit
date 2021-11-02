@@ -7,8 +7,8 @@ import resolveFrom from 'resolve-from'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 import { getGitUser, GitUser } from './utils/git-user'
-import { defautSaoFile } from './default-generator'
-import { handleError, SAOError } from './error'
+import { defautGeneratorFile } from './generator/default-generator'
+import { handleError, ProjenError } from './utils/error'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -21,14 +21,17 @@ import {
 	ensurePackage,
 	ensureRepo,
 } from './generator/validateGenerator'
-import { GeneratorConfig, loadConfig } from './generator/generator'
 import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
 import { logger, colors } from './utils/logger'
 import { spinner } from './utils/spinner'
-import { isLocalPath } from './config'
+import { APP_NAME, isLocalPath } from './config'
 import { pathExists, readFile } from './utils/files'
 import { generatorStore, GeneratorStore } from './store/generatorStore'
-import { updater } from './updater'
+import { updater } from './utils/updater'
+import {
+	GeneratorConfig,
+	loadConfig,
+} from './generator/generatorConfig/generator-config'
 
 export interface Options<T = { [k: string]: any }> {
 	outDir?: string
@@ -44,7 +47,7 @@ export interface Options<T = { [k: string]: any }> {
 	clone?: boolean
 	/** Use a custom npm registry */
 	registry?: string
-	/** Check for sao/generator updates */
+	/** Check for projen /generator updates */
 	updateCheck?: boolean
 	/**
 	 * Mock git info, prompts etc
@@ -70,7 +73,7 @@ const EMPTY_DATA = Symbol()
 export type Answers = { [k: string]: any }
 export type Data = { [k: string]: any }
 
-export class SAO {
+export class Projen {
 	opts: SetRequired<Options, 'outDir' | 'logLevel'>
 	spinner = spinner
 	colors = colors
@@ -116,7 +119,10 @@ export class SAO {
 
 		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
-			this.opts.outDir = path.join(tmpdir(), `sao-out/${Date.now()}/out`)
+			this.opts.outDir = path.join(
+				tmpdir(),
+				`${APP_NAME.toLowerCase()}-out/${Date.now()}/out`
+			)
 		}
 
 		// Use default answers when mock mode is enabled and no answers are explicitly provided
@@ -139,7 +145,7 @@ export class SAO {
 	/**
 	 * Get the help message for current generator
 	 *
-	 * Used by SAO CLI, in general you don't want to touch this
+	 * Used by Projen CLI, in general you don't want to touch this
 	 */
 	async getGeneratorHelp(): Promise<string> {
 		const { config } = await this.getGenerator()
@@ -183,7 +189,9 @@ export class SAO {
 		logger.debug(`Loading generator from ${generator.path}`)
 		const loadedConfig = await loadConfig(generator.path)
 		const config: GeneratorConfig =
-			loadedConfig.path && loadedConfig.data ? loadedConfig.data : defautSaoFile
+			loadedConfig.path && loadedConfig.data
+				? loadedConfig.data
+				: defautGeneratorFile
 
 		// Only run following code for root generator
 		if (!hasParent) {
@@ -205,7 +213,9 @@ export class SAO {
 					: resolveFrom(generator.path, generatorPath)
 				return this.getGenerator(parseGenerator(generatorPath), true)
 			}
-			throw new SAOError(`No such sub generator in generator ${generator.path}`)
+			throw new ProjenError(
+				`No such sub generator in generator ${generator.path}`
+			)
 		}
 
 		return {
@@ -229,7 +239,7 @@ export class SAO {
 
 		// Run generator supplied prompts
 		if (config.prompts) {
-			const { runPrompts } = await import('./run-prompts')
+			const { runPrompts } = await import('./generator/prompts/run-prompts')
 
 			this._answers = await runPrompts(this, config)
 		} else {
@@ -239,7 +249,7 @@ export class SAO {
 		this._data = config.data ? config.data.call(this, this) : {}
 
 		if (config.actions) {
-			const { runActions } = await import('./run-actions')
+			const { runActions } = await import('./generator/actions/run-actions')
 
 			await runActions(this, config)
 		}
@@ -261,7 +271,7 @@ export class SAO {
 	 */
 	get answers(): { [k: string]: any } {
 		if (typeof this._answers === 'symbol') {
-			throw new SAOError(`You can't access \`.answers\` here`)
+			throw new ProjenError(`You can't access \`.answers\` here`)
 		}
 		return this._answers
 	}
@@ -272,7 +282,7 @@ export class SAO {
 
 	get data(): any {
 		if (typeof this._data === 'symbol') {
-			throw new SAOError(`You can't call \`.data\` here`)
+			throw new ProjenError(`You can't call \`.data\` here`)
 		}
 		return {
 			...this.answers,
@@ -394,10 +404,10 @@ export class SAO {
 	}
 
 	/**
-	 * Create an SAO Error so we can pretty print the error message instead of showing full error stack
+	 * Create an Projen Error so we can pretty print the error message instead of showing full error stack
 	 */
-	createError(message: string): SAOError {
-		return new SAOError(message)
+	createError(message: string): ProjenError {
+		return new ProjenError(message)
 	}
 
 	/**
@@ -428,5 +438,5 @@ export class SAO {
 	}
 }
 
-export { runCLI } from './cli-engine'
+export { runCLI } from './cliEngine'
 export { GeneratorConfig, handleError, store, GeneratorStore }

@@ -1,7 +1,8 @@
-import { PromptOptions } from '../utils/prompt'
-import { SAO } from '..'
+import { PromptOptions } from '../prompts'
 import JoyCon from 'joycon'
 import path from 'path'
+import { APP_NAME } from '../../config'
+import { Projen } from '../..'
 
 export interface AddAction {
 	type: 'add'
@@ -26,7 +27,7 @@ export interface AddAction {
 	data?: DataFunction | object
 }
 
-type DataFunction = (this: SAO, context: SAO) => object
+type DataFunction = (this: Projen, context: Projen) => object
 
 export interface MoveAction {
 	type: 'move'
@@ -89,11 +90,16 @@ export interface GeneratorConfig {
 	 */
 	prompts?:
 		| PromptOptions[]
-		| ((this: SAO, ctx: SAO) => PromptOptions[] | Promise<PromptOptions[]>)
+		| ((
+				this: Projen,
+				ctx: Projen
+		  ) => PromptOptions[] | Promise<PromptOptions[]>)
 	/**
 	 * Use actions to control how files are generated
 	 */
-	actions?: Action[] | ((this: SAO, ctx: SAO) => Action[] | Promise<Action[]>)
+	actions?:
+		| Action[]
+		| ((this: Projen, ctx: Projen) => Action[] | Promise<Action[]>)
 	/**
 	 * Directory to template folder
 	 * Defaults to `./template` in your generator folder
@@ -109,21 +115,21 @@ export interface GeneratorConfig {
 	/**
 	 * Run some operations before running actions
 	 */
-	prepare?: (this: SAO, ctx: SAO) => Promise<void> | void
+	prepare?: (this: Projen, ctx: Projen) => Promise<void> | void
 	/**
 	 * Run some operations when completed
 	 * e.g. log some success message
 	 */
-	completed?: (this: SAO, ctx: SAO) => Promise<void> | void
+	completed?: (this: Projen, ctx: Projen) => Promise<void> | void
 }
 const joycon = new JoyCon({
 	files: [
-		'saofile.js',
-		'saofile.mjs',
-		'saofile.json',
 		'generator.js',
 		'generator.mjs',
 		'generator.json',
+		`${APP_NAME}.js`,
+		`${APP_NAME}.mjs`,
+		`${APP_NAME}.json`,
 	],
 })
 

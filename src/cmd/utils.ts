@@ -1,6 +1,7 @@
 import Table from 'cli-table3'
-import { generatorStore } from '../store/generatorStore'
+import { APP_NAME } from '../config'
 import { RepoGenerator, NpmGenerator } from '../generator/parseGenerator'
+import { generatorStore } from '../store/generatorStore'
 
 export function getRepoGeneratorName(generator: RepoGenerator): string {
 	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${
@@ -9,7 +10,7 @@ export function getRepoGeneratorName(generator: RepoGenerator): string {
 }
 
 export function getNpmGeneratorName(generator: NpmGenerator): string {
-	return generator.name.replace('sao-', '')
+	return generator.name.replace(`${APP_NAME}-`, '')
 }
 
 export function printGenerators(): void {

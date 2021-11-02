@@ -3,7 +3,9 @@
 	"version": "0.0.7",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
-	"bin": "cli.js",
+	"bin": {
+		"projen": "cli.js"
+	},
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
@@ -11,11 +13,12 @@
 		"!**/*.test.ts"
 	],
 	"scripts": {
-		"test": "jest",
+		"start": "yarn build && ts-node cli.js",
+		"dev": "ts-node ./src/cliEngine.ts",
 		"build": "rimraf dist && tsup src/index.ts --dts",
-		"prepublishOnly": "npm run build",
+		"test": "jest",
 		"lint": "eslint . --fix",
-		"dev": "ts-node cli.js",
+		"prepublishOnly": "yarn build",
 		"release": "dotenv release-it --only-version"
 	},
 	"license": "MIT",
