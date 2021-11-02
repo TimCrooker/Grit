@@ -1,6 +1,6 @@
 {
 	"name": "projenerator",
-	"version": "0.0.9-1",
+	"version": "0.0.10",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": {
