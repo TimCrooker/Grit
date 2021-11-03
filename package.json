@@ -1,10 +1,10 @@
 {
-	"name": "projenerator",
-	"version": "0.2.9",
+	"name": "grit-cli",
+	"version": "0.0.1",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": {
-		"projen": "cli.js"
+		"grit": "cli.js"
 	},
 	"types": "dist/index.d.ts",
 	"files": [
