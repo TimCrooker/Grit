@@ -25,7 +25,6 @@ describe('Base store', () => {
 
 	test('read store', () => {
 		const content = store.read()
-		console.log(content)
 		expect(content).toBeDefined()
 	})
 	//create after all statement to clean up the test store
