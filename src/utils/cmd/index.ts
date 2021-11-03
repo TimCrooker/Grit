@@ -1,5 +1,7 @@
+import { exec } from 'child_process'
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
+import { promisify } from 'util'
 import { ProjenError } from '../error'
 import { logger } from '../logger'
 import { spinner } from '../spinner'
@@ -24,6 +26,11 @@ export function getNpmClient(): NPM_CLIENT {
 	}
 
 	return cachedNpmClient
+}
+
+export function getScriptRunner(npmClient: NPM_CLIENT): 'npm run' | 'yarn' {
+	const cmdRunner = npmClient === 'npm' ? 'npm run' : 'yarn'
+	return cmdRunner
 }
 
 export interface InstallOptions {
@@ -129,4 +136,35 @@ export const installPackages = async ({
 
 		ps.on('error', reject)
 	})
+}
+
+export interface RunNpmScriptOptions {
+	/** the path to the directory commands will run in*/
+	cwd: string
+	/** script from cwd package.json to run */
+	script: string
+	/** Package manager being used */
+	npmClient?: NPM_CLIENT
+	/** Argunemets to be appended to the command line */
+	args?: string[]
+}
+
+export async function runNpmScript({
+	cwd,
+	script,
+	npmClient: _npmClient,
+	args: _args,
+}: RunNpmScriptOptions): Promise<void> {
+	const npmClient = _npmClient || getNpmClient()
+	const npmRunner = getScriptRunner(npmClient)
+
+	const args = [`--prefix ${cwd}`].concat(_args ? _args : [])
+
+	const command = `${npmRunner} ${script} ${args.join(' ')}`
+
+	try {
+		await promisify(exec)(command)
+	} catch (error) {
+		logger.error('Failed to execute command', command, 'with error:', error)
+	}
 }
