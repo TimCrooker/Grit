@@ -1,4 +1,4 @@
-name: publish new version with feature merged
+name: Create new Release
 
 on: 
   push:
@@ -18,11 +18,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
       - run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.email "timothycrooker@gmail.com"
+          git config --global user.name "TimCrooker"
       - run: |
-          npm i
-          npm test
+          if [ -e yarn.lock ]; then
+            yarn install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
           npm run build
           npm run release
         env:
