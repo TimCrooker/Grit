@@ -14,6 +14,8 @@ import {
 	InstallOptions,
 	installPackages,
 	NPM_CLIENT,
+	runNpmScript,
+	RunNpmScriptOptions,
 } from './utils/cmd'
 import { store } from './store'
 import {
@@ -397,7 +399,9 @@ export class Projen {
 	}
 
 	/** Run any custom command line script in output directory */
-	async runScript()
+	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
+		await runNpmScript({ ...opts, cwd: this.outDir })
+	}
 
 	/**
 	 * Display a success message

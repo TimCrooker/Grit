@@ -138,7 +138,7 @@ export const installPackages = async ({
 	})
 }
 
-interface RunNpmScriptOptions {
+export interface RunNpmScriptOptions {
 	/** the path to the directory commands will run in*/
 	cwd: string
 	/** script from cwd package.json to run */
