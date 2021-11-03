@@ -24,17 +24,17 @@ export const runPrompts = async (
 		'./package.json'
 	)
 	const pkgVersion = pkgPath ? require(pkgPath).version : ''
-	const STORED_ANSWERS_ID = `answers.${
+	const CACHED_ANSWERS_ID = `answers.${
 		context.parsedGenerator.hash + pkgVersion.replace(/\./g, '\\.')
 	}`
 
 	// get cached answers
-	const storedAnswers = store.get(STORED_ANSWERS_ID) || {}
+	const cachedAnswers = store.get(CACHED_ANSWERS_ID) || {}
 
 	const { mock, answers: injectedAnswers } = context.opts
 
 	if (!mock) {
-		logger.debug('Loading cached answers:', storedAnswers)
+		logger.debug('Loaded cached answers:', cachedAnswers)
 	}
 
 	if (injectedAnswers === true) {
@@ -44,7 +44,7 @@ export const runPrompts = async (
 	}
 
 	// Run enquirer on the prompts supplied by the generator
-	const answers = await prompt(prompts, injectedAnswers, mock)
+	const answers = await prompt(prompts, cachedAnswers, injectedAnswers, mock)
 	logger.debug(`Retrived answers:`, answers)
 
 	// cache answers
@@ -58,7 +58,7 @@ export const runPrompts = async (
 		}
 	}
 	if (!mock) {
-		store.set(STORED_ANSWERS_ID, answersToStore)
+		store.set(CACHED_ANSWERS_ID, answersToStore)
 		logger.debug('Cached prompt answers:', answersToStore)
 	}
 

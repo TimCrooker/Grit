@@ -136,7 +136,8 @@ const getChoiceIndex = (choices: string[] | Choice[], value: any): number => {
 /** Use enquirer to get answers to the prompts from the user */
 export const prompt = async (
 	prompts: PromptOptions[],
-	injectedAnswers?: string | boolean | Answers,
+	cachedAnswers: Answers,
+	injectedAnswers?: boolean | Answers,
 	mock?: boolean
 ): Promise<Answers> => {
 	const enquirer = new Enquirer()
@@ -227,6 +228,12 @@ export const prompt = async (
 					return prompt.result(value, this.state)
 				},
 				initial(this: EnquirerContext): any {
+					// inject cached answer as the default overriding the one from the generator
+					const cachedAnswer = cachedAnswers[prompt.name]
+					if (cachedAnswer) {
+						prompt.default = cachedAnswer
+					}
+					// no default provided from generator or the cache
 					if (prompt.default === undefined) {
 						return ''
 					}
@@ -234,6 +241,8 @@ export const prompt = async (
 						typeof prompt.default === 'function'
 							? prompt.default(this.state)
 							: prompt.default
+
+					// handle injecting defaults for prompts with choices
 					let choices = (prompt as ArrayPromptOptions).choices
 					if (typeof choices === 'function') {
 						choices = choices.call(this.state, this.state)
@@ -241,6 +250,7 @@ export const prompt = async (
 					if (choices) {
 						return getChoiceIndex(choices, value)
 					}
+
 					return value === undefined ? '' : value
 				},
 				format(this: EnquirerContext, value: any): any {
