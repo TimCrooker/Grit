@@ -30,7 +30,6 @@
 		"update-notifier": "^5.1.0"
 	},
 	"devDependencies": {
-		"release-it": "^14.11.6",
 		"@babel/cli": "^7.14.8",
 		"@babel/core": "^7.15.5",
 		"@babel/plugin-transform-runtime": "^7.15.0",
@@ -53,7 +52,7 @@
 		"@types/update-notifier": "^4.1.0",
 		"@typescript-eslint/eslint-plugin": "^2.33.0",
 		"@typescript-eslint/parser": "^2.33.0",
-		"axios": "^0.19.2",
+		"axios": "^0.24.0",
 		"babel-jest": "^27.1.0",
 		"babel-plugin-module-resolver": "^4.1.0",
 		"cac": "^6.5.13",
@@ -85,6 +84,7 @@
 		"ora": "^4.0.4",
 		"parse-package-name": "^0.1.0",
 		"prettier": "^2.3.2",
+		"release-it": "^14.11.6",
 		"resolve-from": "^5.0.0",
 		"rollup": "^2.34.0",
 		"text-table": "^0.2.0",
