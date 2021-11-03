@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-	title: 'My Site',
-	tagline: 'Dinosaurs are cool',
+	title: 'Grit',
+	tagline: 'Generate really interesting tech',
 	url: 'https://github.com/TimCrooker/grit',
 	baseUrl: '/grit/',
 	onBrokenLinks: 'throw',
@@ -51,7 +51,7 @@ const config = {
 						label: 'Tutorial',
 					},
 					{
-						href: 'https://github.com/facebook/docusaurus',
+						href: 'https://github.com/TimCrooker/grit',
 						label: 'GitHub',
 						position: 'right',
 					},
