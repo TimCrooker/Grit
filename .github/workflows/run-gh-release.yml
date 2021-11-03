@@ -18,8 +18,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
       - run: |
-          git config --global user.email "timothycrooker@gmail.com"
-          git config --global user.name "TimCrooker"
+          git config user.email "timothycrooker@gmail.com"
+          git config user.name "TimCrooker"
       - run: |
           if [ -e yarn.lock ]; then
             yarn install --frozen-lockfile
