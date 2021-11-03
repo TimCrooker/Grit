@@ -30,7 +30,7 @@ jobs:
           fi
       - run: npm run test
       - run: npm run build
-      - run: npm pack
       - run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
