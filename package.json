@@ -19,7 +19,7 @@
 		"test": "jest",
 		"lint": "eslint . --fix",
 		"prepublishOnly": "yarn build",
-		"release": "release-it --ci",
+		"release": "dotenv release-it --ci",
 		"release:manual": "dotenv release-it --only-version"
 	},
 	"license": "MIT",
