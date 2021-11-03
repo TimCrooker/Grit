@@ -1,5 +1,5 @@
 import { PACKAGES_CACHE_PATH } from '../../config'
-import { ProjenError } from '../../utils/error'
+import { GritError } from '../../utils/error'
 import { installPackages } from '../../utils/cmd'
 import { downloadRepo } from '../downloadRepo'
 import { pathExists, outputFile } from '../../utils/files'
@@ -39,7 +39,7 @@ export async function ensureRepo(
 		if (err.host && err.path) {
 			message += '\n' + err.host + err.path
 		}
-		throw new ProjenError(message)
+		throw new GritError(message)
 	}
 
 	// Only try to install dependencies for real generator
@@ -59,7 +59,7 @@ export async function ensureLocal(generator: LocalGenerator): Promise<void> {
 	const exists = await pathExists(generator.path)
 
 	if (!exists) {
-		throw new ProjenError(
+		throw new GritError(
 			`Directory ${colors.underline(generator.path)} does not exist`
 		)
 	}

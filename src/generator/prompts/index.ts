@@ -1,6 +1,6 @@
 import Enquirer from 'enquirer'
 import { Answers } from '../..'
-import { ProjenError } from '../../utils/error'
+import { GritError } from '../../utils/error'
 import { logger } from '../../utils/logger'
 
 /**
@@ -110,17 +110,17 @@ interface EnquirerContext {
 
 function validatePrompt(prompt: PromptOptions, index: number): void {
 	if (!prompt.type) {
-		throw new ProjenError(`Missing property "type" on prompt # ${index + 1})`)
+		throw new GritError(`Missing property "type" on prompt # ${index + 1})`)
 	}
 
 	if (!prompt.message) {
-		throw new ProjenError(
+		throw new GritError(
 			`Missing property "message" on prompt (index: ${index})`
 		)
 	}
 
 	if (!prompt.name) {
-		throw new ProjenError(`Missing property "name" on prompt (index: ${index})`)
+		throw new GritError(`Missing property "name" on prompt (index: ${index})`)
 	}
 }
 

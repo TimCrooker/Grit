@@ -1,6 +1,6 @@
 import { CAC } from 'cac'
 import textTable from 'text-table'
-import { Options, Projen } from '..'
+import { Options, Grit } from '..'
 import { handleError } from '../utils/error'
 import { getRepoGeneratorName } from './utils'
 import { prompt } from '../generator/prompts'
@@ -67,13 +67,13 @@ export const main =
 			...cli.options,
 		}
 		try {
-			const projen = new Projen(options)
-			const g = projen.parsedGenerator
+			const grit = new Grit(options)
+			const g = grit.parsedGenerator
 			if (cli.options.help) {
-				const { config } = await projen.getGenerator()
+				const { config } = await grit.getGenerator()
 				const prompts =
 					typeof config.prompts === 'function'
-						? await config.prompts.call(projen, projen)
+						? await config.prompts.call(grit, grit)
 						: config.prompts
 				const answerFlags =
 					prompts &&
@@ -132,7 +132,7 @@ export const main =
 				}
 				cli.outputHelp()
 			} else {
-				await projen.run()
+				await grit.run()
 			}
 		} catch (error) {
 			handleError(error)

@@ -1,8 +1,8 @@
 import os from 'os'
 import path from 'path'
 
-export const APP_NAME = 'Projenerator'
-export const COMMAND_NAME = 'projen'
+export const APP_NAME = 'Grit'
+export const COMMAND_NAME = 'grit'
 
 const CACHE_VERSION = 2
 

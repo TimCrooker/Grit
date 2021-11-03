@@ -7,7 +7,7 @@ import {
 	REPOS_CACHE_PATH,
 	isLocalPath,
 } from '../../config'
-import { ProjenError } from '../../utils/error'
+import { GritError } from '../../utils/error'
 import { store } from '../../store'
 import { escapeDots } from '../../utils/glob'
 
@@ -49,11 +49,11 @@ export const GENERATOR_PREFIX_RE = /^(npm|github|bitbucket|gitlab):/
 export function inferGeneratorPrefix(generator: string): string {
 	if (!GENERATOR_PREFIX_RE.test(generator)) {
 		if (generator.startsWith('@')) {
-			generator = `npm:${generator.replace(/\/(projen-)?/, '/projen-')}`
+			generator = `npm:${generator.replace(/\/(grit-)?/, '/grit-')}`
 		} else if (generator.includes('/')) {
 			generator = `github:${generator}`
 		} else {
-			generator = `npm:${generator.replace(/^(projen-)?/, 'projen-')}`
+			generator = `npm:${generator.replace(/^(grit-)?/, 'grit-')}`
 		}
 	}
 	return generator
@@ -144,7 +144,7 @@ export function parseGenerator(generator: string): ParsedGenerator {
 		const alias = generator.slice(6)
 		const url = store.get(`alias.${escapeDots(alias)}`) as string | undefined
 		if (!url) {
-			throw new ProjenError(`Cannot find alias '${alias}'`)
+			throw new GritError(`Cannot find alias '${alias}'`)
 		}
 		return parseGenerator(url)
 	}

@@ -1,12 +1,12 @@
 import resolveFrom from 'resolve-from'
 import { store } from '../../store'
 import { prompt } from './'
-import { Answers, GeneratorConfig, Projen } from '../..'
+import { Answers, GeneratorConfig, Grit } from '../..'
 
 import { logger } from '../../utils/logger'
 
 export const runPrompts = async (
-	context: Projen,
+	context: Grit,
 	config: GeneratorConfig
 ): Promise<Answers> => {
 	// Gets prompts from the generator config

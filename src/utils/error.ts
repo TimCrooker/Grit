@@ -2,13 +2,13 @@ import { logger } from './logger'
 import { spinner } from './spinner'
 import { colors } from './logger'
 
-export class ProjenError extends Error {
-	projen: boolean
+export class GritError extends Error {
+	grit: boolean
 	cmdOutput?: string
 
 	constructor(message: string) {
 		super(message)
-		this.projen = true
+		this.grit = true
 		this.name = this.constructor.name
 		if (typeof Error.captureStackTrace === 'function') {
 			Error.captureStackTrace(this, this.constructor)
@@ -18,9 +18,9 @@ export class ProjenError extends Error {
 	}
 }
 
-export function handleError(error: Error | ProjenError): void {
+export function handleError(error: Error | GritError): void {
 	spinner.stop()
-	if (error instanceof ProjenError) {
+	if (error instanceof GritError) {
 		if (error.cmdOutput) {
 			console.error(error.cmdOutput)
 		}

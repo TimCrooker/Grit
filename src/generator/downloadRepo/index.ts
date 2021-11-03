@@ -5,7 +5,7 @@ import spawn from 'cross-spawn'
 import axios from 'axios'
 import extractZip from '@egoist/extract-zip'
 import { RepoGenerator } from '../parseGenerator'
-import { ProjenError } from '../../utils/error'
+import { GritError } from '../../utils/error'
 import { move } from '../../utils/files'
 import { logger } from '../../utils/logger'
 import { APP_NAME } from '../../config'
@@ -111,7 +111,7 @@ export async function downloadRepo(
 	if (clone) {
 		const cmd = spawn.sync('git', ['clone', url, outDir, '--depth=1'])
 		if (cmd.status !== 0) {
-			throw new ProjenError(`Failed to download repo: ${cmd.output}`)
+			throw new GritError(`Failed to download repo: ${cmd.output}`)
 		}
 	} else {
 		await downloadFile(url, outDir, true)

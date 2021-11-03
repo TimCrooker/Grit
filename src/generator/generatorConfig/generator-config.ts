@@ -2,7 +2,7 @@ import { PromptOptions } from '../prompts'
 import JoyCon from 'joycon'
 import path from 'path'
 import { APP_NAME } from '../../config'
-import { Projen } from '../..'
+import { Grit } from '../..'
 
 export interface AddAction {
 	type: 'add'
@@ -27,7 +27,7 @@ export interface AddAction {
 	data?: DataFunction | object
 }
 
-type DataFunction = (this: Projen, context: Projen) => object
+type DataFunction = (this: Grit, context: Grit) => object
 
 export interface MoveAction {
 	type: 'move'
@@ -91,15 +91,15 @@ export interface GeneratorConfig {
 	prompts?:
 		| PromptOptions[]
 		| ((
-				this: Projen,
-				ctx: Projen
+				this: Grit,
+				ctx: Grit
 		  ) => PromptOptions[] | Promise<PromptOptions[]>)
 	/**
 	 * Use actions to control how files are generated
 	 */
 	actions?:
 		| Action[]
-		| ((this: Projen, ctx: Projen) => Action[] | Promise<Action[]>)
+		| ((this: Grit, ctx: Grit) => Action[] | Promise<Action[]>)
 	/**
 	 * Directory to template folder
 	 * Defaults to `./template` in your generator folder
@@ -115,12 +115,12 @@ export interface GeneratorConfig {
 	/**
 	 * Run some operations before running actions
 	 */
-	prepare?: (this: Projen, ctx: Projen) => Promise<void> | void
+	prepare?: (this: Grit, ctx: Grit) => Promise<void> | void
 	/**
 	 * Run some operations when completed
 	 * e.g. log some success message
 	 */
-	completed?: (this: Projen, ctx: Projen) => Promise<void> | void
+	completed?: (this: Grit, ctx: Grit) => Promise<void> | void
 }
 const joycon = new JoyCon({
 	files: [

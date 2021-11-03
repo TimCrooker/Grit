@@ -8,7 +8,7 @@ import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 import { getGitUser, GitUser } from './utils/git-user'
 import { defautGeneratorFile } from './generator/default-generator'
-import { handleError, ProjenError } from './utils/error'
+import { handleError, GritError } from './utils/error'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -49,7 +49,7 @@ export interface Options<T = { [k: string]: any }> {
 	clone?: boolean
 	/** Use a custom npm registry */
 	registry?: string
-	/** Check for projen /generator updates */
+	/** Check for grit /generator updates */
 	updateCheck?: boolean
 	/**
 	 * Mock git info, prompts etc
@@ -75,7 +75,7 @@ const EMPTY_DATA = Symbol()
 export type Answers = { [k: string]: any }
 export type Data = { [k: string]: any }
 
-export class Projen {
+export class Grit {
 	opts: SetRequired<Options, 'outDir' | 'logLevel'>
 	spinner = spinner
 	colors = colors
@@ -147,7 +147,7 @@ export class Projen {
 	/**
 	 * Get the help message for current generator
 	 *
-	 * Used by Projen CLI, in general you don't want to touch this
+	 * Used by Grit CLI, in general you don't want to touch this
 	 */
 	async getGeneratorHelp(): Promise<string> {
 		const { config } = await this.getGenerator()
@@ -215,7 +215,7 @@ export class Projen {
 					: resolveFrom(generator.path, generatorPath)
 				return this.getGenerator(parseGenerator(generatorPath), true)
 			}
-			throw new ProjenError(
+			throw new GritError(
 				`No such sub generator in generator ${generator.path}`
 			)
 		}
@@ -273,7 +273,7 @@ export class Projen {
 	 */
 	get answers(): { [k: string]: any } {
 		if (typeof this._answers === 'symbol') {
-			throw new ProjenError(`You can't access \`.answers\` here`)
+			throw new GritError(`You can't access \`.answers\` here`)
 		}
 		return this._answers
 	}
@@ -284,7 +284,7 @@ export class Projen {
 
 	get data(): any {
 		if (typeof this._data === 'symbol') {
-			throw new ProjenError(`You can't call \`.data\` here`)
+			throw new GritError(`You can't call \`.data\` here`)
 		}
 		return {
 			...this.answers,
@@ -412,10 +412,10 @@ export class Projen {
 	}
 
 	/**
-	 * Create an Projen Error so we can pretty print the error message instead of showing full error stack
+	 * Create an Grit Error so we can pretty print the error message instead of showing full error stack
 	 */
-	createError(message: string): ProjenError {
-		return new ProjenError(message)
+	createError(message: string): GritError {
+		return new GritError(message)
 	}
 
 	/**

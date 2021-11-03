@@ -24,7 +24,7 @@ describe('Parse generators', () => {
 		expect(result).toMatchInlineSnapshot(`
       Object {
         "hash": "e66c30fe",
-        "path": "~/.projenerator/V2/generators/repos/e66c30fe",
+        "path": "~/.grit/V2/generators/repos/e66c30fe",
         "prefix": "github",
         "repo": "poi",
         "subGenerator": undefined,
@@ -39,7 +39,7 @@ describe('Parse generators', () => {
 		expect(parse(`egoist/poi#v1.0.0`)).toMatchInlineSnapshot(`
       Object {
         "hash": "6e0c0844",
-        "path": "~/.projenerator/V2/generators/repos/6e0c0844",
+        "path": "~/.grit/V2/generators/repos/6e0c0844",
         "prefix": "github",
         "repo": "poi",
         "subGenerator": undefined,
@@ -53,10 +53,10 @@ describe('Parse generators', () => {
 	it('Npm package', () => {
 		expect(parse(`nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "872c3bbe",
-        "name": "projen-nm",
-        "path": "~/.projenerator/V2/generators/packages/872c3bbe/node_modules/projen-nm",
-        "slug": "projen-nm",
+        "hash": "0fce9c51",
+        "name": "grit-nm",
+        "path": "~/.grit/V2/generators/packages/0fce9c51/node_modules/grit-nm",
+        "slug": "grit-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -67,10 +67,10 @@ describe('Parse generators', () => {
 	it('Npm package with version', () => {
 		expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "e89b3150",
-        "name": "projen-nm",
-        "path": "~/.projenerator/V2/generators/packages/e89b3150/node_modules/projen-nm",
-        "slug": "projen-nm@2.0.1",
+        "hash": "136284f0",
+        "name": "grit-nm",
+        "path": "~/.grit/V2/generators/packages/136284f0/node_modules/grit-nm",
+        "slug": "grit-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
@@ -80,10 +80,10 @@ describe('Parse generators', () => {
 	it('Scoped Npm package', () => {
 		expect(parse(`@egoist/nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "f048b5a2",
-        "name": "@egoist/projen-nm",
-        "path": "~/.projenerator/V2/generators/packages/f048b5a2/node_modules/@egoist/projen-nm",
-        "slug": "@egoist/projen-nm",
+        "hash": "a15c6a42",
+        "name": "@egoist/grit-nm",
+        "path": "~/.grit/V2/generators/packages/a15c6a42/node_modules/@egoist/grit-nm",
+        "slug": "@egoist/grit-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -93,10 +93,10 @@ describe('Parse generators', () => {
 	it('Scoped Npm package with version', () => {
 		expect(parse(`@egoist/nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "fbc5b034",
-        "name": "@egoist/projen-nm",
-        "path": "~/.projenerator/V2/generators/packages/fbc5b034/node_modules/@egoist/projen-nm",
-        "slug": "@egoist/projen-nm@2.0.1",
+        "hash": "5dec4996",
+        "name": "@egoist/grit-nm",
+        "path": "~/.grit/V2/generators/packages/5dec4996/node_modules/@egoist/grit-nm",
+        "slug": "@egoist/grit-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
@@ -107,7 +107,7 @@ describe('Parse generators', () => {
 		expect(parse(`gitlab:egoist/poi`)).toMatchInlineSnapshot(`
       Object {
         "hash": "766eaa60",
-        "path": "~/.projenerator/V2/generators/repos/766eaa60",
+        "path": "~/.grit/V2/generators/repos/766eaa60",
         "prefix": "gitlab",
         "repo": "poi",
         "subGenerator": undefined,
@@ -120,10 +120,10 @@ describe('Parse generators', () => {
 	it('Remove sao- pefix', () => {
 		expect(parse(`sao-nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "4ae792e6",
-        "name": "projen-sao-nm",
-        "path": "~/.projenerator/V2/generators/packages/4ae792e6/node_modules/projen-sao-nm",
-        "slug": "projen-sao-nm",
+        "hash": "1ba858bd",
+        "name": "grit-sao-nm",
+        "path": "~/.grit/V2/generators/packages/1ba858bd/node_modules/grit-sao-nm",
+        "slug": "grit-sao-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",

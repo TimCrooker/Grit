@@ -6,10 +6,10 @@ import isBinaryPath from 'is-binary-path'
 import { getGlobPatterns } from '../../utils/glob'
 import { logger } from '../../utils/logger'
 import { move } from '../../utils/files'
-import { GeneratorConfig, Projen } from '../../index'
+import { GeneratorConfig, Grit } from '../../index'
 
 export const runActions = async (
-	context: Projen,
+	context: Grit,
 	config: GeneratorConfig
 ): Promise<void> => {
 	const actions =

@@ -1,5 +1,5 @@
 import path from 'path'
-import { Projen } from '../../'
+import { Grit } from '../../'
 import { prompt, PromptOptions } from './'
 
 const generator = path.join(__dirname, 'fixtures')
@@ -49,42 +49,42 @@ describe('execute pure prompts', () => {
 
 describe('run prompts in generator instance', () => {
 	it('Mock', async () => {
-		const projen = new Projen({
+		const grit = new Grit({
 			generator,
 			mock: true,
 		})
 
-		await projen.run()
+		await grit.run()
 
-		expect(projen.answers).toStrictEqual({
+		expect(grit.answers).toStrictEqual({
 			name: 'my name',
 			age: '28',
 		})
 	})
 
 	it('Use defaults', async () => {
-		const projen = new Projen({
+		const grit = new Grit({
 			generator,
 			answers: true,
 		})
 
-		await projen.run()
+		await grit.run()
 
-		expect(projen.answers).toStrictEqual({
+		expect(grit.answers).toStrictEqual({
 			name: 'my name',
 			age: '28',
 		})
 	})
 
 	it('inject answers', async () => {
-		const projen = new Projen({
+		const grit = new Grit({
 			generator,
 			outDir: path.join(__dirname, 'fixtures', 'output'),
 			answers: injectedAnswers,
 		})
 
-		await projen.run()
+		await grit.run()
 
-		expect(projen.answers).toStrictEqual(injectedAnswers)
+		expect(grit.answers).toStrictEqual(injectedAnswers)
 	})
 })

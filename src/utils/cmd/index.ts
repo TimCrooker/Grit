@@ -2,7 +2,7 @@ import { exec } from 'child_process'
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
 import { promisify } from 'util'
-import { ProjenError } from '../error'
+import { GritError } from '../error'
 import { logger } from '../logger'
 import { spinner } from '../spinner'
 
@@ -130,7 +130,7 @@ export const installPackages = async ({
 				logger.success(`Installed ${packageName}`)
 				resolve({ code })
 			} else {
-				reject(new ProjenError(`Failed to install ${packageName} in ${cwd}`))
+				reject(new GritError(`Failed to install ${packageName} in ${cwd}`))
 			}
 		})
 
