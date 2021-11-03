@@ -1,8 +1,8 @@
 import path from 'path'
 import rimraf from 'rimraf'
-import { readDir } from '../files'
-import { downloadRepo } from './'
-import { RepoGenerator } from '../../generator/parseGenerator'
+import { readDir } from '../../utils/files'
+import { downloadRepo } from '.'
+import { RepoGenerator } from '../parseGenerator'
 
 const outDirPath = path.join(__dirname, 'fixtures')
 const repoGenerator: RepoGenerator = {
