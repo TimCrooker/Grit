@@ -4,13 +4,16 @@ import fs from 'fs'
 import spawn from 'cross-spawn'
 import axios from 'axios'
 import extractZip from '@egoist/extract-zip'
-import { RepoGenerator } from '../../generator/parseGenerator'
-import { ProjenError } from '../error'
-import { move } from '../files'
-import { logger } from '../logger'
+import { RepoGenerator } from '../parseGenerator'
+import { ProjenError } from '../../utils/error'
+import { move } from '../../utils/files'
+import { logger } from '../../utils/logger'
 import { APP_NAME } from '../../config'
 
-function getUrl(generator: RepoGenerator, clone?: boolean): string {
+function getRepoUrlFromGenerator(
+	generator: RepoGenerator,
+	clone?: boolean
+): string {
 	let url = ''
 
 	let origin =
@@ -104,7 +107,7 @@ export async function downloadRepo(
 	generator: RepoGenerator,
 	{ clone, outDir }: { clone?: boolean; outDir: string }
 ): Promise<void> {
-	const url = getUrl(generator, clone)
+	const url = getRepoUrlFromGenerator(generator, clone)
 	if (clone) {
 		const cmd = spawn.sync('git', ['clone', url, outDir, '--depth=1'])
 		if (cmd.status !== 0) {

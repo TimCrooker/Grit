@@ -1,5 +1,5 @@
 import path from 'path'
-import { installPackages } from './'
+import { installPackages } from '.'
 
 test('should ', async () => {
 	const { code } = await installPackages({

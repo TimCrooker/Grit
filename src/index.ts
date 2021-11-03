@@ -14,7 +14,9 @@ import {
 	InstallOptions,
 	installPackages,
 	NPM_CLIENT,
-} from './utils/installPackages'
+	runNpmScript,
+	RunNpmScriptOptions,
+} from './utils/cmd'
 import { store } from './store'
 import {
 	ensureLocal,
@@ -321,7 +323,7 @@ export class Projen {
 	 * The absolute path to output directory
 	 */
 	get outDir(): string {
-		return this.opts.outDir
+		return path.resolve(this.opts.outDir)
 	}
 
 	/**
@@ -352,6 +354,7 @@ export class Projen {
 		}
 	}
 
+	/** Run a git commit with a custom commit message */
 	async gitCommit(commitMessage?: string): Promise<void> {
 		if (this.opts.mock) return
 
@@ -393,6 +396,11 @@ export class Projen {
 				opts
 			)
 		)
+	}
+
+	/** Run any custom command line script in output directory */
+	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
+		await runNpmScript({ ...opts, cwd: this.outDir })
 	}
 
 	/**

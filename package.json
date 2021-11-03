@@ -1,6 +1,6 @@
 {
 	"name": "projenerator",
-	"version": "0.0.11",
+	"version": "0.1.0",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": {
@@ -19,7 +19,7 @@
 		"test": "jest",
 		"lint": "eslint . --fix",
 		"prepublishOnly": "yarn build",
-		"release": "dotenv release-it --only-version"
+		"release": "dotenv release-it --ci"
 	},
 	"license": "MIT",
 	"engines": {
