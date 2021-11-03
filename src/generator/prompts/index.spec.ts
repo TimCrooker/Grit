@@ -26,7 +26,7 @@ const injectedAnswers = {
 
 describe('execute pure prompts', () => {
 	it('Mock', async () => {
-		const answers = await prompt(prompts, undefined, true)
+		const answers = await prompt(prompts, {}, undefined, true)
 		expect(answers).toStrictEqual({
 			name: 'my name',
 			age: '28',
@@ -34,7 +34,7 @@ describe('execute pure prompts', () => {
 	})
 
 	it('Use defaults', async () => {
-		const answers = await prompt(prompts, true)
+		const answers = await prompt(prompts, {}, true)
 		expect(answers).toStrictEqual({
 			name: 'my name',
 			age: '28',
@@ -42,7 +42,7 @@ describe('execute pure prompts', () => {
 	})
 
 	it('inject answers', async () => {
-		const answers = await prompt(prompts, injectedAnswers)
+		const answers = await prompt(prompts, {}, injectedAnswers)
 		expect(answers).toStrictEqual(injectedAnswers)
 	})
 })
