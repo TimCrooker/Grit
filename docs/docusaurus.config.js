@@ -21,7 +21,7 @@ const config = {
 		[
 			'@docusaurus/preset-classic',
 			/** @type {import('@docusaurus/preset-classic').Options} */
-			({
+			{
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
 					// Please change this to your repo.
@@ -30,7 +30,7 @@ const config = {
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
 				},
-			}),
+			},
 		],
 	],
 
@@ -66,24 +66,6 @@ const config = {
 							{
 								label: 'Tutorial',
 								to: '/docs/intro',
-							},
-						],
-					},
-					{
-						title: 'Community',
-						items: [
-							{
-								label: 'Stack Overflow',
-								href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-							},
-						],
-					},
-					{
-						title: 'More',
-						items: [
-							{
-								label: 'GitHub',
-								href: 'https://github.com/facebook/docusaurus',
 							},
 						],
 					},
