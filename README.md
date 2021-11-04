@@ -1,9 +1,13 @@
-#Grit CLI
+<h1 align="center">
 
-A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
-<img src="" width="224px"/>
+<img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2017/09/feature-react.png?ssl=1" width="224px"/>
 
+</br>
+Grit CLI
 </h1>
+<p align="center">A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
+
+<p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
 <img src="https://img.shields.io/github/package-json/v/TimCrooker/Grit?style=for-the-badge" alt="cli version" />
 </a>
@@ -19,13 +23,13 @@ A Simple Flexible and Powerful scaffolding tool built to help eliminate the need
 <img src="https://img.shields.io/circleci/build/github/TimCrooker/Grit/master?color=green&style=for-the-badge" alt="circle ci tests" />
 &nbsp;
 <img src="https://img.shields.io/npm/l/grit-cli?style=for-the-badge" alt="license" />
-</p>
+</h1>
 
 ## Overview
 
-This tool is awesome
+This tool is awesome. Write some more stuff here
 
-## ⚡️ Quick start
+## Quick start
 
 ### Install
 
@@ -49,11 +53,11 @@ grit [generator] [outDir]
 | [generator] | The generator to run. Can be NPM package, github repo, or local dir | none        | no        |
 | [outDir]    | Can be the name of the output directory or a path to it             | working dir | no        |
 
-## 📖 Documentation
+## Documentation
 
 The best way to explore all the features of **Grit** is to read the project [Documentation](https://timcrooker.github.io/Grit/)
 
-## ⚙️ Commands & Options
+## Commands & Options
 
 ### `grit`
 
@@ -67,7 +71,7 @@ grit create [OPTION]
 | ------ | -------------------------------------------------------- | ------ | ------- | --------- |
 | `-t`   | Enables to define custom backend and frontend templates. | `bool` | `false` | No        |
 
-## 📝 Featured generators
+## Featured generators
 
 ### Generator generators
 
@@ -90,7 +94,7 @@ grit create [OPTION]
   - supports typescript projects
   - optional prettier integration for code formatting
 
-## ⭐️ Project assistance
+## Project assistance
 
 If you want to help out and/or support development of `Grit`:
 
@@ -98,6 +102,6 @@ If you want to help out and/or support development of `Grit`:
 - Submit a pull request on [GitHub](https://github.com/TimCrooker/Grit/pulls)
 - Write interesting articles about project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or personal blog.
 
-## ⚠️ License
+## License
 
 `Grit` is free and open-source MIT licensed software.
