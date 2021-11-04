@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 const config = {
 	title: 'Grit',
 	tagline: 'Generate really interesting tech',
-	url: 'https://timcrooker.github.io/grit/',
+	url: 'https://timcrooker.github.io',
 	baseUrl: '/grit/',
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
