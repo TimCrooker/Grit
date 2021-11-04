@@ -1,11 +1,4 @@
-<h1 align="center">
-
-<img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2017/09/feature-react.png?ssl=1" width="224px"/>
-
-</br>
-Grit CLI
-</h1>
-<p align="center">A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
+<p align="center"><img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2017/09/feature-react.png?ssl=1" width="224px"/>
 
 <p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
@@ -29,24 +22,29 @@ Grit CLI
 
 This tool is awesome. Write some more stuff here
 
-## Quick start
-
-### Install
+## Installation
 
 The Grit CLI needs to be installed globally on your machine
 
 ```bash
-# Install globally 
 npm install -g grit-cli
 ```
 
-### Run a generator
+## Running a generator
 
-You now have global access to the `grit` command anywhere in your terminal.
+Use any grit-generator to scaffold out new projects or inject code into existing projects.
 
 ```bash
 grit [generator] [outDir]
 ```
+
+Example:
+
+```bash
+grit react my-new-react-project
+```
+
+This example uses [grit-react](https://github.com/TimCrooker/grit-generator) to build a new React project into the `my-grit-generator` directory
 
 | Argument    | Description                                                         | Default     | Required? |
 | ----------- | ------------------------------------------------------------------- | ----------- | --------- |
@@ -71,36 +69,17 @@ grit create [OPTION]
 | ------ | -------------------------------------------------------- | ------ | ------- | --------- |
 | `-t`   | Enables to define custom backend and frontend templates. | `bool` | `false` | No        |
 
-## Featured generators
-
-### Generators
-
-- [generator](https://github.com/TimCrooker/grit-generator) - Generate an bare bones grit-generator
-  - Unit tested
-  - Typescript compatible
-  - NPM ready
-
-### Project add-ons
-
-- [readme](https://github.com/TimCrooker/grit-readme) - Generate a well formatted README.md
-- [release-it](https://github.com/TimCrooker/grit-release-it) - Add release-it to your project for automated version publishing
-  - config file
-  - github actions script
-- [typescript](https://github.com/TimCrooker/grit-typescript) - Easily add typescript to your Project
-  - Fully configured tsconfig.json files
-  - Enabled rules follow best practices
-- [eslint](https://github.com/TimCrooker/grit-eslint) - Add eslint to any project
-  - Rules follow best practices
-  - supports typescript projects
-  - optional prettier integration for code formatting
-
 ## Project assistance
 
 If you want to help out and/or support development of `Grit`:
 
 - Add a [GitHub Star](https://github.com/TimCrooker/Grit) to the project.
+- Publish [your own generators](https://github.com/TimCrooker/awesome-grit) for the community to use
 - Submit a pull request on [GitHub](https://github.com/TimCrooker/Grit/pulls)
 - Write interesting articles about project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or personal blog.
+
+
+[awesome-grit](https://github.com/TimCrooker/awesome-grit)
 
 ## License
 
