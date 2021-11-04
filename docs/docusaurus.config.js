@@ -9,12 +9,12 @@ const config = {
 	title: 'Grit',
 	tagline: 'Generate really interesting tech',
 	url: 'https://timcrooker.github.io',
-	baseUrl: '/grit/',
+	baseUrl: '/Grit/',
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
 	favicon: 'img/favicon.ico',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
-	projectName: 'grit', // Usually your repo name.
+	projectName: 'Grit', // Usually your repo name.
 	trailingSlash: true,
 
 	presets: [
