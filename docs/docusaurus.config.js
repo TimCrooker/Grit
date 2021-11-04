@@ -25,7 +25,7 @@ const config = {
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
 					// Please change this to your repo.
-					editUrl: 'https://github.com/TimCrooker/Grit/edit/master/docs/docs/',
+					editUrl: 'https://github.com/TimCrooker/Grit/edit/master/docs/',
 				},
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
