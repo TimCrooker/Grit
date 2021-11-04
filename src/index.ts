@@ -147,7 +147,7 @@ export class Grit {
 	/**
 	 * Get the help message for current generator
 	 *
-	 * Used by Grit CLI, in general you don't want to touch this
+	 * Used by Grit CLI
 	 */
 	async getGeneratorHelp(): Promise<string> {
 		const { config } = await this.getGenerator()
@@ -266,6 +266,8 @@ export class Grit {
 		await this.runGenerator(generator, config)
 	}
 
+	/** Instance Properties */
+
 	/**
 	 * Retrive the answers
 	 *
@@ -282,6 +284,11 @@ export class Grit {
 		this._answers = value
 	}
 
+	/**
+	 *  The combination of answers and data from the data generator methods
+	 *
+	 * 	Used to give generator functions more custom data to work with
+	 */
 	get data(): any {
 		if (typeof this._data === 'symbol') {
 			throw new GritError(`You can't call \`.data\` here`)
@@ -297,7 +304,7 @@ export class Grit {
 	 *
 	 * Returns an empty object when it doesn't exist
 	 */
-	get pkg(): any {
+	get pkg(): { [k: string]: any } | undefined {
 		try {
 			return require(path.join(this.outDir, 'package.json'))
 		} catch (err) {
@@ -305,39 +312,29 @@ export class Grit {
 		}
 	}
 
-	/**
-	 * Get the information of system git user
-	 */
+	/** Get the information of system git user */
 	get gitUser(): GitUser {
 		return getGitUser(this.opts.mock)
 	}
 
-	/**
-	 * The basename of output directory
-	 */
+	/** The basename of output directory */
 	get outDirName(): string {
 		return path.basename(this.opts.outDir)
 	}
 
-	/**
-	 * The absolute path to output directory
-	 */
+	/** The absolute path to output directory */
 	get outDir(): string {
 		return path.resolve(this.opts.outDir)
 	}
 
-	/**
-	 * The npm client
-	 */
+	/** The npm client */
 	get npmClient(): NPM_CLIENT {
 		return getNpmClient()
 	}
 
-	/**
-	 * Run `git init` in output directly
-	 *
-	 * It will fail silently when `git` is not available
-	 */
+	/** Instance Methods */
+
+	/**	Run `git init` in output directly */
 	gitInit(): void {
 		if (this.opts.mock) {
 			return
@@ -354,7 +351,7 @@ export class Grit {
 		}
 	}
 
-	/** Run a git commit with a custom commit message */
+	/** Run a git commit with a custom commit message in output directory */
 	async gitCommit(commitMessage?: string): Promise<void> {
 		if (this.opts.mock) return
 
@@ -377,9 +374,7 @@ export class Grit {
 		}
 	}
 
-	/**
-	 * Run `npm install` in output directory
-	 */
+	/** Run `npm install` in output directory */
 	async npmInstall(
 		opts?: Omit<InstallOptions, 'cwd' | 'registry'>
 	): Promise<{ code: number }> {
@@ -398,29 +393,23 @@ export class Grit {
 		)
 	}
 
-	/** Run any custom command line script in output directory */
+	/** Run any npm script from package.json of the output directory */
 	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
 		await runNpmScript({ ...opts, cwd: this.outDir })
 	}
 
-	/**
-	 * Display a success message
-	 */
+	/** Display a success message */
 	showProjectTips(): void {
 		spinner.stop() // Stop when necessary
 		logger.success(`Generated into ${colors.underline(this.outDir)}`)
 	}
 
-	/**
-	 * Create an Grit Error so we can pretty print the error message instead of showing full error stack
-	 */
+	/** Create an Grit Error so we can pretty print the error message instead of showing full error stack */
 	createError(message: string): GritError {
 		return new GritError(message)
 	}
 
-	/**
-	 * Get file list of output directory
-	 */
+	/** Get file list of output directory */
 	async getOutputFiles(): Promise<string[]> {
 		const files = await glob(['**/*', '!**/node_modules/**', '!**/.git/**'], {
 			cwd: this.opts.outDir,
@@ -430,17 +419,12 @@ export class Grit {
 		return files.sort()
 	}
 
-	/**
-	 * Check if a file exists in output directory
-	 */
+	/** Check if a file exists in output directory */
 	async hasOutputFile(file: string): Promise<boolean> {
 		return await pathExists(path.join(this.opts.outDir, file))
 	}
 
-	/**
-	 * Read a file in output directory
-	 * @param file file path
-	 */
+	/** Read a file in output directory */
 	async readOutputFile(file: string): Promise<string> {
 		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}

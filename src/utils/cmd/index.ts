@@ -47,14 +47,18 @@ export interface InstallOptions {
 	registry?: string
 }
 
-export const installPackages = async ({
+export type InstallPackagesFn = (
+	opts: InstallOptions
+) => Promise<{ code: number }>
+
+export const installPackages: InstallPackagesFn = async ({
 	cwd,
 	npmClient: _npmClient,
 	installArgs,
 	packages,
 	saveDev,
 	registry,
-}: InstallOptions): Promise<{ code: number }> => {
+}) => {
 	const npmClient = _npmClient || getNpmClient()
 
 	const packageName = packages ? packages.join(', ') : 'packages'
@@ -141,7 +145,7 @@ export const installPackages = async ({
 export interface RunNpmScriptOptions {
 	/** the path to the directory commands will run in*/
 	cwd: string
-	/** script from cwd package.json to run */
+	/** name of script from package.json to run */
 	script: string
 	/** Package manager being used */
 	npmClient?: NPM_CLIENT
@@ -149,12 +153,14 @@ export interface RunNpmScriptOptions {
 	args?: string[]
 }
 
-export async function runNpmScript({
+export type RunNpmScriptFn = (opts: RunNpmScriptOptions) => Promise<void>
+
+export const runNpmScript: RunNpmScriptFn = async ({
 	cwd,
 	script,
 	npmClient: _npmClient,
 	args: _args,
-}: RunNpmScriptOptions): Promise<void> {
+}) => {
 	const npmClient = _npmClient || getNpmClient()
 	const npmRunner = getScriptRunner(npmClient)
 
