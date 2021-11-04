@@ -16,7 +16,7 @@ The answers to prompts. Cannot be accessing inside of `prompts` in the generator
 
 ### data
 
-A merged object combining the answers and any data returned from the [data method](/docs/data) of the generator
+A merged object combining the answers and any data returned from the [data method](data.md) of the generator
 
 - Type: `{[k: string]: any | undefined}`
 
@@ -54,13 +54,13 @@ The users npm client
 
 The logger instance for logging messages to the user with useful featureSvg
 
-- Type: [Logger](/docs/logger)
+- Type: [Logger](logger.md)
 
 ### spinner
 
 The spinner instance
 
-- Type: [Ora]([/docs/logger](https://github.com/sindresorhus/ora))
+- Type: [Ora](https://github.com/sindresorhus/ora)
 
 ## Methods
 
