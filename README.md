@@ -1,13 +1,9 @@
+#Grit CLI
 
-<h1 align="center">
+A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
 <img src="" width="224px"/>
 
-<br/>
-Grit CLI
 </h1>
-<p align="center">A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
-
-<p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
 <img src="https://img.shields.io/github/package-json/v/TimCrooker/Grit?style=for-the-badge" alt="cli version" />
 </a>
