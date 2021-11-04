@@ -73,7 +73,7 @@ grit create [OPTION]
 
 ## Featured generators
 
-### Generator generators
+### Generators
 
 - [generator](https://github.com/TimCrooker/grit-generator) - Generate an bare bones grit-generator
   - Unit tested
