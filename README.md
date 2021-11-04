@@ -5,7 +5,7 @@
 <br/>
 Grit CLI
 </h1>
-<p align="center">A Simple Flexible and Powerful scaffolding tool to eliminate the need for boilerplate code
+<p align="center">A Simple Flexible and Powerful scaffolding tool built to help eliminate the need for boilerplate code
 
 <p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
