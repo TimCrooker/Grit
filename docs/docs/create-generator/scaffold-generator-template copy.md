@@ -8,4 +8,4 @@ sidebar_position: 1
 
 // use grit-generator to scaffold out the generator template ensure dir name starts with grit-
 
-// 
+// hello

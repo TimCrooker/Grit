@@ -38,17 +38,17 @@ const config = {
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({
 			navbar: {
-				title: 'My Site',
+				title: 'Grit',
 				logo: {
 					alt: 'My Site Logo',
-					src: 'img/logo.svg',
+					src: '/img/logo.svg',
 				},
 				items: [
 					{
 						type: 'doc',
 						docId: 'intro',
-						position: 'left',
-						label: 'Tutorial',
+						position: 'right',
+						label: 'Docs',
 					},
 					{
 						href: 'https://github.com/TimCrooker/grit',
@@ -70,7 +70,7 @@ const config = {
 						],
 					},
 				],
-				copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+				copyright: `Copyright © ${new Date().getFullYear()} Botsea, Inc.`,
 			},
 			prism: {
 				theme: lightCodeTheme,
