@@ -10,7 +10,7 @@ sidebar_position: 1
 
 ❌ Eliminate repetitive tasks and **Never write the same code twice** by creating your own generators in **seconds**
 
-😎 Discover some popular [Grit generators](google.com) to speed up anyone's workflow
+😎 Discover some popular [Grit generators](https://google.com) to speed up anyone's workflow
 
 🏭 Grit is a **scaffolding tool** built to speed up a developers workflow through the use of **reusable code generators**. Grit generators are run in the command line with the **Grit CLI** where they gather information from users to **perform file manipulations**. Generators have access to a libray of useful methods that allow them to perform **nearly any task**, so there is no limit to what Grit can do
 
