@@ -9,7 +9,7 @@ export async function runCLI(): Promise<void> {
 	cli
 		.command('[generator] [outDir]', 'Run a generator')
 		.action((generator, outDir) =>
-			import('./cmd/main').then((res) => res.main(cli)(generator, outDir))
+			import('./cli/main').then((res) => res.main(cli)(generator, outDir))
 		)
 		.option(
 			'--npm-client <client>',
@@ -34,20 +34,20 @@ export async function runCLI(): Promise<void> {
 		.command('set-alias <name> <value>', 'Set an alias for a generator path')
 		.option('-h, --help', 'Display CLI usages')
 		.action((name, value) =>
-			import('./cmd/set-alias').then((res) => res.setAlias()(name, value))
+			import('./cli/set-alias').then((res) => res.setAlias()(name, value))
 		)
 
 	cli
 		.command('get-alias <name>', 'Get the generator for an alias')
 		.option('-h, --help', 'Display CLI usages')
 		.action((name) =>
-			import('./cmd/get-alias').then((res) => res.getAlias(cli)(name))
+			import('./cli/get-alias').then((res) => res.getAlias(cli)(name))
 		)
 
 	cli
 		.command('list', 'List all downloaded generators')
 		.option('-h, --help', 'Display CLI usages')
-		.action(() => import('./cmd/list').then((res) => res.list()()))
+		.action(() => import('./cli/list').then((res) => res.list()()))
 
 	cli.parse(process.argv, { run: false })
 

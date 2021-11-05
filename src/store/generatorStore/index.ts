@@ -1,4 +1,4 @@
-import { getNpmGeneratorName, getRepoGeneratorName } from '../../cmd/utils'
+import { getNpmGeneratorName, getRepoGeneratorName } from '../../cli/utils'
 import { GENERATORS_CACHE_PATH } from '../../config'
 import {
 	NpmGenerator,

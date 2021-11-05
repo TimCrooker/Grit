@@ -318,7 +318,7 @@ export class Grit {
 	}
 
 	/** The basename of output directory */
-	get outDirName(): string {
+	get appName(): string {
 		return path.basename(this.opts.outDir)
 	}
 
