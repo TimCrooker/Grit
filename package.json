@@ -47,7 +47,7 @@
 		"is-binary-path": "^2.1.0",
 		"cross-spawn": "^7.0.3",
 		"fs-extra": "^9.0.1",
-		"dot-prop": "^5.2.0"
+		"dot-prop": "^5.3.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.14.8",
