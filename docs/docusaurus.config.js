@@ -16,7 +16,7 @@ const config = {
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
 	trailingSlash: true,
-
+	plugins: ['@docusaurus/plugin-google-analytics'],
 	presets: [
 		[
 			'@docusaurus/preset-classic',
@@ -75,6 +75,11 @@ const config = {
 			prism: {
 				theme: lightCodeTheme,
 				darkTheme: darkCodeTheme,
+			},
+			googleAnalytics: {
+				trackingID: 'G-T5F55J3XVN',
+				// Optional fields.
+				anonymizeIP: true, // Should IPs be anonymized?
 			},
 		}),
 }
