@@ -40,7 +40,7 @@
 		"cli-table3": "^0.6.0",
 		"hash-sum": "^2.0.0",
 		"ora": "^4.0.4",
-		"cac": "^6.5.13",
+		"cac": "^6.7.11",
 		"parse-package-name": "^0.1.0",
 		"resolve-from": "^5.0.0",
 		"joycon": "^2.2.5",
