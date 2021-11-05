@@ -30,7 +30,7 @@
 		"chalk": "^4.1.2",
 		"rimraf": "^3.0.2",
 		"update-notifier": "^5.1.0",
-		"ejs": "^3.1.2",
+		"ejs": "^3.1.6",
 		"enquirer": "^2.3.6",
 		"text-table": "^0.2.0",
 		"log-update": "^4.0.0",
