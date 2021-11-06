@@ -5,13 +5,13 @@ import {
 	RepoGenerator,
 	ParsedGenerator,
 } from '../../generator/parseGenerator'
-import { Store, StoreOptions } from '..'
+import { BaseStore, BaseStoreOptions } from '../baseStore'
 
 export type GroupedGenerators = Map<string, Array<NpmGenerator | RepoGenerator>>
 
-type GeneratorStoreOptions = StoreOptions
+type GeneratorStoreOptions = BaseStoreOptions
 
-export class GeneratorStore extends Store<ParsedGenerator> {
+export class GeneratorStore extends BaseStore<ParsedGenerator> {
 	constructor(options: GeneratorStoreOptions) {
 		super({ ...options })
 	}

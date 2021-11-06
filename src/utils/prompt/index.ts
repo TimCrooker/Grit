@@ -1,7 +1,7 @@
 import Enquirer from 'enquirer'
-import { Answers } from '../..'
-import { GritError } from '../../utils/error'
-import { logger } from '../../utils/logger'
+import { Answers } from '../../'
+import { GritError } from '../error'
+import { logger } from '../logger'
 
 /**
  * The state of current running prompt

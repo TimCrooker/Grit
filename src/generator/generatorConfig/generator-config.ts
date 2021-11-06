@@ -1,8 +1,8 @@
-import { PromptOptions } from '../prompts'
+import { PromptOptions } from '../../utils/prompt'
 import JoyCon from 'joycon'
 import path from 'path'
 import { APP_NAME } from '../../config'
-import { Grit } from '../..'
+import { Grit } from '../../'
 
 export interface AddAction {
 	type: 'add'
@@ -90,16 +90,11 @@ export interface GeneratorConfig {
 	 */
 	prompts?:
 		| PromptOptions[]
-		| ((
-				this: Grit,
-				ctx: Grit
-		  ) => PromptOptions[] | Promise<PromptOptions[]>)
+		| ((this: Grit, ctx: Grit) => PromptOptions[] | Promise<PromptOptions[]>)
 	/**
 	 * Use actions to control how files are generated
 	 */
-	actions?:
-		| Action[]
-		| ((this: Grit, ctx: Grit) => Action[] | Promise<Action[]>)
+	actions?: Action[] | ((this: Grit, ctx: Grit) => Action[] | Promise<Action[]>)
 	/**
 	 * Directory to template folder
 	 * Defaults to `./template` in your generator folder

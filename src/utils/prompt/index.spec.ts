@@ -1,6 +1,6 @@
 import path from 'path'
-import { Grit } from '../../'
-import { prompt, PromptOptions } from './'
+import { Grit } from '../..'
+import { prompt, PromptOptions } from '.'
 
 const generator = path.join(__dirname, 'fixtures')
 
