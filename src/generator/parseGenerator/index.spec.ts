@@ -1,8 +1,8 @@
 import {
-	ParsedGenerator,
-	parseGenerator,
 	getGeneratorPrefix,
 	inferGeneratorPrefix,
+	ParsedGenerator,
+	parseGenerator,
 } from './'
 import { COMMAND_NAME } from '../../config'
 import os from 'os'

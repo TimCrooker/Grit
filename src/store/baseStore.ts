@@ -1,5 +1,5 @@
 import { ROOT_CACHE_PATH } from '../config'
-import { logger } from '../utils/logger'
+import { logger } from '../logger'
 import { writeFileSync } from 'fs'
 import { readFileSync } from 'fs'
 import { mkdirSync } from 'fs'
@@ -9,7 +9,7 @@ import path from 'path'
 export type StoreFileData<T = any> = { [key: string]: T }
 
 export interface BaseStoreOptions {
-	storePath: string
+	storePath?: string
 	storeFileName?: string
 }
 
@@ -21,14 +21,14 @@ export class BaseStore<T = any> {
 	/** Path to the store config file */
 	storeFilePath: string
 
-	constructor(options: BaseStoreOptions) {
-		logger.debug('Store path:', options.storePath)
+	constructor(options?: BaseStoreOptions) {
+		this.storePath = options?.storePath || ROOT_CACHE_PATH
 
-		this.storePath = options.storePath
+		logger.debug('Store path:', this.storePath)
 
 		this.storeFilePath = path.join(
-			options.storePath,
-			options.storeFileName || 'store.json'
+			this.storePath,
+			options?.storeFileName || 'store.json'
 		)
 
 		this.initiateStore()
@@ -59,23 +59,24 @@ export class BaseStore<T = any> {
 	 * @param overwrite (defaults to true) if set to false, items in the store
 	 * are protected from being overwritten
 	 */
-	set(key: string, value: any, overwrite = true): void {
+	set(key: string, value: T, overwrite = true): this {
 		const alreadyCached = this.data[key]
 		if (alreadyCached && !overwrite) {
 			logger.debug('Not overwriting item in cache:', {
 				key: alreadyCached,
 			})
-			return
+			return this
 		}
 		dotProp.set(this.data, key, value)
 		logger.debug(`Updating ${this.storeFilePath}`)
 		writeFileSync(this.storeFilePath, JSON.stringify(this.data), 'utf8')
+		return this
 	}
 
 	/**
 	 * Get item from the store whose key matches the provided one
 	 */
-	get(key: string): any {
+	get(key: string): T | undefined {
 		return dotProp.get(this.data, key)
 	}
 
@@ -92,5 +93,3 @@ export class BaseStore<T = any> {
 			})
 	}
 }
-
-export const store = new BaseStore({ storePath: ROOT_CACHE_PATH })

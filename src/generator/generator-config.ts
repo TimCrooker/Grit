@@ -1,8 +1,8 @@
-import { PromptOptions } from '../../utils/prompt'
 import JoyCon from 'joycon'
 import path from 'path'
-import { APP_NAME } from '../../config'
-import { Grit } from '../../'
+import { APP_NAME } from '../config'
+import { Grit } from '..'
+import { PromptType } from '../utils/prompt/prompt'
 
 export interface AddAction {
 	type: 'add'
@@ -89,8 +89,8 @@ export interface GeneratorConfig {
 	 * Use prompts to ask questions before generating project
 	 */
 	prompts?:
-		| PromptOptions[]
-		| ((this: Grit, ctx: Grit) => PromptOptions[] | Promise<PromptOptions[]>)
+		| PromptType[]
+		| ((this: Grit, ctx: Grit) => PromptType[] | Promise<PromptType[]>)
 	/**
 	 * Use actions to control how files are generated
 	 */
@@ -100,13 +100,6 @@ export interface GeneratorConfig {
 	 * Defaults to `./template` in your generator folder
 	 */
 	templateDir?: string
-	/**
-	 * Sub generator
-	 */
-	subGenerators?: Array<{
-		name: string
-		generator: string
-	}>
 	/**
 	 * Run some operations before running actions
 	 */

@@ -31,8 +31,9 @@ export const isFileSync = (path: string): boolean => {
 export const stripFileExtension = (name: string): string => {
 	const basePath = path.basename(name)
 	return basePath.replace(/\.[^/.]+$/, '')
-
 }
+
+// TODO impliment read file sync and async functions
 
 export { outputFile }
 
@@ -172,6 +173,14 @@ export const isDirectorySync = (path: string): boolean => {
 		return false
 	}
 }
+
+// export const createDirecory = async (path: string): Promise<void> => {
+// 	try {
+
+// 	} catch (e) {
+
+// 	}
+// }
 
 export { ensureDir }
 

@@ -1,19 +1,25 @@
 import { PACKAGES_CACHE_PATH } from '../../config'
-import { GritError } from '../../utils/error'
+import { GritError } from '../../error'
 import { installPackages } from '../../utils/cmd'
-import { downloadRepo } from '../downloadRepo'
+import { downloadRepoFromGenerator } from '../downloadRepo'
 import { pathExists, outputFile } from '../../utils/files'
-import { logger, colors } from '../../utils/logger'
-import { spinner } from '../../utils/spinner'
+import { logger, colors } from '../../logger'
+import { spinner } from '../../spinner'
 import path from 'path'
-import { RepoGenerator, LocalGenerator, NpmGenerator } from '../parseGenerator'
-import { hasConfig } from '../generatorConfig/generator-config'
+import {
+	RepoGenerator,
+	LocalGenerator,
+	NpmGenerator,
+	ParsedGenerator,
+} from '../parseGenerator'
+import { hasConfig } from '../generator-config'
 
 /**
- * Ensure packages are installed in a generator
+ * Ensure that a generator is availiable at the specified path.
+ *
  * In most cases this is used for `repo` generators
  */
-export async function ensureRepo(
+async function ensureRepo(
 	generator: RepoGenerator,
 	{
 		update,
@@ -21,6 +27,7 @@ export async function ensureRepo(
 		registry,
 	}: { update?: boolean; clone?: boolean; registry?: string }
 ): Promise<void> {
+	// Check for the generator in the cache
 	if (!update && (await pathExists(generator.path))) {
 		return
 	}
@@ -28,7 +35,7 @@ export async function ensureRepo(
 	// Download repo
 	spinner.start('Downloading repo')
 	try {
-		await downloadRepo(generator, {
+		await downloadRepoFromGenerator(generator, {
 			clone,
 			outDir: generator.path,
 		})
@@ -55,7 +62,7 @@ export async function ensureRepo(
 	}
 }
 
-export async function ensureLocal(generator: LocalGenerator): Promise<void> {
+async function ensureLocal(generator: LocalGenerator): Promise<void> {
 	const exists = await pathExists(generator.path)
 
 	if (!exists) {
@@ -65,7 +72,7 @@ export async function ensureLocal(generator: LocalGenerator): Promise<void> {
 	}
 }
 
-export async function ensurePackage(
+async function ensurePackage(
 	generator: NpmGenerator,
 	{ update, registry }: { update?: boolean; registry?: string }
 ): Promise<void> {
@@ -85,5 +92,27 @@ export async function ensurePackage(
 			registry,
 			packages: [`${generator.name}@${generator.version || 'latest'}`],
 		})
+	}
+}
+
+/** Check that the generator exists where it should be and download it if it isnt */
+export const ensureGeneratorExists = async (
+	generator: ParsedGenerator,
+	{
+		update,
+		clone,
+		registry,
+	}: { update?: boolean; clone?: boolean; registry?: string }
+): Promise<void> => {
+	if (generator.type === 'repo') {
+		await ensureRepo(generator, {
+			update,
+			clone,
+			registry,
+		})
+	} else if (generator.type === 'npm') {
+		await ensurePackage(generator, { update, registry })
+	} else if (generator.type === 'local') {
+		await ensureLocal(generator)
 	}
 }

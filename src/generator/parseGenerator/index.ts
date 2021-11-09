@@ -7,9 +7,6 @@ import {
 	REPOS_CACHE_PATH,
 	isLocalPath,
 } from '../../config'
-import { GritError } from '../../utils/error'
-import { store } from '../../store'
-import { escapeDots } from '../../utils/glob'
 
 export interface LocalGenerator {
 	type: 'local'
@@ -59,7 +56,7 @@ export function inferGeneratorPrefix(generator: string): string {
 	return generator
 }
 
-export function HandleLocalGenerator(generator: string): LocalGenerator {
+function HandleLocalGenerator(generator: string): LocalGenerator {
 	let subGenerator: string | undefined
 	if (removeLocalPathPrefix(generator).includes(':')) {
 		subGenerator = generator.slice(generator.lastIndexOf(':') + 1)
@@ -75,7 +72,7 @@ export function HandleLocalGenerator(generator: string): LocalGenerator {
 	}
 }
 
-export function HandleNpmGenerator(generator: string): NpmGenerator {
+function HandleNpmGenerator(generator: string): NpmGenerator {
 	const hasSubGenerator = generator.indexOf(':') !== -1
 	const slug = generator.slice(
 		0,
@@ -96,7 +93,7 @@ export function HandleNpmGenerator(generator: string): NpmGenerator {
 	}
 }
 
-export function HandleRepoGenerator(
+function HandleRepoGenerator(
 	generator: string,
 	prefix: GeneratorPrefix
 ): RepoGenerator {
@@ -137,18 +134,8 @@ export function getGeneratorPrefix(generator: string): GeneratorPrefix {
 	return prefix
 }
 
-/** Load the generator config file from the given generator string */
+/** Get information from the given generator string */
 export function parseGenerator(generator: string): ParsedGenerator {
-	// Handle user cached generators with aliases
-	if (generator.startsWith('alias:')) {
-		const alias = generator.slice(6)
-		const url = store.get(`alias.${escapeDots(alias)}`) as string | undefined
-		if (!url) {
-			throw new GritError(`Cannot find alias '${alias}'`)
-		}
-		return parseGenerator(url)
-	}
-
 	// Handle local generators
 	if (isLocalPath(generator)) {
 		return HandleLocalGenerator(generator)

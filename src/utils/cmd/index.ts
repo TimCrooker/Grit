@@ -2,9 +2,9 @@ import { exec } from 'child_process'
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
 import { promisify } from 'util'
-import { GritError } from '../error'
-import { logger } from '../logger'
-import { spinner } from '../spinner'
+import { GritError } from '../../error'
+import { logger } from '../../logger'
+import { spinner } from '../../spinner'
 
 export type NPM_CLIENT = 'npm' | 'yarn' | 'pnpm'
 

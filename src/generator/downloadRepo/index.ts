@@ -5,12 +5,13 @@ import spawn from 'cross-spawn'
 import axios from 'axios'
 import extractZip from '@egoist/extract-zip'
 import { RepoGenerator } from '../parseGenerator'
-import { GritError } from '../../utils/error'
 import { move } from '../../utils/files'
-import { logger } from '../../utils/logger'
+import { logger } from '../../logger'
 import { APP_NAME } from '../../config'
+import { GritError } from '../../error'
 
-function getRepoUrlFromGenerator(
+/** Build the repo url from the generator contents */
+function buildRepoUrlFromGenerator(
 	generator: RepoGenerator,
 	clone?: boolean
 ): string {
@@ -73,7 +74,8 @@ function getRepoUrlFromGenerator(
 	return url
 }
 
-async function downloadFile(
+/** Download file from a URL */
+async function downloadFileFromUrl(
 	url: string,
 	outPath: string,
 	extract: boolean
@@ -103,17 +105,18 @@ async function downloadFile(
 	}
 }
 
-export async function downloadRepo(
+/** Download a repository from a url */
+export async function downloadRepoFromGenerator(
 	generator: RepoGenerator,
 	{ clone, outDir }: { clone?: boolean; outDir: string }
 ): Promise<void> {
-	const url = getRepoUrlFromGenerator(generator, clone)
+	const url = buildRepoUrlFromGenerator(generator, clone)
 	if (clone) {
 		const cmd = spawn.sync('git', ['clone', url, outDir, '--depth=1'])
 		if (cmd.status !== 0) {
 			throw new GritError(`Failed to download repo: ${cmd.output}`)
 		}
 	} else {
-		await downloadFile(url, outDir, true)
+		await downloadFileFromUrl(url, outDir, true)
 	}
 }

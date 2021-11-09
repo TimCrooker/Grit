@@ -1,12 +1,9 @@
-import { ROOT_CACHE_PATH } from '../config'
-import { BaseStore, BaseStoreOptions } from './baseStore'
+import { answerStore, AnswerStore } from './answerStore'
+import { GeneratorStore, generatorStore } from './generatorStore'
 
-export type StoreOptions = BaseStoreOptions
-
-export class Store extends BaseStore<any> {
-	constructor(options: StoreOptions) {
-		super({ ...options })
-	}
+export class Store {
+	generators: GeneratorStore = generatorStore
+	answers: AnswerStore = answerStore
 }
 
-export const store = new Store({ storePath: ROOT_CACHE_PATH })
+export const store = new Store()
