@@ -3,12 +3,11 @@ import spawn from 'cross-spawn'
 import { glob } from 'majo'
 import { tmpdir } from 'os'
 import path from 'path'
-import resolveFrom from 'resolve-from'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 import { getGitUser, GitUser } from './utils/git-user'
 import { defautGeneratorFile } from './generator/default-generator'
-import { handleError, GritError } from './utils/error'
+import { handleError, GritError } from './error'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -18,30 +17,40 @@ import {
 	RunNpmScriptOptions,
 } from './utils/cmd'
 import { store } from './store'
-import {
-	ensureLocal,
-	ensurePackage,
-	ensureRepo,
-} from './generator/validateGenerator'
+import { ensureGeneratorExists } from './generator/validateGenerator'
 import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
-import { logger, colors } from './utils/logger'
-import { spinner } from './utils/spinner'
-import { APP_NAME, isLocalPath } from './config'
+import { logger, colors } from './logger'
+import { spinner } from './spinner'
+import { APP_NAME } from './config'
 import { pathExists, readFile } from './utils/files'
-import { generatorStore, GeneratorStore } from './store/generatorStore'
-import { updater } from './utils/updater'
-import {
-	GeneratorConfig,
-	loadConfig,
-} from './generator/generatorConfig/generator-config'
+import { updater } from './cli/updater'
+import { GeneratorConfig, loadConfig } from './generator/generator-config'
+import { Answers } from './utils/prompt/answers'
 
 export interface Options<T = { [k: string]: any }> {
+	/**
+	 * Name of directory to output to or relative path to it
+	 * Will be created if it does not alreadt exist.
+	 * Defaults to the current working directory.
+	 */
 	outDir?: string
-	logLevel?: number
+	/**
+	 *  Controls the level of logging that is shown in the console.
+	 *	1: Errors and success messages only
+	 *	2: Errors and warnings
+	 *	3: Errors, warnings and info
+	 *	4: Errors, warnings, info and debug
+	 */
+	logLevel?: 1 | 2 | 3 | 4
+	/**
+	 * Sets logLevel to 4
+	 * prevents dependency installation prevents
+	 * prevents git init
+	 */
 	debug?: boolean
 	/** Least amount of logging to the console */
 	quiet?: boolean
-	/** Path to generator can be local dir, repo, or npm package */
+	/** generator string */
 	generator: string
 	/** Update cached generator before running */
 	updateGenerator?: boolean
@@ -60,11 +69,7 @@ export interface Options<T = { [k: string]: any }> {
 	 * User-supplied answers
 	 * `true` means using default answers for prompts
 	 */
-	answers?:
-		| boolean
-		| {
-				[k: string]: any
-		  }
+	answers?: Answers
 	/** Extra data payload to provide the generator at runtime */
 	extras?: T
 }
@@ -72,8 +77,7 @@ export interface Options<T = { [k: string]: any }> {
 const EMPTY_ANSWERS = Symbol()
 const EMPTY_DATA = Symbol()
 
-export type Answers = { [k: string]: any }
-export type Data = { [k: string]: any }
+export type Data = Record<string, any>
 
 export class Grit {
 	opts: SetRequired<Options, 'outDir' | 'logLevel'>
@@ -81,13 +85,13 @@ export class Grit {
 	colors = colors
 	logger = logger
 	updater = updater
+	store = store
 
 	/** Prompt answers provided by the user */
 	private _answers: Answers | symbol = EMPTY_ANSWERS
 	private _data: Data | symbol = EMPTY_DATA
 
 	parsedGenerator: ParsedGenerator
-	generatorList: GeneratorStore
 
 	constructor(opts: Options) {
 		this.opts = {
@@ -127,65 +131,18 @@ export class Grit {
 			)
 		}
 
-		// Use default answers when mock mode is enabled and no answers are explicitly provided
-		if (this.opts.mock && typeof this.opts.answers === 'undefined') {
-			this.opts.answers = true
-		}
-
-		this.generatorList = generatorStore
 		this.parsedGenerator = parseGenerator(this.opts.generator)
-
-		// Sub generator can only be used in already executed generator outdir
-		if (this.parsedGenerator.subGenerator && !this.opts.mock) {
-			logger.debug(
-				`Setting out directory to process.cwd() since it's a sub generator`
-			)
-			this.opts.outDir = process.cwd()
-		}
-	}
-
-	/**
-	 * Get the help message for current generator
-	 *
-	 * Used by Grit CLI
-	 */
-	async getGeneratorHelp(): Promise<string> {
-		const { config } = await this.getGenerator()
-
-		let help = ''
-
-		if (config.description) {
-			help += `\n${config.description}`
-		}
-
-		return help
 	}
 
 	/**
 	 * Get actual generator to run and its config
+	 *
 	 * Download it if not yet cached
 	 */
 	async getGenerator(
-		generator: ParsedGenerator = this.parsedGenerator,
-		hasParent?: boolean
+		generator: ParsedGenerator = this.parsedGenerator
 	): Promise<{ generator: ParsedGenerator; config: GeneratorConfig }> {
-		// TODO find out what these do
-		if (generator.type === 'repo') {
-			await ensureRepo(generator, {
-				update: this.opts.updateGenerator,
-				clone: this.opts.clone,
-				registry: this.opts.registry,
-			})
-		} else if (generator.type === 'npm') {
-			await ensurePackage(generator, this.opts)
-		} else if (generator.type === 'local') {
-			await ensureLocal(generator)
-		}
-
-		// store generator in generator cache
-		if (!hasParent) {
-			this.generatorList.add(generator)
-		}
+		await ensureGeneratorExists(generator, this.opts)
 
 		// load actual generator from generator path
 		logger.debug(`Loading generator from ${generator.path}`)
@@ -195,30 +152,7 @@ export class Grit {
 				? loadedConfig.data
 				: defautGeneratorFile
 
-		// Only run following code for root generator
-		if (!hasParent) {
-			if (this.opts.updateCheck) {
-				this.updater.checkGenerator(generator, config.updateCheck)
-			}
-			// Keep the generator info
-			store.set(`generators.${generator.hash}`, generator)
-		}
-
-		if (generator.subGenerator && config.subGenerators) {
-			const subGenerator = config.subGenerators.find(
-				(g) => g.name === generator.subGenerator
-			)
-			if (subGenerator) {
-				let generatorPath = subGenerator.generator
-				generatorPath = isLocalPath(generatorPath)
-					? path.resolve(generator.path, generatorPath)
-					: resolveFrom(generator.path, generatorPath)
-				return this.getGenerator(parseGenerator(generatorPath), true)
-			}
-			throw new GritError(
-				`No such sub generator in generator ${generator.path}`
-			)
-		}
+		this.store.generators.add(generator)
 
 		return {
 			generator,
@@ -241,7 +175,7 @@ export class Grit {
 
 		// Run generator supplied prompts
 		if (config.prompts) {
-			const { runPrompts } = await import('./generator/prompts/run-prompts')
+			const { runPrompts } = await import('./generator/run-prompts')
 
 			this._answers = await runPrompts(this, config)
 		} else {
@@ -251,7 +185,7 @@ export class Grit {
 		this._data = config.data ? config.data.call(this, this) : {}
 
 		if (config.actions) {
-			const { runActions } = await import('./generator/actions/run-actions')
+			const { runActions } = await import('./generator/run-actions')
 
 			await runActions(this, config)
 		}
@@ -266,7 +200,7 @@ export class Grit {
 		await this.runGenerator(generator, config)
 	}
 
-	/** Instance Properties */
+	/** Generator Instance Properties */
 
 	/**
 	 * Retrive the answers
@@ -285,9 +219,9 @@ export class Grit {
 	}
 
 	/**
-	 *  The combination of answers and data from the data generator methods
+	 * The combination of answers and data from the data generator methods
 	 *
-	 * 	Used to give generator functions more custom data to work with
+	 * Used to give generator functions more custom data to work with
 	 */
 	get data(): any {
 		if (typeof this._data === 'symbol') {
@@ -332,7 +266,7 @@ export class Grit {
 		return getNpmClient()
 	}
 
-	/** Instance Methods */
+	/** Generator Instance Methods */
 
 	/**	Run `git init` in output directly */
 	gitInit(): void {
@@ -430,5 +364,5 @@ export class Grit {
 	}
 }
 
-export { runCLI } from './cliEngine'
-export { GeneratorConfig, handleError, store, GeneratorStore }
+export { runCLI } from './cli/cli'
+export { GeneratorConfig, handleError, store }

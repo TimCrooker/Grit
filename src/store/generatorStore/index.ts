@@ -1,29 +1,27 @@
 import { getNpmGeneratorName, getRepoGeneratorName } from '../../cli/utils'
-import { GENERATORS_CACHE_PATH } from '../../config'
 import {
 	NpmGenerator,
 	RepoGenerator,
 	ParsedGenerator,
 } from '../../generator/parseGenerator'
-import { Store, StoreOptions } from '..'
+import { BaseStore, BaseStoreOptions } from '../baseStore'
 
 export type GroupedGenerators = Map<string, Array<NpmGenerator | RepoGenerator>>
 
-type GeneratorStoreOptions = StoreOptions
+type GeneratorStoreOptions = BaseStoreOptions
 
-export class GeneratorStore extends Store<ParsedGenerator> {
-	constructor(options: GeneratorStoreOptions) {
+export class GeneratorStore extends BaseStore<ParsedGenerator> {
+	constructor(options?: GeneratorStoreOptions) {
 		super({ ...options })
 	}
 
 	/** Add a new generator to the store if it doesn't already exist */
-	add(generator: ParsedGenerator): void {
+	add(generator: ParsedGenerator): this {
 		this.set(generator.hash, generator, false)
+		return this
 	}
 
-	/**
-	 * Search the store for generators matching the current one's name
-	 */
+	/** Search the store for generators matching the current one's name */
 	getAllByName(generator: ParsedGenerator): ParsedGenerator[] {
 		return this.getAllWhere((key, value) => {
 			if (generator.type === 'repo' && value.type === 'repo') {
@@ -39,9 +37,7 @@ export class GeneratorStore extends Store<ParsedGenerator> {
 		})
 	}
 
-	/**
-	 * Group generators by name
-	 */
+	/** Group generators by name */
 	get groupedGenerators(): GroupedGenerators {
 		const generatorsMap: GroupedGenerators = new Map()
 		Object.entries(this.data).forEach(([, generator]) => {
@@ -62,6 +58,5 @@ export class GeneratorStore extends Store<ParsedGenerator> {
 }
 
 export const generatorStore = new GeneratorStore({
-	storePath: GENERATORS_CACHE_PATH,
-	storeFileName: 'generator-list.json',
+	storeFileName: 'generators.json',
 })

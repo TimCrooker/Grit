@@ -1,10 +1,11 @@
 import path from 'path'
 import { Grit } from '../../'
-import { prompt, PromptOptions } from './'
+import { PromptType } from './prompt'
+import { prompt } from './'
 
 const generator = path.join(__dirname, 'fixtures')
 
-const prompts: PromptOptions[] = [
+const prompts: PromptType[] = [
 	{
 		name: 'name',
 		type: 'input',
@@ -26,15 +27,7 @@ const injectedAnswers = {
 
 describe('execute pure prompts', () => {
 	it('Mock', async () => {
-		const answers = await prompt(prompts, {}, undefined, true)
-		expect(answers).toStrictEqual({
-			name: 'my name',
-			age: '28',
-		})
-	})
-
-	it('Use defaults', async () => {
-		const answers = await prompt(prompts, {}, true)
+		const answers = await prompt({ prompts, mock: true })
 		expect(answers).toStrictEqual({
 			name: 'my name',
 			age: '28',
@@ -42,7 +35,7 @@ describe('execute pure prompts', () => {
 	})
 
 	it('inject answers', async () => {
-		const answers = await prompt(prompts, {}, injectedAnswers)
+		const answers = await prompt({ prompts, injectedAnswers })
 		expect(answers).toStrictEqual(injectedAnswers)
 	})
 })
@@ -52,20 +45,6 @@ describe('run prompts in generator instance', () => {
 		const grit = new Grit({
 			generator,
 			mock: true,
-		})
-
-		await grit.run()
-
-		expect(grit.answers).toStrictEqual({
-			name: 'my name',
-			age: '28',
-		})
-	})
-
-	it('Use defaults', async () => {
-		const grit = new Grit({
-			generator,
-			answers: true,
 		})
 
 		await grit.run()

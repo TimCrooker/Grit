@@ -1,11 +1,10 @@
 import path from 'path'
 import fs from 'fs'
 import updateNotifier from 'update-notifier'
-import { colors } from './logger'
 import yarnGlobal from 'yarn-global'
-import { logger } from './logger'
 import { APP_NAME } from '../config'
 import { ParsedGenerator } from '../generator/parseGenerator'
+import { colors, logger } from '../logger'
 
 export interface UpdaterOptions {
 	updateSelf?: boolean
