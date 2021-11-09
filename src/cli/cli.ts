@@ -61,17 +61,6 @@ export const runCLI = async (): Promise<void> => {
 		})
 
 	await cli.run()
-
-	// const options = program
-	// const [generator, outDir] = program.args
-
-	// console.log('options: ' + options.help)
-	// console.log('args: ' + generator + ' ' + outDir)
-
-	// set command variable to the first arg
-	// check if the command variable is one of the supported Commands
-	// if it is one of the commands then run the function for that command
-	// if it isnt, then assume we are trying to run a generator
 }
 
 // if running with ts-node this runs the cli so we dont have to recompile every time

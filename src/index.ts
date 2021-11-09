@@ -270,7 +270,8 @@ export class Grit {
 
 	/**	Run `git init` in output directly */
 	gitInit(): void {
-		if (this.opts.mock) {
+		if (this.opts.mock || this.opts.debug) {
+			logger.debug('Skipping git init')
 			return
 		}
 
@@ -287,7 +288,10 @@ export class Grit {
 
 	/** Run a git commit with a custom commit message in output directory */
 	async gitCommit(commitMessage?: string): Promise<void> {
-		if (this.opts.mock) return
+		if (this.opts.mock || this.opts.debug) {
+			logger.debug('Skipping git commit')
+			return
+		}
 
 		const outDir = this.outDir
 
@@ -312,7 +316,8 @@ export class Grit {
 	async npmInstall(
 		opts?: Omit<InstallOptions, 'cwd' | 'registry'>
 	): Promise<{ code: number }> {
-		if (this.opts.mock) {
+		if (this.opts.mock || this.opts.debug) {
+			logger.debug('npm install skipped')
 			return { code: 0 }
 		}
 
@@ -329,6 +334,10 @@ export class Grit {
 
 	/** Run any npm script from package.json of the output directory */
 	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
+		if (this.opts.debug){
+			logger.debug(`skipping run script`)
+			return
+		}
 		await runNpmScript({ ...opts, cwd: this.outDir })
 	}
 

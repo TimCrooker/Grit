@@ -39,10 +39,6 @@ export const prompt = async ({
 		injectedAnswers = JSON.parse(injectedAnswers)
 	}
 
-	// if use defaults is true then automatically answer the prompts with the default values
-
-	// if mock is true then simple return the default answers
-
 	logger.debug('Generator injected answers:', injectedAnswers)
 
 	const parsedPrompts: PromptType[] = prompts.map(
@@ -53,8 +49,9 @@ export const prompt = async ({
 			if (mock) {
 				let injectMock
 				if (prompt.mock) injectMock = prompt.mock
-				else if (typeof prompt.default !== 'function')
+				else if (typeof prompt.default !== 'function') {
 					injectMock = prompt.default
+				}
 				injectedAnswers[prompt.name] = injectMock
 			}
 
@@ -72,7 +69,7 @@ export const prompt = async ({
 				},
 				default(answers) {
 					// If we have cached answers, use them to override the defaults before we prompt the username
-					if (cachedAnswers) {
+					if (cachedAnswers && cachedAnswers[prompt.name]) {
 						return cachedAnswers[prompt.name]
 					}
 					if (typeof prompt.default === 'function') {
