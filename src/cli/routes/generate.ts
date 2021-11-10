@@ -3,7 +3,7 @@ import { logger } from '../../logger'
 import { GritRoute } from '../cli'
 
 export const generate: GritRoute = async (app, { args, options }) => {
-	console.log('generating')
+	logger.debug
 
 	const generator = args[0]
 	const outDir = args[1]
@@ -29,4 +29,5 @@ export const generate: GritRoute = async (app, { args, options }) => {
 	} catch (error) {
 		handleError(error)
 	}
+	return await app.navigate('exit')
 }

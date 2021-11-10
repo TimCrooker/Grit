@@ -23,7 +23,6 @@ import { logger, colors } from './logger'
 import { spinner } from './spinner'
 import { APP_NAME } from './config'
 import { pathExists, readFile } from './utils/files'
-import { updater } from './cli/updater'
 import { GeneratorConfig, loadConfig } from './generator/generator-config'
 import { Answers } from './utils/prompt/answers'
 
@@ -51,7 +50,7 @@ export interface Options<T = { [k: string]: any }> {
 	/** Least amount of logging to the console */
 	quiet?: boolean
 	/** generator string */
-	generator: string
+	generator: string | ParsedGenerator
 	/** Update cached generator before running */
 	updateGenerator?: boolean
 	/** Use `git clone` to download repo */
@@ -84,7 +83,6 @@ export class Grit {
 	spinner = spinner
 	colors = colors
 	logger = logger
-	updater = updater
 	store = store
 
 	/** Prompt answers provided by the user */
@@ -117,12 +115,6 @@ export class Grit {
 			mock: this.opts.mock,
 		})
 
-		// configure Updater
-		updater.setOptions({
-			updateSelf: this.opts.updateCheck,
-			updateGenerator: this.opts.updateGenerator,
-		})
-
 		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
 			this.opts.outDir = path.join(
@@ -131,7 +123,9 @@ export class Grit {
 			)
 		}
 
-		this.parsedGenerator = parseGenerator(this.opts.generator)
+		if (typeof opts.generator === 'string') {
+			this.parsedGenerator = parseGenerator(this.opts.generator as string)
+		} else this.parsedGenerator = this.opts.generator as ParsedGenerator
 	}
 
 	/**
@@ -139,7 +133,7 @@ export class Grit {
 	 *
 	 * Download it if not yet cached
 	 */
-	async getGenerator(
+	async getGeneratorConfig(
 		generator: ParsedGenerator = this.parsedGenerator
 	): Promise<{ generator: ParsedGenerator; config: GeneratorConfig }> {
 		await ensureGeneratorExists(generator, this.opts)
@@ -160,6 +154,10 @@ export class Grit {
 		}
 	}
 
+	/**
+	 * Run the generator with the configured options
+	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
+	 */
 	async runGenerator(
 		generator: ParsedGenerator,
 		config: GeneratorConfig
@@ -184,6 +182,7 @@ export class Grit {
 
 		this._data = config.data ? config.data.call(this, this) : {}
 
+		// Run generator supplied actions
 		if (config.actions) {
 			const { runActions } = await import('./generator/run-actions')
 
@@ -195,8 +194,9 @@ export class Grit {
 		}
 	}
 
+	/** Method to run when instantiated with a generator */
 	async run(): Promise<void> {
-		const { generator, config } = await this.getGenerator()
+		const { generator, config } = await this.getGeneratorConfig()
 		await this.runGenerator(generator, config)
 	}
 
@@ -334,7 +334,7 @@ export class Grit {
 
 	/** Run any npm script from package.json of the output directory */
 	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
-		if (this.opts.debug){
+		if (this.opts.debug) {
 			logger.debug(`skipping run script`)
 			return
 		}

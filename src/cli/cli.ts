@@ -8,6 +8,7 @@ import { home } from './routes/home'
 import { install } from './routes/install'
 import { list } from './routes'
 import { Route } from '../CLI_FRAMEWORK/router'
+import { find } from './routes/find'
 
 export type RuntimeEnv = Grit
 
@@ -28,6 +29,7 @@ export const runCLI = async (): Promise<void> => {
 		.addRoute('help', help)
 		.addRoute('list', list)
 		.addRoute('exit', exit)
+		.addRoute('find', find)
 
 	/**
 	 * Command routes

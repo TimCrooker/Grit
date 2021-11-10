@@ -1,5 +1,4 @@
 import Table from 'cli-table3'
-import { APP_NAME } from '../config'
 import { RepoGenerator, NpmGenerator } from '../generator/parseGenerator'
 import { generatorStore } from '../store/generatorStore'
 
@@ -10,17 +9,17 @@ export function getRepoGeneratorName(generator: RepoGenerator): string {
 }
 
 export function getNpmGeneratorName(generator: NpmGenerator): string {
-	return generator.name.replace(`${APP_NAME}-`, '')
+	return generator.name.replace(`grit-`, '')
 }
 
-export function printGenerators(): void {
-	const table = new Table({
-		head: ['Name', 'Versions'],
-	})
+// export function printGenerators(): void {
+// 	const table = new Table({
+// 		head: ['Name', 'Versions'],
+// 	})
 
-	for (const [name, generators] of generatorStore.groupedGenerators) {
-		table.push([name, generators.map((g) => `${g.version}`).join(', ')])
-	}
+// 	for (const [name, generators] of generatorStore.generatorNameList) {
+// 		table.push([name, generators.map((g) => `${g.version}`).join(', ')])
+// 	}
 
-	console.log(table.toString())
-}
+// 	console.log(table.toString())
+// }

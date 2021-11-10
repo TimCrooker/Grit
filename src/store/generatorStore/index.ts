@@ -6,7 +6,7 @@ import {
 } from '../../generator/parseGenerator'
 import { BaseStore, BaseStoreOptions } from '../baseStore'
 
-export type GroupedGenerators = Map<string, Array<NpmGenerator | RepoGenerator>>
+export type GroupedGenerators = Map<string, NpmGenerator | RepoGenerator>
 
 type GeneratorStoreOptions = BaseStoreOptions
 
@@ -38,19 +38,22 @@ export class GeneratorStore extends BaseStore<ParsedGenerator> {
 	}
 
 	/** Group generators by name */
-	get groupedGenerators(): GroupedGenerators {
+	get generatorNameList(): GroupedGenerators {
 		const generatorsMap: GroupedGenerators = new Map()
-		Object.entries(this.data).forEach(([, generator]) => {
+		this.listify().forEach((generator) => {
+			if (generator.type === 'repo') {
+				const repoGenerator = generator as RepoGenerator
+				const repoGeneratorName = getRepoGeneratorName(repoGenerator)
+				if (!generatorsMap.has(repoGeneratorName)) {
+					generatorsMap.set(repoGeneratorName, repoGenerator)
+				}
+			}
 			if (generator.type === 'npm') {
-				const name = getNpmGeneratorName(generator)
-				const arr = generatorsMap.get(name) || []
-				arr.push(generator)
-				generatorsMap.set(generator.name, arr)
-			} else if (generator.type === 'repo') {
-				const name = getRepoGeneratorName(generator)
-				const arr = generatorsMap.get(name) || []
-				arr.push(generator)
-				generatorsMap.set(name, arr)
+				const npmGenerator = generator as NpmGenerator
+				const npmGeneratorName = getNpmGeneratorName(npmGenerator)
+				if (!generatorsMap.has(npmGeneratorName)) {
+					generatorsMap.set(npmGeneratorName, npmGenerator)
+				}
 			}
 		})
 		return generatorsMap

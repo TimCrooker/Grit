@@ -13,6 +13,7 @@ import {
 	ParsedGenerator,
 } from '../parseGenerator'
 import { hasConfig } from '../generator-config'
+import { store } from '../..'
 
 /**
  * Ensure that a generator is availiable at the specified path.
@@ -79,8 +80,9 @@ async function ensurePackage(
 	const installPath = path.join(PACKAGES_CACHE_PATH, generator.hash)
 
 	if (update || !(await pathExists(generator.path))) {
+		const packagePath = path.join(installPath, 'package.json')
 		await outputFile(
-			path.join(installPath, 'package.json'),
+			packagePath,
 			JSON.stringify({
 				private: true,
 			}),
@@ -92,6 +94,14 @@ async function ensurePackage(
 			registry,
 			packages: [`${generator.name}@${generator.version || 'latest'}`],
 		})
+
+		// update the version in the cache
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const packageJson = require(packagePath)
+		store.generators.set(
+			generator.hash + '.version',
+			packageJson.dependencies[generator.name].replace(/^\^/, '')
+		)
 	}
 }
 

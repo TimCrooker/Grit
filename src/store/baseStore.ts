@@ -6,7 +6,7 @@ import { mkdirSync } from 'fs'
 import dotProp from 'dot-prop'
 import path from 'path'
 
-export type StoreFileData<T = any> = { [key: string]: T }
+export type StoreFileData<T = any> = Record<string, T>
 
 export interface BaseStoreOptions {
 	storePath?: string
@@ -78,6 +78,10 @@ export class BaseStore<T = any> {
 	 */
 	get(key: string): T | undefined {
 		return dotProp.get(this.data, key)
+	}
+
+	listify(): T[] {
+		return Object.values(this.data)
 	}
 
 	/**
