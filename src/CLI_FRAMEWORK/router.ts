@@ -2,15 +2,15 @@ import chalk from 'chalk'
 import { Logger } from '../logger'
 import { CLI } from './cli'
 
-export type Route<RuntimeEnvInstance = any> =
-	| ((
-			app: CLI<RuntimeEnvInstance>,
-			input: { args: any[]; options: { [key: string]: any } }
-	  ) => void)
-	| ((
-			app: CLI<RuntimeEnvInstance>,
-			input: { args: any[]; options: { [key: string]: any } }
-	  ) => Promise<void>)
+export type Route<RuntimeEnvInstance = any> = (
+	app: CLI<RuntimeEnvInstance>,
+	input: {
+		/** args passed from the initial command line */
+		args: any[]
+		/** options passed from the initial command line */
+		options: { [key: string]: any }
+	}
+) => void | Promise<void>
 
 type Routes<RuntimeEnvInstance = any> = {
 	[k: string]: Route<RuntimeEnvInstance>

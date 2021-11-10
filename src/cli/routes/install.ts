@@ -19,3 +19,8 @@ export const install: GritRoute = async (app, { args, options }) => {
 
 	return await app.navigate(answers.whatNext)
 }
+
+export const InstallChoice = {
+	name: 'Install a new Generator',
+	value: 'install',
+}

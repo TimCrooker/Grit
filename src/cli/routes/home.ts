@@ -1,5 +1,9 @@
+import { ExitChoice, HelpChoice } from '.'
 import { GritRoute } from '../cli'
 
+/** 
+ * This is the home route when users input just the `grit` keyword with no commands\
+*/
 export const home: GritRoute = async (app, { args, options }) => {
 	const defaultChoices = [
 		{
@@ -7,17 +11,11 @@ export const home: GritRoute = async (app, { args, options }) => {
 			value: 'list',
 		},
 		{
-			name: 'Install a generator',
+			name: 'Install a new generator',
 			value: 'install',
 		},
-		{
-			name: 'Get Help',
-			value: 'help',
-		},
-		{
-			name: 'Exit',
-			value: 'exit',
-		},
+		HelpChoice,
+		ExitChoice,
 	]
 
 	const answers = await app.prompt([
