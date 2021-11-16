@@ -1,6 +1,6 @@
 import Table from 'cli-table3'
-import { RepoGenerator, NpmGenerator } from '../generator/parseGenerator'
-import { generatorStore } from '../store/generatorStore'
+import { RepoGenerator, NpmGenerator } from '../Generator/parseGenerator'
+import { generatorStore } from '../Store/generatorStore'
 
 export function getRepoGeneratorName(generator: RepoGenerator): string {
 	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${

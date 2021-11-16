@@ -8,6 +8,8 @@ import { Route, Router, RouterOptions } from './router'
 export interface CLIOptions<RuntimeEnvInstance = any> {
 	pkg: Package
 	debug?: boolean
+	/** renders cli output  */
+	// testMode?: boolean
 	env?: RuntimeEnvInstance
 }
 
@@ -24,8 +26,10 @@ export class CLI<RuntimeEnvInstance = any> {
 		this.opts = {
 			...opts,
 			debug: opts.debug || false,
+			// testMode: opts.testMode || false,
 		}
 
+		// Set the runtime enviroment
 		this.env = opts.env
 
 		// Configure logger

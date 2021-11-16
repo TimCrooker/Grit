@@ -1,4 +1,4 @@
-import { Grit, handleError, Options } from '../../'
+import { Grit, handleError, Options } from '../../Generator'
 import { logger } from '../../logger'
 import { GritRoute } from '../cli'
 

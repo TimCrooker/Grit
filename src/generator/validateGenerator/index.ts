@@ -13,7 +13,7 @@ import {
 	ParsedGenerator,
 } from '../parseGenerator'
 import { hasConfig } from '../generator-config'
-import { store } from '../..'
+import { store } from '..'
 
 /**
  * Ensure that a generator is availiable at the specified path.

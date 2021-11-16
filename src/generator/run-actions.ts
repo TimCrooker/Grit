@@ -6,7 +6,7 @@ import isBinaryPath from 'is-binary-path'
 import { getGlobPatterns } from '../utils/glob'
 import { logger } from '../logger'
 import { move } from '../utils/files'
-import { GeneratorConfig, Grit } from '../index'
+import { GeneratorConfig, Grit } from './index'
 
 export const runActions = async (
 	context: Grit,

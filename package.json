@@ -15,7 +15,7 @@
 	"scripts": {
 		"start": "yarn build && ts-node ./src/cli/cli.ts",
 		"dev": "ts-node ./src/cli/cli.ts",
-		"build": "rimraf dist && tsup src/index.ts --dts",
+		"build": "rimraf dist && tsc",
 		"test": "jest",
 		"lint": "eslint . --fix",
 		"prepublishOnly": "yarn build",

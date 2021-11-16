@@ -5,9 +5,9 @@ import { tmpdir } from 'os'
 import path from 'path'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
-import { getGitUser, GitUser } from './utils/git-user'
-import { defautGeneratorFile } from './generator/default-generator'
-import { handleError, GritError } from './error'
+import { getGitUser, GitUser } from '../utils/git-user'
+import { defautGeneratorFile } from './default-generator'
+import { handleError, GritError } from '../error'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -15,16 +15,16 @@ import {
 	NPM_CLIENT,
 	runNpmScript,
 	RunNpmScriptOptions,
-} from './utils/cmd'
-import { store } from './store'
-import { ensureGeneratorExists } from './generator/validateGenerator'
-import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
-import { logger, colors } from './logger'
-import { spinner } from './spinner'
-import { APP_NAME } from './config'
-import { pathExists, readFile } from './utils/files'
-import { GeneratorConfig, loadConfig } from './generator/generator-config'
-import { Answers } from './utils/prompt/answers'
+} from '../utils/cmd'
+import { store } from '../Store'
+import { ensureGeneratorExists } from './validateGenerator'
+import { ParsedGenerator, parseGenerator } from './parseGenerator'
+import { logger, colors } from '../logger'
+import { spinner } from '../spinner'
+import { APP_NAME } from '../config'
+import { pathExists, readFile } from '../utils/files'
+import { GeneratorConfig, loadConfig } from './generator-config'
+import { Answers } from './prompt/answers'
 
 export interface Options<T = { [k: string]: any }> {
 	/**
@@ -173,7 +173,7 @@ export class Grit {
 
 		// Run generator supplied prompts
 		if (config.prompts) {
-			const { runPrompts } = await import('./generator/run-prompts')
+			const { runPrompts } = await import('./run-prompts')
 
 			this._answers = await runPrompts(this, config)
 		} else {
@@ -184,7 +184,7 @@ export class Grit {
 
 		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import('./generator/run-actions')
+			const { runActions } = await import('./run-actions')
 
 			await runActions(this, config)
 		}
@@ -373,5 +373,5 @@ export class Grit {
 	}
 }
 
-export { runCLI } from './cli/cli'
+export { runCLI } from '../Cli/cli'
 export { GeneratorConfig, handleError, store }

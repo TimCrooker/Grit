@@ -1,8 +1,8 @@
 import JoyCon from 'joycon'
 import path from 'path'
 import { APP_NAME } from '../config'
-import { Grit } from '..'
-import { PromptType } from '../utils/prompt/prompt'
+import { Grit } from '.'
+import { PromptType } from './prompt/prompt'
 
 export interface AddAction {
 	type: 'add'

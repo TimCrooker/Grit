@@ -1,4 +1,4 @@
-import { Grit } from '../'
+import { Grit } from '../Generator'
 import pkg from '../../package.json'
 import { CLI, CLIOptions } from '../CLI_FRAMEWORK/cli'
 import { exit } from './routes/exit'

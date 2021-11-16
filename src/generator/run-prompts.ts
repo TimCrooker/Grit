@@ -1,7 +1,7 @@
 import resolveFrom from 'resolve-from'
-import { store } from '../store'
-import { prompt } from '../utils/prompt'
-import { GeneratorConfig, Grit } from '../'
+import { store } from '../Store'
+import { prompt } from './prompt'
+import { GeneratorConfig, Grit } from '.'
 import { logger } from '../logger'
 import { Answers } from 'inquirer'
 

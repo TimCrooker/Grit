@@ -1,9 +1,9 @@
-import { getNpmGeneratorName, getRepoGeneratorName } from '../../cli/utils'
+import { getNpmGeneratorName, getRepoGeneratorName } from '../../Cli/utils'
 import {
 	NpmGenerator,
 	RepoGenerator,
 	ParsedGenerator,
-} from '../../generator/parseGenerator'
+} from '../../Generator/parseGenerator'
 import { BaseStore, BaseStoreOptions } from '../baseStore'
 
 export type GroupedGenerators = Map<string, NpmGenerator | RepoGenerator>

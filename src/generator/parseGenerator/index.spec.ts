@@ -3,7 +3,7 @@ import {
 	inferGeneratorPrefix,
 	ParsedGenerator,
 	parseGenerator,
-} from './'
+} from '.'
 import { COMMAND_NAME } from '../../config'
 import os from 'os'
 
