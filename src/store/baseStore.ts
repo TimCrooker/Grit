@@ -1,10 +1,10 @@
-import { ROOT_CACHE_PATH } from '../config'
-import { logger } from '../logger'
 import { writeFileSync } from 'fs'
 import { readFileSync } from 'fs'
 import { mkdirSync } from 'fs'
 import dotProp from 'dot-prop'
 import path from 'path'
+import { ROOT_CACHE_PATH } from '@/config'
+import { logger } from '@/logger'
 
 export type StoreFileData<T = any> = Record<string, T>
 

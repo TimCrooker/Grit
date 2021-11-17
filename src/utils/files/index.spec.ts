@@ -1,5 +1,5 @@
 import path from 'path'
-import { pathExists } from './'
+import { pathExists } from '.'
 
 describe('File Utilities', () => {
 	it('Path should exist', async () => {

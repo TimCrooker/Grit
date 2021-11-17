@@ -1,10 +1,3 @@
-import { PACKAGES_CACHE_PATH } from '../../config'
-import { GritError } from '../../error'
-import { installPackages } from '../../utils/cmd'
-import { downloadRepoFromGenerator } from '../downloadRepo'
-import { pathExists, outputFile } from '../../utils/files'
-import { logger, colors } from '../../logger'
-import { spinner } from '../../spinner'
 import path from 'path'
 import {
 	RepoGenerator,
@@ -12,8 +5,15 @@ import {
 	NpmGenerator,
 	ParsedGenerator,
 } from '../parseGenerator'
+import { store } from '@/store'
+import { outputFile, pathExists } from '@/utils/files'
+import { GritError } from '@/error'
+import { downloadRepoFromGenerator } from '../downloadRepo'
+import { colors, logger } from '@/logger'
+import { PACKAGES_CACHE_PATH } from '@/config'
+import { spinner } from '@/spinner'
 import { hasConfig } from '../generator-config'
-import { store } from '..'
+import { installPackages } from '@/utils/cmd'
 
 /**
  * Ensure that a generator is availiable at the specified path.

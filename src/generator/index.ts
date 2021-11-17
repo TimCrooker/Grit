@@ -1,13 +1,7 @@
-import { exec } from 'child_process'
-import spawn from 'cross-spawn'
-import { glob } from 'majo'
-import { tmpdir } from 'os'
-import path from 'path'
-import { SetRequired } from 'type-fest'
-import { promisify } from 'util'
-import { getGitUser, GitUser } from '../utils/git-user'
-import { defautGeneratorFile } from './default-generator'
-import { handleError, GritError } from '../error'
+import { GritError } from '@/error'
+import { colors, logger } from '@/logger'
+import { spinner } from '@/spinner'
+import { store } from '@/store'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -15,16 +9,21 @@ import {
 	NPM_CLIENT,
 	runNpmScript,
 	RunNpmScriptOptions,
-} from '../utils/cmd'
-import { store } from '../Store'
-import { ensureGeneratorExists } from './validateGenerator'
-import { ParsedGenerator, parseGenerator } from './parseGenerator'
-import { logger, colors } from '../logger'
-import { spinner } from '../spinner'
-import { APP_NAME } from '../config'
-import { pathExists, readFile } from '../utils/files'
+} from '@/utils/cmd'
+import { pathExists, readFile } from '@/utils/files'
+import { getGitUser, GitUser } from '@/utils/git-user'
+import { exec } from 'child_process'
+import spawn from 'cross-spawn'
+import { glob } from 'majo'
+import { tmpdir } from 'os'
+import path from 'path'
+import { SetRequired } from 'type-fest'
+import { promisify } from 'util'
+import { defautGeneratorFile } from './default-generator'
 import { GeneratorConfig, loadConfig } from './generator-config'
+import { ParsedGenerator, parseGenerator } from './parseGenerator'
 import { Answers } from './prompt/answers'
+import { ensureGeneratorExists } from './validateGenerator'
 
 export interface Options<T = { [k: string]: any }> {
 	/**
@@ -117,10 +116,7 @@ export class Grit {
 
 		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
-			this.opts.outDir = path.join(
-				tmpdir(),
-				`${APP_NAME.toLowerCase()}-out/${Date.now()}/out`
-			)
+			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
 		if (typeof opts.generator === 'string') {
@@ -372,6 +368,3 @@ export class Grit {
 		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}
 }
-
-export { runCLI } from '../Cli/cli'
-export { GeneratorConfig, handleError, store }

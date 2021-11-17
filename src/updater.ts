@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import path from 'path'
 import updateNotifier, { Package, UpdateInfo } from 'update-notifier'
-import { ParsedGenerator } from './Generator/parseGenerator'
+import { ParsedGenerator } from './generator/parseGenerator'
 import { logger } from './logger'
 
 export function checkPkgForUpdates(pkg: Package): UpdateInfo | undefined {

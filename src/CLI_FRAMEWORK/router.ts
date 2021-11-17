@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { Logger } from '../logger'
+import { Logger } from './logger'
 import { CLI } from './cli'
 
 export type Route<RuntimeEnvInstance = any> = (

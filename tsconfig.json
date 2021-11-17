@@ -2,13 +2,13 @@
 	"compilerOptions": {
 		"target": "es2018",
 		"module": "commonjs",
-		"outDir": "dist",
+		"outDir": "./dist",
 		"sourceMap": true,
 		"declaration": true,
 		"resolveJsonModule": true,
 		"strict": true,
 		"esModuleInterop": true,
-		"skipLibCheck": false,
+		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": "./src",
 		"moduleResolution": "node",
@@ -16,8 +16,16 @@
 			"node",
 			"jest"
 		],
+		"paths": {
+			"@": [
+				"./"
+			],
+			"@/*": [
+				"./*"
+			],
+		},
 	},
-	"include": [
+		"include": [
 		"src/"
 	],
 	"exclude": [

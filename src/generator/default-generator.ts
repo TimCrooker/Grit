@@ -1,4 +1,4 @@
-import { GeneratorConfig } from './'
+import { GeneratorConfig } from './generator-config'
 
 export const defautGeneratorFile: GeneratorConfig = {
 	templateDir: '.',

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import { GritError } from '@/error'
+import { logger } from '@/logger'
+import { spinner } from '@/spinner'
 import { exec } from 'child_process'
 import spawn from 'cross-spawn'
 import logUpdate from 'log-update'
 import { promisify } from 'util'
-import { GritError } from '../../error'
-import { logger } from '../../logger'
-import { spinner } from '../../spinner'
 
 export type NPM_CLIENT = 'npm' | 'yarn' | 'pnpm'
 
@@ -87,10 +88,8 @@ export const installPackages: InstallPackagesFn = async ({
 			env: Object.assign(
 				{
 					FORCE_COLOR: true,
-					/* eslint-disable camelcase */
 					npm_config_color: 'always',
 					npm_config_progress: true,
-					/* eslint-enable camelcase */
 				},
 				process.env
 			),

@@ -1,5 +1,6 @@
-import { Grit, handleError, Options } from '../../Generator'
-import { logger } from '../../logger'
+import { handleError } from '@/error'
+import { Grit, Options } from '@/generator'
+import { logger } from '@/logger'
 import { GritRoute } from '../cli'
 
 export const generate: GritRoute = async (app, { args, options }) => {

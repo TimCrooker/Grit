@@ -1,11 +1,11 @@
+import { Grit } from '@/generator'
+import { NpmGenerator, RepoGenerator } from '@/generator/parseGenerator'
+import { colors } from '@/logger'
+import { store } from '@/store'
+import { checkGeneratorForUpdates } from '@/updater'
 import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
-import { Grit } from '../../Generator'
-import { NpmGenerator, RepoGenerator } from '../../Generator/parseGenerator'
-import { colors } from '../../logger'
-import { store } from '../../Store'
 import { GritRoute } from '../cli'
-import { checkGeneratorForUpdates } from '../../updater'
 
 export const list: GritRoute = async (app, { args, options }) => {
 	const defaultChoices = [

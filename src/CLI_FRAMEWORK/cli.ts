@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import inquirer, { Answers, QuestionCollection } from 'inquirer'
 import updateNotifier, { Package } from 'update-notifier'
-import { logger } from '../logger'
+import { logger } from './logger'
 import { commander } from './commander'
 import { Route, Router, RouterOptions } from './router'
 
