@@ -1,4 +1,4 @@
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 
 export const install: GritRoute = async (app, { args, options }) => {
 	const defaultChoices = [

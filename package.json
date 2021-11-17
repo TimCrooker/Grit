@@ -4,7 +4,7 @@
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": {
-		"grit": "cli.js"
+		"grit": "cli/index.js"
 	},
 	"types": "dist/index.d.ts",
 	"files": [
@@ -12,10 +12,9 @@
 		"!**/*.(test|spec).ts"
 	],
 	"scripts": {
-		"start": "yarn build && node ./dist/index.js",
+		"start": "yarn build && node ./dist/cli/index.js",
 		"build": "npm run clean && tsup src/cli/index.ts src/generator/index.ts --dts",
 		"clean": "rimraf ./dist",
-		"cli": "ts-node ./src/cli/cli.ts",
 		"test": "jest",
 		"lint": "eslint . --fix",
 		"prepublishOnly": "yarn build",

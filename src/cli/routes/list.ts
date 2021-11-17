@@ -5,7 +5,7 @@ import { store } from '@/store'
 import { checkGeneratorForUpdates } from '@/updater'
 import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 
 export const list: GritRoute = async (app, { args, options }) => {
 	const defaultChoices = [

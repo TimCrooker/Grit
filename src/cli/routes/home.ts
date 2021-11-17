@@ -1,9 +1,10 @@
+import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice } from '.'
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 
-/** 
+/**
  * This is the home route when users input just the `grit` keyword with no commands\
-*/
+ */
 export const home: GritRoute = async (app, { args, options }) => {
 	const defaultChoices = [
 		{
@@ -16,7 +17,7 @@ export const home: GritRoute = async (app, { args, options }) => {
 		},
 		HelpChoice,
 		ExitChoice,
-	]
+	] as Choice[]
 
 	const answers = await app.prompt([
 		{
@@ -26,5 +27,5 @@ export const home: GritRoute = async (app, { args, options }) => {
 			choices: defaultChoices,
 		},
 	])
-	return await app.navigate(answers.whatnex.value)
+	return await app.navigate(answers.whatNext)
 }

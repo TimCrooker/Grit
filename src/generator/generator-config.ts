@@ -1,5 +1,5 @@
 import JoyCon from 'joycon'
-import path from 'path'
+import pa from 'path'
 import { Grit } from '.'
 import { PromptType } from './prompt/prompt'
 
@@ -119,7 +119,7 @@ export const loadConfig = (
 ): Promise<{ path?: string; data?: GeneratorConfig }> => {
 	return joycon.load({
 		cwd,
-		stopDir: path.dirname(cwd),
+		stopDir: pa.dirname(cwd),
 	})
 }
 
@@ -128,7 +128,7 @@ export const hasConfig = (cwd: string): boolean => {
 	return Boolean(
 		joycon.resolve({
 			cwd,
-			stopDir: path.dirname(cwd),
+			stopDir: pa.dirname(cwd),
 		})
 	)
 }

@@ -1,6 +1,6 @@
-import { Grit } from '../generator'
-import pkg from '../../package.json'
-import { CLI, CLIOptions } from '../CLI_FRAMEWORK/cli'
+import { Grit } from '@/generator'
+import pkg from '@/../package.json'
+import { CLI, CLIOptions } from '@/CLI_FRAMEWORK/cli'
 import { exit } from './routes/exit'
 import { generate } from './routes/generate'
 import { help } from './routes/help'
@@ -64,6 +64,3 @@ export const runCLI = async (): Promise<void> => {
 
 	await cli.run()
 }
-
-// if running with ts-node this runs the cli so we dont have to recompile every time
-if (__filename.includes('src')) runCLI()

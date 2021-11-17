@@ -1,4 +1,4 @@
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 
 /**
  *  This route lets the user search for generators using npm search.

@@ -1,4 +1,4 @@
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 
 export const run: GritRoute = (app, { args, options }) => {}
 
