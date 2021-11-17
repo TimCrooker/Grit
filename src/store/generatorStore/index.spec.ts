@@ -1,6 +1,6 @@
-import { ParsedGenerator } from '../../generator/parseGenerator'
+import { ParsedGenerator } from '@/generator/parseGenerator'
 import path from 'path'
-import { GeneratorStore } from '.'
+import { GeneratorStore } from './'
 
 describe('Generator Store', () => {
 	const storePath = path.join(__dirname, 'fixtures')

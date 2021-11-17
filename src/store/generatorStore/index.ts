@@ -42,14 +42,14 @@ export class GeneratorStore extends BaseStore<ParsedGenerator> {
 		this.listify().forEach((generator) => {
 			if (generator.type === 'repo') {
 				const repoGenerator = generator as RepoGenerator
-				const repoGeneratorName = getRepoGeneratorName(repoGenerator)
+				const repoGeneratorName = 'temp'
 				if (!generatorsMap.has(repoGeneratorName)) {
 					generatorsMap.set(repoGeneratorName, repoGenerator)
 				}
 			}
 			if (generator.type === 'npm') {
 				const npmGenerator = generator as NpmGenerator
-				const npmGeneratorName = getNpmGeneratorName(npmGenerator)
+				const npmGeneratorName = 'temp'
 				if (!generatorsMap.has(npmGeneratorName)) {
 					generatorsMap.set(npmGeneratorName, npmGenerator)
 				}

@@ -9,19 +9,18 @@
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
-		"/cli.js",
 		"!**/*.(test|spec).ts"
 	],
 	"scripts": {
-		"start": "yarn build && ts-node ./src/cli/cli.ts",
-		"dev": "ts-node ./src/cli/cli.ts",
-		"build": "npm run clean && tsc && babel src --out-dir dist --extensions \".ts,.js,.json\" --source-maps inline",
+		"start": "yarn build && node ./dist/index.js",
+		"build": "npm run clean && tsup src/cli/index.ts src/generator/index.ts --dts",
 		"clean": "rimraf ./dist",
+		"cli": "ts-node ./src/cli/cli.ts",
 		"test": "jest",
 		"lint": "eslint . --fix",
 		"prepublishOnly": "yarn build",
-		"release": "dotenv release-it --ci",
-		"release:manual": "dotenv release-it --only-version"
+		"release": "dotenv release-it --only-version",
+		"release:ci": "dotenv release-it --ci"
 	},
 	"license": "MIT",
 	"engines": {
@@ -79,6 +78,7 @@
 		"@types/update-notifier": "^4.1.0",
 		"@typescript-eslint/eslint-plugin": "^2.33.0",
 		"@typescript-eslint/parser": "^2.33.0",
+		"alias-hq": "^5.2.1",
 		"axios": "^0.24.0",
 		"babel-jest": "^27.1.0",
 		"babel-plugin-module-resolver": "^4.1.0",
@@ -96,7 +96,6 @@
 		"prettier": "^2.3.2",
 		"release-it": "^14.11.6",
 		"rollup": "^2.34.0",
-		"ts-jest": "^26.0.0",
 		"ts-node": "^8.10.2",
 		"tsup": "^5.5.0",
 		"type-fest": "^2.5.2",
