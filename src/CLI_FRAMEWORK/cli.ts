@@ -38,6 +38,13 @@ export class CLI<RuntimeEnvInstance = any> {
 		// Configure CLI router
 		const routerOpts = { logger: this.logger } as RouterOptions
 		this.router = new Router(routerOpts)
+
+		// Add autocomplete prompts to inquirer
+		inquirer.registerPrompt(
+			'autocomplete',
+			// eslint-disable-next-line @typescript-eslint/no-var-requires
+			require('inquirer-autocomplete-prompt')
+		)
 	}
 
 	async run(): Promise<void> {

@@ -21,11 +21,16 @@ import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 import { defautGeneratorFile } from './default-generator'
 import { GeneratorConfig, loadConfig } from './generator-config'
-import { ParsedGenerator, parseGenerator } from './parseGenerator'
+import {
+	NpmGenerator,
+	ParsedGenerator,
+	parseGenerator,
+	RepoGenerator,
+} from './parseGenerator'
 import { Answers } from './prompt/answers'
-import { ensureGeneratorExists } from './validateGenerator'
+import { ensureGeneratorExists } from './ensureGenerator'
 
-export interface Options<T = { [k: string]: any }> {
+export interface GritOptions<T = Record<string, any>> {
 	/**
 	 * Name of directory to output to or relative path to it
 	 * Will be created if it does not alreadt exist.
@@ -51,13 +56,11 @@ export interface Options<T = { [k: string]: any }> {
 	/** generator string */
 	generator: string | ParsedGenerator
 	/** Update cached generator before running */
-	updateGenerator?: boolean
+	update?: boolean
 	/** Use `git clone` to download repo */
 	clone?: boolean
 	/** Use a custom npm registry */
 	registry?: string
-	/** Check for grit /generator updates */
-	updateCheck?: boolean
 	/**
 	 * Mock git info, prompts etc
 	 * Additionally, Set ENV variable NODE_ENV to test to enable this
@@ -78,7 +81,7 @@ const EMPTY_DATA = Symbol()
 export type Data = Record<string, any>
 
 export class Grit {
-	opts: SetRequired<Options, 'outDir' | 'logLevel'>
+	opts: SetRequired<GritOptions, 'outDir' | 'logLevel'>
 	spinner = spinner
 	colors = colors
 	logger = logger
@@ -90,7 +93,7 @@ export class Grit {
 
 	parsedGenerator: ParsedGenerator
 
-	constructor(opts: Options) {
+	constructor(opts: GritOptions) {
 		this.opts = {
 			...opts,
 			outDir: path.resolve(opts.outDir || '.'),
@@ -119,9 +122,15 @@ export class Grit {
 			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
+		// use directly passed parsed generator or parse generator string
 		if (typeof opts.generator === 'string') {
 			this.parsedGenerator = parseGenerator(this.opts.generator as string)
-		} else this.parsedGenerator = this.opts.generator as ParsedGenerator
+		} else {
+			const generator = this.opts.generator as NpmGenerator | RepoGenerator
+			// Tell the generator what version to update to if update is selected
+			if (this.opts.update) generator.version = 'latest'
+			this.parsedGenerator = generator
+		}
 	}
 
 	/**
@@ -129,35 +138,35 @@ export class Grit {
 	 *
 	 * Download it if not yet cached
 	 */
-	async getGeneratorConfig(
+	async getGenerator(
 		generator: ParsedGenerator = this.parsedGenerator
-	): Promise<{ generator: ParsedGenerator; config: GeneratorConfig }> {
+	): Promise<GeneratorConfig> {
 		await ensureGeneratorExists(generator, this.opts)
+
+		// Increment the run count of the generator
+		this.store.generators.set(
+			generator.hash + '.runCount',
+			store.generators.get(generator.hash + '.runCount') + 1 || 1
+		)
 
 		// load actual generator from generator path
 		logger.debug(`Loading generator from ${generator.path}`)
+
+		// load generator config file from generator path
 		const loadedConfig = await loadConfig(generator.path)
 		const config: GeneratorConfig =
 			loadedConfig.path && loadedConfig.data
 				? loadedConfig.data
 				: defautGeneratorFile
 
-		this.store.generators.add(generator)
-
-		return {
-			generator,
-			config,
-		}
+		return config
 	}
 
 	/**
 	 * Run the generator with the configured options
 	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
 	 */
-	async runGenerator(
-		generator: ParsedGenerator,
-		config: GeneratorConfig
-	): Promise<void> {
+	async runGenerator(config: GeneratorConfig): Promise<void> {
 		if (config.description) {
 			logger.status('green', 'Generator', config.description)
 		}
@@ -192,8 +201,8 @@ export class Grit {
 
 	/** Method to run when instantiated with a generator */
 	async run(): Promise<void> {
-		const { generator, config } = await this.getGeneratorConfig()
-		await this.runGenerator(generator, config)
+		const config = await this.getGenerator()
+		await this.runGenerator(config)
 	}
 
 	/** Generator Instance Properties */

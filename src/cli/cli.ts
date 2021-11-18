@@ -1,20 +1,17 @@
 import { Grit } from '@/generator'
 import pkg from '@/../package.json'
 import { CLI, CLIOptions } from '@/CLI_FRAMEWORK/cli'
-import { exit } from './routes/exit'
 import { generate } from './routes/generate'
-import { help } from './routes/help'
-import { home } from './routes/home'
-import { install } from './routes/install'
-import { list } from './routes'
+import { exit, find, help, home } from './routes'
 import { Route } from '../CLI_FRAMEWORK/router'
-import { find } from './routes/find'
 
 export type RuntimeEnv = Grit
 
 export type GritRoute = Route<RuntimeEnv>
 
 export const runCLI = async (): Promise<void> => {
+	// console.clear()
+
 	const cliOpts = {
 		pkg,
 		debug: true,
@@ -25,22 +22,18 @@ export const runCLI = async (): Promise<void> => {
 	cli
 		.addRoute('home', home)
 		.addRoute('generate', generate)
-		.addRoute('install', install)
 		.addRoute('help', help)
-		.addRoute('list', list)
 		.addRoute('exit', exit)
 		.addRoute('find', find)
+
+	cli.commander.name('grit').version(pkg.version)
 
 	/**
 	 * Command routes
 	 */
 
 	// List command for listing your generators
-	cli.commander
-		.name('grit')
-		.version(pkg.version)
-		.command('list')
-		.action(() => cli.navigate('list'))
+	cli.commander.command('find').action(() => cli.navigate('find'))
 
 	// Running a generator or using the helper
 	cli.commander

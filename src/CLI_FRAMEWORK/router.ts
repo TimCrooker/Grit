@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import { Logger } from './logger'
 import { CLI } from './cli'
+import { GritError } from '@/error'
 
 export type Route<RuntimeEnvInstance = any> = (
 	app: CLI<RuntimeEnvInstance>,
@@ -55,12 +56,12 @@ export class Router<RuntimeEnvInstance = any> {
 				await this.routes[route](context, args)
 			} catch (error) {
 				this.routeHistory.pop()
-				this.logger.error('Something went wrong in the route handler:', error)
-				this.goBack()
+				throw new GritError(
+					'Something went wrong in the route : ' + chalk.yellow(route)
+				)
 			}
 		} else {
 			this.logger.error(`No routes named:`, chalk.yellow(route))
-			await this.goBack()
 		}
 		return this
 	}

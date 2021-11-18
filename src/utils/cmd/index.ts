@@ -130,7 +130,7 @@ export const installPackages: InstallPackagesFn = async ({
 			if (code === 0) {
 				logUpdate.clear()
 				logUpdate.stderr.clear()
-				logger.success(`Installed ${packageName}`)
+				logger.debug(`Sucessfully installed`, packageName)
 				resolve({ code })
 			} else {
 				reject(new GritError(`Failed to install ${packageName} in ${cwd}`))
