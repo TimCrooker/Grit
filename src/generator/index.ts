@@ -1,13 +1,7 @@
-import { exec } from 'child_process'
-import spawn from 'cross-spawn'
-import { glob } from 'majo'
-import { tmpdir } from 'os'
-import path from 'path'
-import { SetRequired } from 'type-fest'
-import { promisify } from 'util'
-import { getGitUser, GitUser } from './utils/git-user'
-import { defautGeneratorFile } from './generator/default-generator'
-import { handleError, GritError } from './error'
+import { GritError } from '@/error'
+import { colors, logger } from '@/logger'
+import { spinner } from '@/spinner'
+import { store } from '@/store'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -15,19 +9,28 @@ import {
 	NPM_CLIENT,
 	runNpmScript,
 	RunNpmScriptOptions,
-} from './utils/cmd'
-import { store } from './store'
-import { ensureGeneratorExists } from './generator/validateGenerator'
-import { ParsedGenerator, parseGenerator } from './generator/parseGenerator'
-import { logger, colors } from './logger'
-import { spinner } from './spinner'
-import { APP_NAME } from './config'
-import { pathExists, readFile } from './utils/files'
-import { updater } from './cli/updater'
-import { GeneratorConfig, loadConfig } from './generator/generator-config'
-import { Answers } from './utils/prompt/answers'
+} from '@/utils/cmd'
+import { pathExists, readFile } from '@/utils/files'
+import { getGitUser, GitUser } from '@/utils/git-user'
+import { exec } from 'child_process'
+import spawn from 'cross-spawn'
+import { glob } from 'majo'
+import { tmpdir } from 'os'
+import path from 'path'
+import { SetRequired } from 'type-fest'
+import { promisify } from 'util'
+import { defautGeneratorFile } from './default-generator'
+import { GeneratorConfig, loadConfig } from './generator-config'
+import {
+	NpmGenerator,
+	ParsedGenerator,
+	parseGenerator,
+	RepoGenerator,
+} from './parseGenerator'
+import { Answers } from './prompt/answers'
+import { ensureGeneratorExists } from './ensureGenerator'
 
-export interface Options<T = { [k: string]: any }> {
+export interface GritOptions<T = Record<string, any>> {
 	/**
 	 * Name of directory to output to or relative path to it
 	 * Will be created if it does not alreadt exist.
@@ -51,15 +54,13 @@ export interface Options<T = { [k: string]: any }> {
 	/** Least amount of logging to the console */
 	quiet?: boolean
 	/** generator string */
-	generator: string
+	generator: string | ParsedGenerator
 	/** Update cached generator before running */
-	updateGenerator?: boolean
+	update?: boolean
 	/** Use `git clone` to download repo */
 	clone?: boolean
 	/** Use a custom npm registry */
 	registry?: string
-	/** Check for grit /generator updates */
-	updateCheck?: boolean
 	/**
 	 * Mock git info, prompts etc
 	 * Additionally, Set ENV variable NODE_ENV to test to enable this
@@ -80,11 +81,10 @@ const EMPTY_DATA = Symbol()
 export type Data = Record<string, any>
 
 export class Grit {
-	opts: SetRequired<Options, 'outDir' | 'logLevel'>
+	opts: SetRequired<GritOptions, 'outDir' | 'logLevel'>
 	spinner = spinner
 	colors = colors
 	logger = logger
-	updater = updater
 	store = store
 
 	/** Prompt answers provided by the user */
@@ -93,7 +93,7 @@ export class Grit {
 
 	parsedGenerator: ParsedGenerator
 
-	constructor(opts: Options) {
+	constructor(opts: GritOptions) {
 		this.opts = {
 			...opts,
 			outDir: path.resolve(opts.outDir || '.'),
@@ -117,21 +117,20 @@ export class Grit {
 			mock: this.opts.mock,
 		})
 
-		// configure Updater
-		updater.setOptions({
-			updateSelf: this.opts.updateCheck,
-			updateGenerator: this.opts.updateGenerator,
-		})
-
 		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
-			this.opts.outDir = path.join(
-				tmpdir(),
-				`${APP_NAME.toLowerCase()}-out/${Date.now()}/out`
-			)
+			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
-		this.parsedGenerator = parseGenerator(this.opts.generator)
+		// use directly passed parsed generator or parse generator string
+		if (typeof opts.generator === 'string') {
+			this.parsedGenerator = parseGenerator(this.opts.generator as string)
+		} else {
+			const generator = this.opts.generator as NpmGenerator | RepoGenerator
+			// Tell the generator what version to update to if update is selected
+			if (this.opts.update) generator.version = 'latest'
+			this.parsedGenerator = generator
+		}
 	}
 
 	/**
@@ -141,29 +140,33 @@ export class Grit {
 	 */
 	async getGenerator(
 		generator: ParsedGenerator = this.parsedGenerator
-	): Promise<{ generator: ParsedGenerator; config: GeneratorConfig }> {
+	): Promise<GeneratorConfig> {
 		await ensureGeneratorExists(generator, this.opts)
+
+		// Increment the run count of the generator
+		this.store.generators.set(
+			generator.hash + '.runCount',
+			store.generators.get(generator.hash + '.runCount') + 1 || 1
+		)
 
 		// load actual generator from generator path
 		logger.debug(`Loading generator from ${generator.path}`)
+
+		// load generator config file from generator path
 		const loadedConfig = await loadConfig(generator.path)
 		const config: GeneratorConfig =
 			loadedConfig.path && loadedConfig.data
 				? loadedConfig.data
 				: defautGeneratorFile
 
-		this.store.generators.add(generator)
-
-		return {
-			generator,
-			config,
-		}
+		return config
 	}
 
-	async runGenerator(
-		generator: ParsedGenerator,
-		config: GeneratorConfig
-	): Promise<void> {
+	/**
+	 * Run the generator with the configured options
+	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
+	 */
+	async runGenerator(config: GeneratorConfig): Promise<void> {
 		if (config.description) {
 			logger.status('green', 'Generator', config.description)
 		}
@@ -175,7 +178,7 @@ export class Grit {
 
 		// Run generator supplied prompts
 		if (config.prompts) {
-			const { runPrompts } = await import('./generator/run-prompts')
+			const { runPrompts } = await import('./run-prompts')
 
 			this._answers = await runPrompts(this, config)
 		} else {
@@ -184,8 +187,9 @@ export class Grit {
 
 		this._data = config.data ? config.data.call(this, this) : {}
 
+		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import('./generator/run-actions')
+			const { runActions } = await import('./run-actions')
 
 			await runActions(this, config)
 		}
@@ -195,9 +199,10 @@ export class Grit {
 		}
 	}
 
+	/** Method to run when instantiated with a generator */
 	async run(): Promise<void> {
-		const { generator, config } = await this.getGenerator()
-		await this.runGenerator(generator, config)
+		const config = await this.getGenerator()
+		await this.runGenerator(config)
 	}
 
 	/** Generator Instance Properties */
@@ -334,7 +339,7 @@ export class Grit {
 
 	/** Run any npm script from package.json of the output directory */
 	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
-		if (this.opts.debug){
+		if (this.opts.debug) {
 			logger.debug(`skipping run script`)
 			return
 		}
@@ -372,6 +377,3 @@ export class Grit {
 		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}
 }
-
-export { runCLI } from './cli/cli'
-export { GeneratorConfig, handleError, store }

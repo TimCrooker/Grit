@@ -1,7 +1,8 @@
 node_modules
 *.log
-dist
+/dist
 .DS_Store
 out/
 docs/typedoc/
 .env
+/wild

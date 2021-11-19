@@ -1,16 +1,22 @@
 import chalk from 'chalk'
-import { Logger } from '../logger'
+import { Logger } from './logger'
 import { CLI } from './cli'
+import { GritError } from '@/error'
 
-export type Route<RuntimeEnvInstance = any> =
-	| ((
-			app: CLI<RuntimeEnvInstance>,
-			input: { args: any[]; options: { [key: string]: any } }
-	  ) => void)
-	| ((
-			app: CLI<RuntimeEnvInstance>,
-			input: { args: any[]; options: { [key: string]: any } }
-	  ) => Promise<void>)
+export const BackChoice = {
+	name: 'Go Back',
+	value: 'back',
+}
+
+export type Route<RuntimeEnvInstance = any> = (
+	app: CLI<RuntimeEnvInstance>,
+	input: {
+		/** args passed from the initial command line */
+		args: any[]
+		/** options passed from the initial command line */
+		options: { [key: string]: any }
+	}
+) => void | Promise<void>
 
 type Routes<RuntimeEnvInstance = any> = {
 	[k: string]: Route<RuntimeEnvInstance>
@@ -48,6 +54,8 @@ export class Router<RuntimeEnvInstance = any> {
 	async navigate(route: string, args: any, context: CLI): Promise<this> {
 		this.logger.debug('Navigating to route:', chalk.yellow(route))
 
+		if (route === 'back') await this.goBack()
+
 		if (typeof this.routes[route] === 'function') {
 			//store the call to routeHistory
 			this.saveNavigateCall({ route, args, context })
@@ -55,12 +63,12 @@ export class Router<RuntimeEnvInstance = any> {
 				await this.routes[route](context, args)
 			} catch (error) {
 				this.routeHistory.pop()
-				this.logger.error('Something went wrong in the route handler:', error)
-				this.goBack()
+				throw new GritError(
+					'Something went wrong in the route : ' + chalk.yellow(route)
+				)
 			}
 		} else {
 			this.logger.error(`No routes named:`, chalk.yellow(route))
-			await this.goBack()
 		}
 		return this
 	}
@@ -74,6 +82,10 @@ export class Router<RuntimeEnvInstance = any> {
 		if (lastCall !== undefined) {
 			const { route, args, context } = lastCall
 			await this.navigate(route, args, context)
+		} else {
+			this.logger.error(
+				'No route history to go back to. You are at the first route.'
+			)
 		}
 	}
 

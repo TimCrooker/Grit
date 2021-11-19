@@ -1,5 +1,5 @@
 import path from 'path'
-import { AnswerStore } from '.'
+import { AnswerStore } from './'
 import { Answers } from 'inquirer'
 
 describe('Answer Store', () => {

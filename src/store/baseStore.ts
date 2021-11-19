@@ -1,12 +1,12 @@
-import { ROOT_CACHE_PATH } from '../config'
-import { logger } from '../logger'
 import { writeFileSync } from 'fs'
 import { readFileSync } from 'fs'
 import { mkdirSync } from 'fs'
 import dotProp from 'dot-prop'
 import path from 'path'
+import { ROOT_CACHE_PATH } from '@/config'
+import { logger } from '@/logger'
 
-export type StoreFileData<T = any> = { [key: string]: T }
+export type StoreFileData<T = any> = Record<string, T>
 
 export interface BaseStoreOptions {
 	storePath?: string
@@ -57,9 +57,9 @@ export class BaseStore<T = any> {
 	 * Set an item into the store
 	 *
 	 * @param overwrite (defaults to true) if set to false, items in the store
-	 * are protected from being overwritten
+	 * are protected from being written to if they already exist
 	 */
-	set(key: string, value: T, overwrite = true): this {
+	set(key: string, value: T | any, overwrite = true): this {
 		const alreadyCached = this.data[key]
 		if (alreadyCached && !overwrite) {
 			logger.debug('Not overwriting item in cache:', {
@@ -67,8 +67,15 @@ export class BaseStore<T = any> {
 			})
 			return this
 		}
+		logger.debug(
+			'Setting',
+			key,
+			'to',
+			value,
+			'in',
+			path.basename(this.storeFilePath)
+		)
 		dotProp.set(this.data, key, value)
-		logger.debug(`Updating ${this.storeFilePath}`)
 		writeFileSync(this.storeFilePath, JSON.stringify(this.data), 'utf8')
 		return this
 	}
@@ -76,8 +83,13 @@ export class BaseStore<T = any> {
 	/**
 	 * Get item from the store whose key matches the provided one
 	 */
-	get(key: string): T | undefined {
+	get(key: string): T | undefined | any {
 		return dotProp.get(this.data, key)
+	}
+
+	/** Return an array of the values in the store for iteration */
+	listify(): T[] {
+		return Object.values(this.data)
 	}
 
 	/**
@@ -91,5 +103,9 @@ export class BaseStore<T = any> {
 			.map(([, value]) => {
 				return value
 			})
+	}
+
+	get isEmpty(): boolean {
+		return this.listify().length === 0
 	}
 }

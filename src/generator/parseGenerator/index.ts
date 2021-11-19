@@ -6,34 +6,33 @@ import {
 	PACKAGES_CACHE_PATH,
 	REPOS_CACHE_PATH,
 	isLocalPath,
-} from '../../config'
+} from '@/config'
 
-export interface LocalGenerator {
-	type: 'local'
+interface Basegenerator {
+	type: 'local' | 'npm' | 'repo'
 	path: string
 	hash: string
 	subGenerator?: string
+	runCount?: number
 }
 
-export interface NpmGenerator {
+export interface LocalGenerator extends Basegenerator {
+	type: 'local'
+}
+
+export interface NpmGenerator extends Basegenerator {
 	type: 'npm'
 	name: string
-	version: string
 	slug: string
-	subGenerator?: string
-	hash: string
-	path: string
+	version: string
 }
 
-export interface RepoGenerator {
+export interface RepoGenerator extends Basegenerator {
 	type: 'repo'
 	prefix: GeneratorPrefix
 	user: string
 	repo: string
 	version: string
-	subGenerator?: string
-	hash: string
-	path: string
 }
 
 export type ParsedGenerator = LocalGenerator | NpmGenerator | RepoGenerator
@@ -99,10 +98,13 @@ function HandleRepoGenerator(
 ): RepoGenerator {
 	const PROTOCOL_RE = /^(http(s?):\/\/)(.+).com?(\/)?/
 
+	// remove protocol `http://` or `https://` from generator
 	generator = generator.replace(PROTOCOL_RE, ``)
 
+	// remove .git from the end of generator if its a git repository
 	generator = generator.replace(/(\.git)/, ``)
 
+	// extract details from generator
 	const [, user, repo, version = 'master', subGenerator] =
 		/([^/]+)\/([^#:]+)(?:#(.+))?(?::(.+))?$/.exec(generator) || []
 	const hash = sum({
@@ -141,18 +143,20 @@ export function parseGenerator(generator: string): ParsedGenerator {
 		return HandleLocalGenerator(generator)
 	}
 
-	generator = inferGeneratorPrefix(generator)
+	// Append prefix to the generator string
+	const prefixedGenerator = inferGeneratorPrefix(generator)
 
-	// Get generator type, e.g. `npm` or `github`
-	const prefix: GeneratorPrefix = getGeneratorPrefix(generator)
+	// Extract prefix from the generator string
+	const prefix: GeneratorPrefix = getGeneratorPrefix(prefixedGenerator)
+
 	// Remove prefix from generator to process
-	generator = generator.replace(GENERATOR_PREFIX_RE, '')
+	const noPrefixGenerator = prefixedGenerator.replace(GENERATOR_PREFIX_RE, '')
 
 	// Generator is an npm package
 	if (prefix === 'npm') {
-		return HandleNpmGenerator(generator)
+		return HandleNpmGenerator(noPrefixGenerator)
 	}
 
 	// Generator is a repo
-	return HandleRepoGenerator(generator, prefix)
+	return HandleRepoGenerator(noPrefixGenerator, prefix)
 }
