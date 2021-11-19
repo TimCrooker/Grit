@@ -1,4 +1,4 @@
-import { GritError } from '@/error'
+import { GritError, handleError } from '@/error'
 import { colors, logger } from '@/logger'
 import { spinner } from '@/spinner'
 import { store } from '@/store'
@@ -29,6 +29,7 @@ import {
 } from './parseGenerator'
 import { Answers } from './prompt/answers'
 import { ensureGeneratorExists } from './ensureGenerator'
+import { runCLI } from '@/cli/cli'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**

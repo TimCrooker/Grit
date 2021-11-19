@@ -1,10 +1,10 @@
 import { BackChoice } from '@/CLI_FRAMEWORK/router'
 import { handleError } from '@/error'
-import { Grit } from '@/generator'
+import { Grit } from '@/generator/index'
 import { store } from '@/store'
 import axios from 'axios'
 import chalk from 'chalk'
-import { ExitChoice, HelpChoice } from '.'
+import { ExitChoice, HelpChoice, HomeChoice } from '.'
 import { GritRoute } from '../cli'
 
 /**
@@ -41,6 +41,7 @@ export const find: GritRoute = async (app, { args, options }) => {
 			new app.inquirer.Separator(),
 			{ name: 'Refresh list', value: 'find' },
 			BackChoice,
+			HomeChoice,
 			HelpChoice,
 			ExitChoice,
 		]
@@ -58,6 +59,7 @@ export const find: GritRoute = async (app, { args, options }) => {
 		if (
 			answer === 'find' ||
 			answer === 'back' ||
+			answer === 'home' ||
 			answer === 'help' ||
 			answer === 'exit'
 		) {

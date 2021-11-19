@@ -1,6 +1,6 @@
 import { DOCS_URL, GITHUB_URL } from '@/config'
 import Choice from 'inquirer/lib/objects/choice'
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 import open from 'open'
 import { ExitChoice, HomeChoice } from '.'
 import { BackChoice } from '@/CLI_FRAMEWORK/router'

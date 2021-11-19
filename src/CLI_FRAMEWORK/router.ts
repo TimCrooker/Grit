@@ -54,7 +54,10 @@ export class Router<RuntimeEnvInstance = any> {
 	async navigate(route: string, args: any, context: CLI): Promise<this> {
 		this.logger.debug('Navigating to route:', chalk.yellow(route))
 
-		if (route === 'back') await this.goBack()
+		if (route === 'back') {
+			await this.goBack()
+			return this
+		}
 
 		if (typeof this.routes[route] === 'function') {
 			//store the call to routeHistory
@@ -78,6 +81,7 @@ export class Router<RuntimeEnvInstance = any> {
 	}
 
 	async goBack(): Promise<void> {
+		this.routeHistory.pop()
 		const lastCall = this.routeHistory.pop()
 		if (lastCall !== undefined) {
 			const { route, args, context } = lastCall

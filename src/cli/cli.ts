@@ -4,14 +4,15 @@ import { generate } from './routes/generate'
 import { exit, find, help, home } from './routes'
 import { Route } from '../CLI_FRAMEWORK/router'
 import { checkPkgForUpdates } from './utils/updater'
-import { Grit } from '@/generator'
+import { Grit } from '@/generator/index'
 
 export type RuntimeEnv = Grit
 
 export type GritRoute = Route<RuntimeEnv>
 
 export const runCLI = async (): Promise<void> => {
-	const debugMode = true
+	const debugMode = process.env.NODE_ENV === 'development'
+
 	const cliOpts = {
 		pkg,
 		debug: debugMode,

@@ -1,11 +1,11 @@
 import { UserFirstName } from '@/config'
-import { Grit, GritOptions } from '@/generator'
+import { Grit, GritOptions } from '@/generator/index'
 import { store } from '@/store'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice, FindChoice } from '.'
-import { GritRoute } from '../cli'
+import { GritRoute } from '..'
 import { generatorChoiceList } from '../utils/generator'
 import { getWelcomeMessage } from '../utils/welcome'
 
