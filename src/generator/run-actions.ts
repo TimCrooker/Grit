@@ -3,10 +3,11 @@ import matcher from 'micromatch'
 import { glob, majo, remove } from 'majo'
 import ejs from 'ejs'
 import isBinaryPath from 'is-binary-path'
-import { getGlobPatterns } from '../utils/glob'
-import { logger } from '../logger'
-import { move } from '../utils/files'
-import { GeneratorConfig, Grit } from '../index'
+import { GeneratorConfig } from './generator-config'
+import { logger } from '@/logger'
+import { move } from '@/utils/files'
+import { getGlobPatterns } from '@/utils/glob'
+import { Grit } from '.'
 
 export const runActions = async (
 	context: Grit,
