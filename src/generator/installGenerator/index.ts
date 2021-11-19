@@ -6,9 +6,9 @@ import { store } from '@/store'
 import { installPackages } from '@/utils/cmd'
 import { outputFile, pathExists } from '@/utils/files'
 import path from 'path'
-import { downloadRepoFromGenerator } from '../downloadRepo'
-import { hasConfig } from '../generator-config'
-import { NpmGenerator, RepoGenerator } from '../parseGenerator'
+import { downloadRepoFromGenerator } from './downloadRepo'
+import { NpmGenerator, ParsedGenerator, RepoGenerator } from '../parseGenerator'
+import { hasConfig } from '../generatorConfig'
 
 /** Install an NPM generator to the grit store */
 export const installNpmGenerator = async (
@@ -83,4 +83,15 @@ export const installRepoGenerator = async (
 
 	// in the store, add the generator
 	store.generators.add(generator)
+}
+
+/** Install a generator to the grit store */
+export const installGenerator = async (
+	generator: ParsedGenerator
+): Promise<void> => {
+	if (generator.type === 'npm') {
+		return await installNpmGenerator(generator as NpmGenerator)
+	} else if (generator.type === 'repo') {
+		return await installRepoGenerator(generator as RepoGenerator)
+	}
 }

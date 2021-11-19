@@ -14,22 +14,23 @@ import { pathExists, readFile } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
 import { exec } from 'child_process'
 import spawn from 'cross-spawn'
+import { Answers } from 'inquirer'
 import { glob } from 'majo'
 import { tmpdir } from 'os'
 import path from 'path'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
-import { defautGeneratorFile } from './default-generator'
-import { GeneratorConfig, loadConfig } from './generator-config'
+
+import { CreateAction } from './generator/actions/createAction'
+import { ensureGeneratorExists } from './generator/ensureGenerator'
+import { GeneratorConfig, loadConfig } from './generator/generatorConfig'
+import { defautGeneratorFile } from './generator/generatorConfig/default-generator'
 import {
-	NpmGenerator,
 	ParsedGenerator,
 	parseGenerator,
+	NpmGenerator,
 	RepoGenerator,
-} from './parseGenerator'
-import { Answers } from './prompt/answers'
-import { ensureGeneratorExists } from './ensureGenerator'
-import { runCLI } from '@/cli/cli'
+} from './generator/parseGenerator'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -83,10 +84,16 @@ export type Data = Record<string, any>
 
 export class Grit {
 	opts: SetRequired<GritOptions, 'outDir' | 'logLevel'>
+	/** Use a console spinner to make asyncronous calls more user friendly */
 	spinner = spinner
+	/** Colorize your console output */
 	colors = colors
-	logger = logger
+	/** Log to the console with Grit */
+	log = logger
+	/** Access Grit local storage */
 	store = store
+	/** Create actions more safely */
+	createAction = CreateAction
 
 	/** Prompt answers provided by the user */
 	private _answers: Answers | symbol = EMPTY_ANSWERS
@@ -179,7 +186,7 @@ export class Grit {
 
 		// Run generator supplied prompts
 		if (config.prompts) {
-			const { runPrompts } = await import('./run-prompts')
+			const { runPrompts } = await import('./generator/prompts/runPrompts')
 
 			this._answers = await runPrompts(this, config)
 		} else {
@@ -190,7 +197,7 @@ export class Grit {
 
 		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import('./run-actions')
+			const { runActions } = await import('./generator/actions/runActions')
 
 			await runActions(this, config)
 		}
@@ -204,6 +211,48 @@ export class Grit {
 	async run(): Promise<void> {
 		const config = await this.getGenerator()
 		await this.runGenerator(config)
+	}
+
+	/**Hot Reloading */
+
+	/** Watch plugin directories for changes */
+	private async watchPlugins(): Promise<void> {
+		// this.logger.info('Watching files in for changes')
+		// const pluginDirectories = this.selectedPluginsPaths
+		// // add the template directory to the list
+		// pluginDirectories.push(path.resolve(this.sourcePath, 'template'))
+		// // add the prompt.js file to the list
+		// // pluginDirectories.push(path.resolve(this.sourcePath, 'prompt.js'))
+		// const event = new EventEmitter()
+		// // event triggered by file changes in plugins
+		// event.on('Rebuild', async (pluginPath, filename) => {
+		// 	await this.rerunGenerator(path.basename(pluginPath), filename).catch(
+		// 		(err: Error) => {
+		// 			logger.error('Rebuild encountered the following error', err)
+		// 			// process.exit(1)
+		// 		}
+		// 	)
+		// 	logger.info('Watching for changes')
+		// })
+		// begin watching plugin pack directories for changes
+		// await watchDirectories(pluginDirectories, true, event)
+	}
+
+	/** Rebuild project */
+	async rerunGenerator(pluginName: string, filename: string): Promise<void> {
+		// logger.info('Changes detected now rebuilding')
+		// // update generator options with previous run's answers
+		// this.opts = {
+		// 	...this.opts,
+		// 	answers: { ...this.answers },
+		// }
+		// // run rebuild in quiet mode
+		// this.grit.logger.options.logLevel = 1
+		// // run the rebuild
+		// await this.grit.run()
+		// !this.debug &&
+		// 	['package.json', '_package.json'].includes(filename) &&
+		// 	(await this.installPackages())
 	}
 
 	/** Generator Instance Properties */
@@ -378,3 +427,6 @@ export class Grit {
 		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}
 }
+
+export { runCLI } from '@/cli/cli'
+export { GeneratorConfig, handleError, store }

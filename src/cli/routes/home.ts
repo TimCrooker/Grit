@@ -1,13 +1,13 @@
 import { UserFirstName } from '@/config'
-import { Grit, GritOptions } from '@/generator/index'
+import { Grit, GritOptions } from '@'
 import { store } from '@/store'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice, FindChoice } from '.'
-import { GritRoute } from '..'
 import { generatorChoiceList } from '../utils/generator'
 import { getWelcomeMessage } from '../utils/welcome'
+import { GritRoute } from '../cli'
 
 /**
  * This is the home route when users input just the `grit` keyword with no commands\

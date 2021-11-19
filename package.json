@@ -2,11 +2,11 @@
 	"name": "grit-cli",
 	"version": "0.2.8",
 	"description": "Simple and flexible scaffolding",
-	"main": "dist/generator/index.js",
+	"main": "dist/index.js",
 	"bin": {
 		"grit": "dist/cli/index.js"
 	},
-	"types": "dist/generator/index.d.ts",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
 		"/cli.js",
@@ -16,7 +16,7 @@
 		"start": "npm run build && npm run cli",
 		"build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
 		"cli": "node ./dist/cli/index.js",
-		"build": "npm run clean && tsup src/cli/index.ts src/generator/index.ts --dts",
+		"build": "npm run clean && tsup src/cli/index.ts src/index.ts --dts",
 		"clean": "rimraf ./dist",
 		"test": "jest",
 		"lint": "eslint . --fix",

@@ -1,7 +1,7 @@
 import path from 'path'
 import { PromptType } from './prompt'
-import { prompt } from './'
-import { Grit } from '..'
+import { prompt } from './prompt'
+import { Grit } from '@/index'
 
 const generator = path.join(__dirname, 'fixtures')
 

@@ -1,6 +1,6 @@
 import { BackChoice } from '@/CLI_FRAMEWORK/router'
 import { handleError } from '@/error'
-import { Grit } from '@/generator/index'
+import { Grit } from '@'
 import { store } from '@/store'
 import axios from 'axios'
 import chalk from 'chalk'
@@ -12,7 +12,7 @@ import { GritRoute } from '../cli'
  *
  *  eventuall make this searchable
  */
-export const find: GritRoute = async (app, { args, options }) => {
+export const find: GritRoute = async (app, { options }) => {
 	// get the generators from npm (packages that start with `grit-`)
 	try {
 		// Get a list of installed npm generators from the store

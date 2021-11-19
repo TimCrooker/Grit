@@ -1,68 +1,10 @@
+import { Grit } from '@/index'
 import JoyCon from 'joycon'
 import pa from 'path'
-import { Grit } from '.'
-import { PromptType } from './prompt/prompt'
+import { Action } from '../actions'
+import { PromptType } from '../prompts/prompt'
 
-export interface AddAction {
-	type: 'add'
-	templateDir?: string
-	files: string[] | string
-	filters?: {
-		[k: string]: string | boolean | null | undefined
-	}
-	/** Transform the template with ejs */
-	transform?: boolean
-	/**
-	 * Only transform files matching given minimatch patterns
-	 */
-	transformInclude?: string[]
-	/**
-	 * Don't transform files matching given minimatch patterns
-	 */
-	transformExclude?: string
-	/**
-	 * Custom data to use in template transformation
-	 */
-	data?: DataFunction | object
-}
-
-type DataFunction = (this: Grit, context: Grit) => object
-
-export interface MoveAction {
-	type: 'move'
-	patterns: {
-		[k: string]: string
-	}
-}
-
-export interface CopyAction {
-	type: 'copy'
-	patterns: {
-		[k: string]: string
-	}
-}
-
-export interface ModifyAction {
-	/** Identify this action as the modify type */
-	type: 'modify'
-	/** Glob patterns to identify items inside of the project directory */
-	files: string | string[]
-	/**  */
-	handler: (data: any, filepath: string) => any
-}
-
-export interface RemoveAction {
-	type: 'remove'
-	files: string | string[] | { [k: string]: string | boolean }
-	when: boolean | string
-}
-
-export type Action =
-	| AddAction
-	| MoveAction
-	| CopyAction
-	| ModifyAction
-	| RemoveAction
+export type DataFunction = (this: Grit, context: Grit) => object
 
 export interface GeneratorConfig {
 	/**
@@ -109,6 +51,7 @@ export interface GeneratorConfig {
 	 */
 	completed?: (this: Grit, ctx: Grit) => Promise<void> | void
 }
+
 const joycon = new JoyCon({
 	files: ['generator.js', 'generator.json', `gritfile.js`, `gritfile.json`],
 })

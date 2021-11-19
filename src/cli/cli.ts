@@ -4,7 +4,7 @@ import { generate } from './routes/generate'
 import { exit, find, help, home } from './routes'
 import { Route } from '../CLI_FRAMEWORK/router'
 import { checkPkgForUpdates } from './utils/updater'
-import { Grit } from '@/generator/index'
+import { Grit } from '@/index'
 
 export type RuntimeEnv = Grit
 

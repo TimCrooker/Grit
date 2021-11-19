@@ -13,7 +13,7 @@ export interface BaseStoreOptions {
 	storeFileName?: string
 }
 
-export class BaseStore<T = any> {
+export abstract class BaseStore<T = any> {
 	/** contents of the store file */
 	data: StoreFileData<T>
 	/** Path to the store directory */

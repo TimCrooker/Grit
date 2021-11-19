@@ -78,7 +78,6 @@ If you want to help out and/or support development of `Grit`:
 - Submit a pull request on [GitHub](https://github.com/TimCrooker/Grit/pulls)
 - Write interesting articles about project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or personal blog.
 
-
 [awesome-grit](https://github.com/TimCrooker/awesome-grit)
 
 ## License

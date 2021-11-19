@@ -1,9 +1,9 @@
-import { NpmGenerator, RepoGenerator } from '@/generator/parseGenerator'
 import { colors, logger } from '@/logger'
 import { store } from '@/store'
 import { StoreGenerator } from '@/store/generatorStore'
 import { checkGeneratorForUpdates } from '@/cli/utils/updater'
 import { spinner } from '@/spinner'
+import { RepoGenerator, NpmGenerator } from '@/generator/parseGenerator'
 
 export function getRepoGeneratorName(generator: RepoGenerator): string {
 	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${
