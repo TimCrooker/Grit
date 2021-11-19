@@ -23,6 +23,7 @@ export class CLI<RuntimeEnvInstance = any> {
 	commander = commander
 	inquirer = inquirer
 	spinner = spinner
+	chalk = chalk
 
 	constructor(opts: CLIOptions) {
 		this.opts = {

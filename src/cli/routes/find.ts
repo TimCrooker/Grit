@@ -66,8 +66,20 @@ export const find: GritRoute = async (app, { args, options }) => {
 			return await app.navigate(answer)
 		}
 
+		// verify output directory
+		const { outputDir } = await app.prompt([
+			{
+				type: 'input',
+				name: 'outputDir',
+				message: `Where would you like to generate the files? ${app.chalk.gray(
+					'leave blank to use current working directory'
+				)}`,
+				default: './',
+			},
+		])
+
 		// Install and run the selected generator
-		await new Grit({ generator: answer, ...options }).run()
+		await new Grit({ generator: answer, ...options, outDir: outputDir }).run()
 
 		// Go home after running the generator
 		return await app.navigate('home')
