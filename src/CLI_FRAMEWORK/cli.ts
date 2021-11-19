@@ -8,8 +8,8 @@ import { Route, Router, RouterOptions } from './router'
 export interface CLIOptions<RuntimeEnvInstance = any> {
 	pkg: Package
 	debug?: boolean
-	/** renders cli output  */
-	// testMode?: boolean
+	/** renders prompts to  */
+	mock?: boolean
 	env?: RuntimeEnvInstance
 }
 
@@ -26,7 +26,7 @@ export class CLI<RuntimeEnvInstance = any> {
 		this.opts = {
 			...opts,
 			debug: opts.debug || false,
-			// testMode: opts.testMode || false,
+			mock: opts.mock || false,
 		}
 
 		// Set the runtime enviroment
@@ -80,12 +80,17 @@ export class CLI<RuntimeEnvInstance = any> {
 	// Navigate to a route
 	async navigate(routeName: string): Promise<void> {
 		console.clear()
+
 		// get options from commander
 		const options = this.commander.opts()
 
 		const args = this.commander.args
 
 		await this.router.navigate(routeName, { args: args, options }, this)
+	}
+
+	async goBack(): Promise<void> {
+		this.router.goBack()
 	}
 
 	async prompt(

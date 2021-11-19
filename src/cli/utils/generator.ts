@@ -1,10 +1,9 @@
-import { APP_NAME } from '@/config'
 import { NpmGenerator, RepoGenerator } from '@/generator/parseGenerator'
-import { colors } from '@/logger'
+import { colors, logger } from '@/logger'
 import { store } from '@/store'
 import { StoreGenerator } from '@/store/generatorStore'
 import { checkGeneratorForUpdates } from '@/cli/utils/updater'
-import { logger } from '@/CLI_FRAMEWORK/logger'
+import { spinner } from '@/spinner'
 
 export function getRepoGeneratorName(generator: RepoGenerator): string {
 	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${
@@ -29,9 +28,11 @@ interface GeneratorChoice {
 type GeneratorList = GeneratorChoice[]
 
 export const generatorChoiceList = async (): Promise<GeneratorList> => {
+	spinner.start('Loading your generators')
 	const generators: GeneratorList = []
 	for (const [name, generator] of store.generators.generatorNameList) {
 		const updateInfo = await checkGeneratorForUpdates(generator)
+		logger.debug('Check for updates: ' + colors.green(name))
 		if (updateInfo) {
 			generators.push({
 				name: `${name} ${colors.yellow('*Update Available*')} ${
@@ -49,6 +50,7 @@ export const generatorChoiceList = async (): Promise<GeneratorList> => {
 			})
 		}
 	}
+	spinner.stop()
 	return generators.sort(
 		(a, b) => b.value.generator.runCount - a.value.generator.runCount
 	)

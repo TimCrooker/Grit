@@ -3,6 +3,11 @@ import { Logger } from './logger'
 import { CLI } from './cli'
 import { GritError } from '@/error'
 
+export const BackChoice = {
+	name: 'Go Back',
+	value: 'back',
+}
+
 export type Route<RuntimeEnvInstance = any> = (
 	app: CLI<RuntimeEnvInstance>,
 	input: {
@@ -49,6 +54,8 @@ export class Router<RuntimeEnvInstance = any> {
 	async navigate(route: string, args: any, context: CLI): Promise<this> {
 		this.logger.debug('Navigating to route:', chalk.yellow(route))
 
+		if (route === 'back') await this.goBack()
+
 		if (typeof this.routes[route] === 'function') {
 			//store the call to routeHistory
 			this.saveNavigateCall({ route, args, context })
@@ -75,6 +82,10 @@ export class Router<RuntimeEnvInstance = any> {
 		if (lastCall !== undefined) {
 			const { route, args, context } = lastCall
 			await this.navigate(route, args, context)
+		} else {
+			this.logger.error(
+				'No route history to go back to. You are at the first route.'
+			)
 		}
 	}
 

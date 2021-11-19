@@ -1,18 +1,22 @@
+import { BackChoice } from '@/CLI_FRAMEWORK/router'
 import { handleError } from '@/error'
 import { Grit } from '@/generator'
 import { spinner } from '@/spinner'
 import { store } from '@/store'
 import axios from 'axios'
 import chalk from 'chalk'
+import { ExitChoice, HelpChoice } from '.'
 import { GritRoute } from '../cli'
 
 /**
  *  This route lets the user search for generators using npm search.
+ *
+ *  eventuall make this searchable
  */
 export const find: GritRoute = async (app, { args, options }) => {
 	// get the generators from npm (packages that start with `grit-`)
 	try {
-		// Get a list of installed npm generators
+		// Get a list of installed npm generators from the store
 		const installedNpmGenerators = store.generators.npmGeneratorsNames
 
 		// get the generators from npm)
@@ -23,36 +27,55 @@ export const find: GritRoute = async (app, { args, options }) => {
 		spinner.stop()
 
 		// Create inquirer choices with search results
-		const choices = data.objects.map(({ package: { name, description } }) => {
-			name = name.replace('grit-', '')
-			const alreadyInstalled = installedNpmGenerators.includes(name)
+		const choices = [
+			...data.objects.map(({ package: { name, description } }) => {
+				name = name.replace('grit-', '')
+				const alreadyInstalled = installedNpmGenerators.includes(name)
 
-			return {
-				name: `${name} ${chalk.gray(description)}${
-					alreadyInstalled ? chalk.yellow(' installed') : ''
-				} `,
-				value: name,
-			}
-		})
+				return {
+					name: `${name} ${chalk.gray(description)}${
+						alreadyInstalled ? chalk.yellow(' installed') : ''
+					} `,
+					value: name,
+				}
+			}),
+			new app.inquirer.Separator(),
+			{ name: 'Refresh list', value: 'find' },
+			BackChoice,
+			HelpChoice,
+			ExitChoice,
+		]
 
-		const { generator } = await app.prompt([
+		const { answer } = await app.prompt([
 			{
 				type: 'list',
-				name: 'generator',
+				name: 'answer',
 				message: 'Which generator would you like to use?',
 				choices,
+				loop: false,
 			},
 		])
 
-		// run the generator
-		await new Grit({ generator, ...options }).run()
-	} catch (e) {
-		handleError(e)
+		if (
+			answer === 'find' ||
+			answer === 'back' ||
+			answer === 'help' ||
+			answer === 'exit'
+		) {
+			return await app.navigate(answer)
+		}
+
+		// Install and run the selected generator
+		await new Grit({ generator: answer, ...options }).run()
+
+		// Go home after running the generator
+		return await app.navigate('home')
+	} catch (error) {
+		handleError(error)
 	}
-	// after the user has chosen the generator prompt them to install it for later or install & run it
 }
 
 export const FindChoice = {
-	name: 'Search for new generators',
+	name: 'Discover new generators',
 	value: 'find',
 }

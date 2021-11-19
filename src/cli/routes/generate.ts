@@ -7,7 +7,7 @@ export const generate: GritRoute = async (app, { args, options }) => {
 	const generator = args[0]
 	const outDir = args[1]
 
-	logger.debug(generator, outDir, options)
+	logger.debug('Generator command', generator, outDir, options)
 
 	const gritOptions = {
 		generator,

@@ -35,6 +35,8 @@ export const runCLI = async (): Promise<void> => {
 	// List command for listing your generators
 	cli.commander.command('find').action(() => cli.navigate('find'))
 
+	cli.commander.command('help').action(() => cli.navigate('help'))
+
 	// Running a generator or using the helper
 	cli.commander
 		.arguments('[generator] [outDir]')

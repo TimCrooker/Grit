@@ -4,11 +4,10 @@ import { store } from '@/store'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
-import { ExitChoice, HelpChoice } from '.'
+import { ExitChoice, HelpChoice, FindChoice } from '.'
 import { GritRoute } from '../cli'
 import { generatorChoiceList } from '../utils/generator'
 import { getWelcomeMessage } from '../utils/welcome'
-import { FindChoice } from './find'
 
 /**
  * This is the home route when users input just the `grit` keyword with no commands\
@@ -18,11 +17,11 @@ export const home: GritRoute = async (app) => {
 	const RunGeneratorChoices = [
 		new inquirer.Separator('Run Generator'),
 		...(await generatorChoiceList()).slice(0, 100),
+		new inquirer.Separator(),
 	] as Choice[]
 
 	const choices = [
 		...RunGeneratorChoices,
-		new inquirer.Separator(),
 		FindChoice,
 		HelpChoice,
 		ExitChoice,
@@ -31,9 +30,9 @@ export const home: GritRoute = async (app) => {
 	// Show welcome message for new users
 	getWelcomeMessage(store.generators.isEmpty)
 
-	const answers = await app.prompt([
+	const { answer } = await app.prompt([
 		{
-			name: 'whatNext',
+			name: 'answer',
 			type: 'list',
 			message: `Hi ${chalk.underline(
 				UserFirstName
@@ -44,27 +43,27 @@ export const home: GritRoute = async (app) => {
 	])
 
 	// If the user chose to run a generator and it has no updates, run it
-	if (answers.whatNext.method === 'run') {
-		await new Grit({ generator: answers.whatNext.generator }).run()
+	if (answer.method === 'run') {
+		await new Grit({ generator: answer.generator }).run()
 
 		// Go home after generation
 		return await app.navigate('home')
 	}
 
 	// Run when generators have an update available
-	if (answers.whatNext.method === 'update') {
+	if (answer.method === 'update') {
 		const updateGenerator = await app.prompt([
 			{
 				name: 'update',
 				type: 'confirm',
 				message: `Do you want to update ${chalk.underline(
-					answers.whatNext.generator.name
+					answer.generator.name
 				)}?`,
 			},
 		])
 
 		const gritOptions: GritOptions = {
-			generator: answers.whatNext.generator,
+			generator: answer.generator,
 			update: updateGenerator.update,
 		}
 
@@ -75,9 +74,10 @@ export const home: GritRoute = async (app) => {
 	}
 
 	// Route when generators are not selected
-	return await app.navigate(answers.whatNext)
+	return await app.navigate(answer)
 }
 
+/** Choice for navigating home */
 export const HomeChoice = {
 	name: 'Go Home',
 	value: 'home',

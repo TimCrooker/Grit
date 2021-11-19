@@ -6,6 +6,10 @@ import { getGitUser } from './utils/git-user'
 export const APP_NAME = 'Grit'
 export const COMMAND_NAME = 'grit'
 
+// URLs
+export const DOCS_URL = 'https://timcrooker.github.io/Grit/'
+export const GITHUB_URL = 'https://github.com/TimCrooker/Grit'
+
 // Store configs
 const CACHE_VERSION = 2
 export const ROOT_CACHE_PATH = path.join(
