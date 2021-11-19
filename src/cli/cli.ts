@@ -1,23 +1,27 @@
-import { Grit } from '@/generator'
 import pkg from '@/../package.json'
 import { CLI, CLIOptions } from '@/CLI_FRAMEWORK/cli'
 import { generate } from './routes/generate'
 import { exit, find, help, home } from './routes'
 import { Route } from '../CLI_FRAMEWORK/router'
+import { checkPkgForUpdates } from './utils/updater'
+import { Grit } from '@/generator'
 
 export type RuntimeEnv = Grit
 
 export type GritRoute = Route<RuntimeEnv>
 
 export const runCLI = async (): Promise<void> => {
-	// console.clear()
-
+	const debugMode = true
 	const cliOpts = {
 		pkg,
-		debug: true,
+		debug: debugMode,
 	} as CLIOptions
 
 	const cli = new CLI(cliOpts)
+
+	!debugMode && console.clear()
+
+	cli.logger.log(await checkPkgForUpdates(pkg))
 
 	cli
 		.addRoute('home', home)
@@ -35,6 +39,7 @@ export const runCLI = async (): Promise<void> => {
 	// List command for listing your generators
 	cli.commander.command('find').action(() => cli.navigate('find'))
 
+	// Help command to get some tips and resources
 	cli.commander.command('help').action(() => cli.navigate('help'))
 
 	// Running a generator or using the helper

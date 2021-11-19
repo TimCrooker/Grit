@@ -1,5 +1,4 @@
 import { ParsedGenerator } from '@/generator/parseGenerator'
-import { logger } from '@/logger'
 import { readFileSync } from 'fs'
 import path from 'path'
 import updateNotifier, { Package, UpdateInfo } from 'update-notifier'

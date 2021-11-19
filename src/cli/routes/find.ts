@@ -1,7 +1,6 @@
 import { BackChoice } from '@/CLI_FRAMEWORK/router'
 import { handleError } from '@/error'
 import { Grit } from '@/generator'
-import { spinner } from '@/spinner'
 import { store } from '@/store'
 import axios from 'axios'
 import chalk from 'chalk'
@@ -20,11 +19,11 @@ export const find: GritRoute = async (app, { args, options }) => {
 		const installedNpmGenerators = store.generators.npmGeneratorsNames
 
 		// get the generators from npm)
-		spinner.start('searching for grit-generators')
+		app.spinner.start('searching for grit-generators')
 		const { data } = await axios.get(
 			'http://registry.npmjs.com/-/v1/search?text=keywords:grit-generator&size=20'
 		)
-		spinner.stop()
+		app.spinner.stop()
 
 		// Create inquirer choices with search results
 		const choices = [

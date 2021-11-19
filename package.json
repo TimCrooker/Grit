@@ -2,11 +2,11 @@
 	"name": "grit-cli",
 	"version": "0.2.0",
 	"description": "Simple and flexible scaffolding",
-	"main": "dist/index.js",
+	"main": "dist/generator/index.js",
 	"bin": {
 		"grit": "cli/index.js"
 	},
-	"types": "dist/index.d.ts",
+	"types": "dist/generator/index.d.ts",
 	"files": [
 		"dist",
 		"!**/*.(test|spec).ts"

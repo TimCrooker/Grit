@@ -4,6 +4,7 @@ import updateNotifier, { Package } from 'update-notifier'
 import { logger } from './logger'
 import { commander } from './commander'
 import { Route, Router, RouterOptions } from './router'
+import { spinner } from './spinner'
 
 export interface CLIOptions<RuntimeEnvInstance = any> {
 	pkg: Package
@@ -21,6 +22,7 @@ export class CLI<RuntimeEnvInstance = any> {
 	logger = logger
 	commander = commander
 	inquirer = inquirer
+	spinner = spinner
 
 	constructor(opts: CLIOptions) {
 		this.opts = {
@@ -79,7 +81,7 @@ export class CLI<RuntimeEnvInstance = any> {
 
 	// Navigate to a route
 	async navigate(routeName: string): Promise<void> {
-		console.clear()
+		!this.opts.debug && console.clear()
 
 		// get options from commander
 		const options = this.commander.opts()
