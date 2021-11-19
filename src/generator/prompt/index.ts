@@ -1,6 +1,6 @@
+import { GritError } from '@/error'
+import { logger } from '@/logger'
 import inquirer from 'inquirer'
-import { GritError } from '../../error'
-import { logger } from '../../logger'
 import { Answers } from './answers'
 import { ArrayPrompt, PromptType } from './prompt'
 

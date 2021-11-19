@@ -1,28 +1,38 @@
-import { getNpmGeneratorName, getRepoGeneratorName } from '../../cli/utils'
+import {
+	getNpmGeneratorName,
+	getRepoGeneratorName,
+} from '@/cli/utils/generator'
 import {
 	NpmGenerator,
 	RepoGenerator,
 	ParsedGenerator,
-} from '../../generator/parseGenerator'
-import { BaseStore, BaseStoreOptions } from '../baseStore'
+} from '@/generator/parseGenerator'
+import { SetRequired } from 'type-fest'
+import { BaseStoreOptions, BaseStore } from '../baseStore'
 
-export type GroupedGenerators = Map<string, Array<NpmGenerator | RepoGenerator>>
+export type StoreNpmGenerator = SetRequired<NpmGenerator, 'runCount'>
+
+export type StoreRepoGenerator = SetRequired<RepoGenerator, 'runCount'>
+
+export type StoreGenerator = StoreNpmGenerator | StoreRepoGenerator
+
+export type GroupedGenerators = Map<string, StoreGenerator>
 
 type GeneratorStoreOptions = BaseStoreOptions
 
-export class GeneratorStore extends BaseStore<ParsedGenerator> {
+export class GeneratorStore extends BaseStore<StoreGenerator> {
 	constructor(options?: GeneratorStoreOptions) {
 		super({ ...options })
 	}
 
 	/** Add a new generator to the store if it doesn't already exist */
 	add(generator: ParsedGenerator): this {
-		this.set(generator.hash, generator, false)
+		this.set(generator.hash, generator)
 		return this
 	}
 
 	/** Search the store for generators matching the current one's name */
-	getAllByName(generator: ParsedGenerator): ParsedGenerator[] {
+	getByName(generator: ParsedGenerator): StoreGenerator[] {
 		return this.getAllWhere((key, value) => {
 			if (generator.type === 'repo' && value.type === 'repo') {
 				return (
@@ -38,22 +48,31 @@ export class GeneratorStore extends BaseStore<ParsedGenerator> {
 	}
 
 	/** Group generators by name */
-	get groupedGenerators(): GroupedGenerators {
+	get generatorNameList(): GroupedGenerators {
 		const generatorsMap: GroupedGenerators = new Map()
-		Object.entries(this.data).forEach(([, generator]) => {
+		this.listify().forEach((generator) => {
+			if (generator.type === 'repo') {
+				const repoGenerator = generator as StoreRepoGenerator
+				const repoGeneratorName = getRepoGeneratorName(repoGenerator)
+				if (!generatorsMap.has(repoGeneratorName)) {
+					generatorsMap.set(repoGeneratorName, repoGenerator)
+				}
+			}
 			if (generator.type === 'npm') {
-				const name = getNpmGeneratorName(generator)
-				const arr = generatorsMap.get(name) || []
-				arr.push(generator)
-				generatorsMap.set(generator.name, arr)
-			} else if (generator.type === 'repo') {
-				const name = getRepoGeneratorName(generator)
-				const arr = generatorsMap.get(name) || []
-				arr.push(generator)
-				generatorsMap.set(name, arr)
+				const npmGenerator = generator as StoreNpmGenerator
+				const npmGeneratorName = getNpmGeneratorName(npmGenerator)
+				if (!generatorsMap.has(npmGeneratorName)) {
+					generatorsMap.set(npmGeneratorName, npmGenerator)
+				}
 			}
 		})
 		return generatorsMap
+	}
+
+	get npmGeneratorsNames(): string[] {
+		return this.listify()
+			.filter((g) => g.type === 'npm')
+			.map((g) => getNpmGeneratorName(g as StoreNpmGenerator))
 	}
 }
 

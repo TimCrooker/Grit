@@ -1,6 +1,5 @@
-export * from './install'
 export * from './exit'
 export * from './home'
 export * from './help'
-export * from './list'
 export * from './exit'
+export * from './find'

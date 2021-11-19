@@ -1,9 +1,10 @@
+import { logger } from '@/logger'
+import { store } from '@/store'
 import resolveFrom from 'resolve-from'
-import { store } from '../store'
-import { prompt } from '../utils/prompt'
-import { GeneratorConfig, Grit } from '../'
-import { logger } from '../logger'
-import { Answers } from 'inquirer'
+import { Grit } from '.'
+import { GeneratorConfig } from './generator-config'
+import { prompt } from './prompt'
+import { Answers } from './prompt/answers'
 
 export const runPrompts = async (
 	context: Grit,
@@ -48,7 +49,7 @@ export const runPrompts = async (
 	logger.debug(`Retrived answers:`, answers)
 
 	// cache answers
-	const answersToStore: { [k: string]: any } = {}
+	const answersToStore: Answers = {}
 	for (const p of prompts) {
 		if (!Object.prototype.hasOwnProperty.call(answers, p.name)) {
 			answers[p.name] = undefined

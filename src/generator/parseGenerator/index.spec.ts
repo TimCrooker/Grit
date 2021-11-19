@@ -3,8 +3,8 @@ import {
 	inferGeneratorPrefix,
 	ParsedGenerator,
 	parseGenerator,
-} from './'
-import { COMMAND_NAME } from '../../config'
+} from '.'
+import { COMMAND_NAME } from '@/config'
 import os from 'os'
 
 const parse = (name: string): ParsedGenerator => {
@@ -20,43 +20,43 @@ const parse = (name: string): ParsedGenerator => {
 
 describe('Parse generators', () => {
 	it('GitHub repo', () => {
-		const result = parse(`egoist/poi`)
+		const result = parse(`TimCrooker/grit-generator`)
 		expect(result).toMatchInlineSnapshot(`
       Object {
-        "hash": "e66c30fe",
-        "path": "~/.grit/V2/generators/repos/e66c30fe",
+        "hash": "0b2c5ee2",
+        "path": "~/.grit/V2/generators/repos/0b2c5ee2",
         "prefix": "github",
-        "repo": "poi",
+        "repo": "grit-generator",
         "subGenerator": undefined,
         "type": "repo",
-        "user": "egoist",
+        "user": "TimCrooker",
         "version": "master",
       }
     `)
 	})
 
 	it('GitHub repo with version', () => {
-		expect(parse(`egoist/poi#v1.0.0`)).toMatchInlineSnapshot(`
+		expect(parse(`TimCrooker/grit-generator#v1.0.0`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "6e0c0844",
-        "path": "~/.grit/V2/generators/repos/6e0c0844",
+        "hash": "272300b6",
+        "path": "~/.grit/V2/generators/repos/272300b6",
         "prefix": "github",
-        "repo": "poi",
+        "repo": "grit-generator",
         "subGenerator": undefined,
         "type": "repo",
-        "user": "egoist",
+        "user": "TimCrooker",
         "version": "v1.0.0",
       }
     `)
 	})
 
 	it('Npm package', () => {
-		expect(parse(`nm`)).toMatchInlineSnapshot(`
+		expect(parse(`generator`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "0fce9c51",
-        "name": "grit-nm",
-        "path": "~/.grit/V2/generators/packages/0fce9c51/node_modules/grit-nm",
-        "slug": "grit-nm",
+        "hash": "62dbe401",
+        "name": "grit-generator",
+        "path": "~/.grit/V2/generators/packages/62dbe401/node_modules/grit-generator",
+        "slug": "grit-generator",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -78,12 +78,12 @@ describe('Parse generators', () => {
     `)
 	})
 	it('Scoped Npm package', () => {
-		expect(parse(`@egoist/nm`)).toMatchInlineSnapshot(`
+		expect(parse(`@TimCroker/nm`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "a15c6a42",
-        "name": "@egoist/grit-nm",
-        "path": "~/.grit/V2/generators/packages/a15c6a42/node_modules/@egoist/grit-nm",
-        "slug": "@egoist/grit-nm",
+        "hash": "7152f7bc",
+        "name": "@TimCroker/grit-nm",
+        "path": "~/.grit/V2/generators/packages/7152f7bc/node_modules/@TimCroker/grit-nm",
+        "slug": "@TimCroker/grit-nm",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
@@ -91,12 +91,12 @@ describe('Parse generators', () => {
     `)
 	})
 	it('Scoped Npm package with version', () => {
-		expect(parse(`@egoist/nm@2.0.1`)).toMatchInlineSnapshot(`
+		expect(parse(`@TimCroker/nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "5dec4996",
-        "name": "@egoist/grit-nm",
-        "path": "~/.grit/V2/generators/packages/5dec4996/node_modules/@egoist/grit-nm",
-        "slug": "@egoist/grit-nm@2.0.1",
+        "hash": "181d9cb3",
+        "name": "@TimCroker/grit-nm",
+        "path": "~/.grit/V2/generators/packages/181d9cb3/node_modules/@TimCroker/grit-nm",
+        "slug": "@TimCroker/grit-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
@@ -104,26 +104,26 @@ describe('Parse generators', () => {
     `)
 	})
 	it('prefix', () => {
-		expect(parse(`gitlab:egoist/poi`)).toMatchInlineSnapshot(`
+		expect(parse(`gitlab:TimCroker/poi`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "766eaa60",
-        "path": "~/.grit/V2/generators/repos/766eaa60",
+        "hash": "286ea960",
+        "path": "~/.grit/V2/generators/repos/286ea960",
         "prefix": "gitlab",
         "repo": "poi",
         "subGenerator": undefined,
         "type": "repo",
-        "user": "egoist",
+        "user": "TimCroker",
         "version": "master",
       }
     `)
 	})
 	it('Remove sao- pefix', () => {
-		expect(parse(`sao-nm`)).toMatchInlineSnapshot(`
+		expect(parse(`grit-generator`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "1ba858bd",
-        "name": "grit-sao-nm",
-        "path": "~/.grit/V2/generators/packages/1ba858bd/node_modules/grit-sao-nm",
-        "slug": "grit-sao-nm",
+        "hash": "62dbe401",
+        "name": "grit-generator",
+        "path": "~/.grit/V2/generators/packages/62dbe401/node_modules/grit-generator",
+        "slug": "grit-generator",
         "subGenerator": undefined,
         "type": "npm",
         "version": "latest",
