@@ -21,7 +21,7 @@ import path from 'path'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 
-import { CreateAction } from './generator/actions/createActions'
+import { CreateAction } from './generator/actions/createAction'
 import { ensureGeneratorExists } from './generator/ensureGenerator'
 import { GeneratorConfig, loadConfig } from './generator/generatorConfig'
 import { defautGeneratorFile } from './generator/generatorConfig/default-generator'
@@ -194,7 +194,7 @@ export class Grit {
 
 		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import('./generator/actions/runActions')
+			const { runActions } = await import('./generator/actions/runActions/runActions')
 
 			await runActions(this, config)
 		}

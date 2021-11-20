@@ -6,7 +6,7 @@ import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
 import { DataFunction } from '../../generatorConfig'
-import { ActionFn } from '../runActions'
+import { ActionFn } from '../runActions/runActions'
 
 /**  */
 export interface AddAction {

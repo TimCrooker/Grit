@@ -1,11 +1,11 @@
-import { GeneratorConfig } from '../generatorConfig'
+import { GeneratorConfig } from '../../generatorConfig'
 import { logger } from '@/logger'
-import { Grit } from '../..'
-import { addAction } from './add'
-import { modifyAction } from './modify'
-import { removeAction } from './remove'
-import { copyAction } from './copy'
-import { moveAction } from './move'
+import { Grit } from '../../..'
+import { addAction } from '../add'
+import { modifyAction } from '../modify'
+import { removeAction } from '../remove'
+import { copyAction } from '../copy'
+import { moveAction } from '../move'
 
 const runAction = async (
 	context: Grit,

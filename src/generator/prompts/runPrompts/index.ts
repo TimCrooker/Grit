@@ -1,9 +1,9 @@
 import { logger } from '@/logger'
 import { store } from '@/store'
 import resolveFrom from 'resolve-from'
-import { Grit } from '../..'
-import { GeneratorConfig } from '../generatorConfig'
-import { Answers, prompt } from './prompt'
+import { Grit } from '../../..'
+import { GeneratorConfig } from '../../generatorConfig'
+import { Answers, prompt } from '../prompt'
 
 export const runPrompts = async (
 	context: Grit,

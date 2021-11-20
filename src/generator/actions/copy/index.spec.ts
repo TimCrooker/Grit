@@ -1,7 +1,7 @@
 import { Grit } from '@/index'
 import path from 'path'
 import { copyAction } from '.'
-import { CreateAction } from '../createActions'
+import { CreateAction } from '../createAction'
 
 // jest.mock('@/index')
 let context: Grit

@@ -1,7 +1,7 @@
 import { Grit } from '@/index'
 import path from 'path'
 import { addAction } from '.'
-import { CreateAction } from '../createActions'
+import { CreateAction } from '../createAction'
 
 let context: Grit
 
