@@ -62,12 +62,10 @@ export const home: GritRoute = async (app) => {
 			},
 		])
 
-		const gritOptions: GritOptions = {
+		await new Grit({
 			generator: answer.generator,
 			update: updateGenerator.update,
-		}
-
-		await new Grit(gritOptions).run()
+		}).run()
 
 		// Go home after generation
 		return await app.navigate('home')

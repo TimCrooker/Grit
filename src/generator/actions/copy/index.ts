@@ -2,7 +2,7 @@ import { logger } from '@/logger'
 import { move } from '@/utils/files'
 import { glob } from 'majo'
 import path from 'path'
-import { ActionFn } from '../runActions/runActions'
+import { ActionFn } from '../runActions'
 
 /**
  * Copy files

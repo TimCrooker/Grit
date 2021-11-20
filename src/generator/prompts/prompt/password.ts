@@ -6,5 +6,5 @@ export interface PasswordPrompt extends BasePrompt {
 	mock?: string
 	default?: WithAnswers<string>
 	validate?: WithFullContext<string, boolean | string>
-	filter?: WithFullContext<string, Answer>
+	filter?: WithFullContext<string, string>
 }

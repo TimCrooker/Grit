@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { CreateAction } from '../../../createAction'
+import { GeneratorConfig } from '@/generator/generatorConfig'
 
 module.exports = {
 	actions() {
 		return [
-			CreateAction.add({
+			this.createAction.add({
 				files: '**',
 				data: (context) => ({ name: 'Tim' }),
 			}),
+			this.createAction.move({
+				patterns: {
+					'bar.json': 'buz.json',
+				},
+			}),
 		]
 	},
-}
+} as GeneratorConfig

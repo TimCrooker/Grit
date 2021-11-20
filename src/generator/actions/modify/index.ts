@@ -1,7 +1,7 @@
 import { logger } from '@/logger'
 import { majo } from 'majo'
 import path from 'path'
-import { ActionFn } from '../runActions/runActions'
+import { ActionFn } from '../runActions'
 
 export interface ModifyAction {
 	type: 'modify'

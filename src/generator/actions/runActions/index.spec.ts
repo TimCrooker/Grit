@@ -20,7 +20,7 @@ describe('Run Actions', () => {
 
 		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await context.readOutputFile('bar.json'))
+		const output = JSON.parse(await context.readOutputFile('buz.json'))
 		expect(output).toEqual({ bar: name })
 	})
 })

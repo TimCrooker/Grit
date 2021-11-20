@@ -3,7 +3,7 @@ import JoyCon from 'joycon'
 import pa from 'path'
 import { Action } from '../actions'
 import { Prompt } from '../prompts/prompt'
-import { transpileModule } from 'typescript'
+import { ModuleKind, transpileModule } from 'typescript'
 import { readFile } from '@/utils/files'
 import { unlinkSync, writeFileSync } from 'fs'
 import module from 'module'
@@ -69,7 +69,17 @@ const tsTranspile = async (
 
 	// transpile the ts code into a js string
 	const { outputText: jsText } = await transpileModule(tsCode, {
-		/* Here the compiler options */
+		compilerOptions: {
+			target: 5,
+			module: 1,
+			resolveJsonModule: true,
+			strict: true,
+			esModuleInterop: true,
+			skipLibCheck: true,
+			forceConsistentCasingInFileNames: true,
+			moduleResolution: 2,
+			noImplicitAny: false,
+		},
 	})
 
 	// set js file path to the same as ts file path but as temp.js
@@ -81,7 +91,7 @@ const tsTranspile = async (
 	// turn the file path into a module with import
 	const jsModule = await import(jsCodePath)
 
-	// remove the temp file
+	// // remove the temp file
 	unlinkSync(jsCodePath)
 
 	return { path: jsCodePath, data: jsModule }

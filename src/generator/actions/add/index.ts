@@ -6,7 +6,7 @@ import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
 import { DataFunction } from '../../generatorConfig'
-import { ActionFn } from '../runActions/runActions'
+import { ActionFn } from '../runActions'
 
 /**  */
 export interface AddAction {
@@ -22,11 +22,11 @@ export interface AddAction {
 	/**
 	 * Only transform files matching given minimatch patterns
 	 */
-	transformInclude?: string[]
+	transformInclude?: string | string[]
 	/**
 	 * Don't transform files matching given minimatch patterns
 	 */
-	transformExclude?: string[]
+	transformExclude?: string | string[]
 	/**
 	 * Custom data to use in template transformation
 	 */

@@ -198,7 +198,7 @@ export class Grit {
 		// Run generator supplied actions
 		if (config.actions) {
 			const { runActions } = await import(
-				'./generator/actions/runActions/runActions'
+				'./generator/actions/runActions'
 			)
 
 			await runActions(this, config)

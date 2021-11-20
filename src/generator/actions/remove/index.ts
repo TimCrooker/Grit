@@ -2,7 +2,7 @@ import { logger } from '@/logger'
 import { remove } from '@/utils/files'
 import { getGlobPatterns } from '@/utils/glob'
 import { glob } from 'majo'
-import { ActionFn } from '../runActions/runActions'
+import { ActionFn } from '../runActions'
 
 /**
  * Remove files
