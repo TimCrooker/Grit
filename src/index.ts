@@ -31,6 +31,7 @@ import {
 	NpmGenerator,
 	RepoGenerator,
 } from './generator/parseGenerator'
+import { CreatePrompt } from './generator/prompts/createPrompt'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -94,6 +95,8 @@ export class Grit {
 	store = store
 	/** Create actions more safely */
 	createAction = CreateAction
+	/** Create actions more safely */
+	createPrompt = CreatePrompt
 
 	/** Prompt answers provided by the user */
 	private _answers: Answers | symbol = EMPTY_ANSWERS
@@ -194,7 +197,9 @@ export class Grit {
 
 		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import('./generator/actions/runActions/runActions')
+			const { runActions } = await import(
+				'./generator/actions/runActions/runActions'
+			)
 
 			await runActions(this, config)
 		}
