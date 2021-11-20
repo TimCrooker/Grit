@@ -1,12 +1,13 @@
-import { Action } from '.'
-import { AddAction } from './add'
-import { CopyAction } from './copy'
-import { ModifyAction } from './modify'
-import { MoveAction } from './move'
+import { Action } from '..'
+import { AddAction } from '../add'
+import { CopyAction } from '../copy'
+import { ModifyAction } from '../modify'
+import { MoveAction } from '../move'
+import { RemoveAction } from '../remove'
 
 type RemoveActionType<T extends Action> = Omit<T, 'type'>
 
-/** Allows safe and easy creation of actions */
+/** Simple type-safe creation of actions */
 export class CreateAction {
 	static add(action: RemoveActionType<AddAction>): AddAction {
 		return {
@@ -36,10 +37,10 @@ export class CreateAction {
 		}
 	}
 
-	static remove(action: RemoveActionType<AddAction>): AddAction {
+	static remove(action: RemoveActionType<RemoveAction>): RemoveAction {
 		return {
 			...action,
-			type: 'add',
+			type: 'remove',
 		}
 	}
 }

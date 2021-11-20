@@ -21,7 +21,7 @@ import path from 'path'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
 
-import { CreateAction } from './generator/actions/createAction'
+import { CreateAction } from './generator/actions/createActions'
 import { ensureGeneratorExists } from './generator/ensureGenerator'
 import { GeneratorConfig, loadConfig } from './generator/generatorConfig'
 import { defautGeneratorFile } from './generator/generatorConfig/default-generator'
@@ -106,10 +106,7 @@ export class Grit {
 			...opts,
 			outDir: path.resolve(opts.outDir || '.'),
 			logLevel: opts.logLevel || 3,
-			mock:
-				typeof opts.mock === 'boolean'
-					? opts.mock
-					: process.env.NODE_ENV === 'test',
+			mock: typeof opts.mock === 'boolean' ? opts.mock : false,
 		}
 
 		// Set log level from run mode

@@ -2,7 +2,7 @@ import { Grit } from '@/index'
 import JoyCon from 'joycon'
 import pa from 'path'
 import { Action } from '../actions'
-import { PromptType } from '../prompts/prompt'
+import { Prompt } from '../prompts/prompt'
 
 export type DataFunction = (this: Grit, context: Grit) => object
 
@@ -29,9 +29,7 @@ export interface GeneratorConfig {
 	/**
 	 * Use prompts to ask questions before generating project
 	 */
-	prompts?:
-		| PromptType[]
-		| ((this: Grit, ctx: Grit) => PromptType[] | Promise<PromptType[]>)
+	prompts?: Prompt[] | ((this: Grit, ctx: Grit) => Prompt[] | Promise<Prompt[]>)
 	/**
 	 * Use actions to control how files are generated
 	 */

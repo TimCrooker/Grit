@@ -1,15 +1,19 @@
 import { logger } from '@/logger'
 import { majo } from 'majo'
 import path from 'path'
-import { ActionFn } from './runActions'
+import { ActionFn } from '../runActions'
 
-/**  */
 export interface ModifyAction {
-	/** Identify this action as the modify type */
 	type: 'modify'
-	/** Glob patterns to identify items inside of the project directory */
+	/** Glob patterns to target files inside of the project directory for manipulation */
 	files: string | string[]
-	/**  */
+	/**
+	 * A function that will be called on each file that matches the glob pattern.
+	 *
+	 * @param data the contents of the file to modify (JSON object if `filePath` is .json)
+	 *
+	 * @param filePath: The relative path to the file that matched the glob pattern
+	 */
 	handler: (data: any, filepath: string) => any
 }
 

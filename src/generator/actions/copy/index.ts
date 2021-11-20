@@ -2,11 +2,24 @@ import { logger } from '@/logger'
 import { move } from '@/utils/files'
 import { glob } from 'majo'
 import path from 'path'
-import { ActionFn } from './runActions'
+import { ActionFn } from '../runActions'
 
-/** */
+/**
+ * Copy files
+ */
 export interface CopyAction {
 	type: 'copy'
+	/**
+	 *	Patterns object represents mappings for the source and destination files
+	 *
+	 *	key is the source file's relative filePath
+	 *
+	 * 	value is the new file's relative filePath
+	 *
+	 *	Copy to new dir: {'sourceDir/file.js': 'newDir/file.js'}
+	 *
+	 *	Copy and rename in same dir: {'sourceDir/file.js': 'sourceDir/newFile.js'}
+	 */
 	patterns: {
 		[k: string]: string
 	}

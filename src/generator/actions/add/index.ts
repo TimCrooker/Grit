@@ -5,18 +5,19 @@ import isBinaryPath from 'is-binary-path'
 import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
-import { DataFunction } from '../generatorConfig'
-import { ActionFn } from './runActions'
+import { DataFunction } from '../../generatorConfig'
+import { ActionFn } from '../runActions'
 
 /**  */
 export interface AddAction {
 	type: 'add'
 	templateDir?: string
 	files: string[] | string
+	/**  */
 	filters?: {
 		[k: string]: string | boolean | null | undefined
 	}
-	/** Transform the template with ejs */
+	/** Transform the template contents with ejs */
 	transform?: boolean
 	/**
 	 * Only transform files matching given minimatch patterns
@@ -25,7 +26,7 @@ export interface AddAction {
 	/**
 	 * Don't transform files matching given minimatch patterns
 	 */
-	transformExclude?: string
+	transformExclude?: string[]
 	/**
 	 * Custom data to use in template transformation
 	 */
@@ -35,7 +36,7 @@ export interface AddAction {
 export const addAction: ActionFn<AddAction> = async (
 	context,
 	action,
-	config
+	config = {}
 ) => {
 	const stream = majo()
 	stream.source(['!**/node_modules/**'].concat(action.files), {

@@ -1,11 +1,11 @@
 import path from 'path'
-import { PromptType } from './prompt'
+import { Prompt } from './prompt'
 import { prompt } from './prompt'
 import { Grit } from '@/index'
 
 const generator = path.join(__dirname, 'fixtures')
 
-const prompts: PromptType[] = [
+const prompts: Prompt[] = [
 	{
 		name: 'name',
 		type: 'input',

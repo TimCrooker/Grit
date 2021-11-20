@@ -2,11 +2,24 @@ import { logger } from '@/logger'
 import { move } from '@/utils/files'
 import { glob } from 'majo'
 import path from 'path'
-import { ActionFn } from './runActions'
+import { ActionFn } from '../runActions'
 
-/**  */
+/**
+ * Move and rename files
+ */
 export interface MoveAction {
 	type: 'move'
+	/**
+	 *	Patterns object represents the filepath conversions
+	 *
+	 *	key is the relative filePath to be transformed
+	 *
+	 *	value is the new relative filePath
+	 *
+	 *	Move file: {'oldDir/file.js': 'newDir/file.js'}
+	 *
+	 *	Rename file: {'oldFile.js': 'newFile.js'}
+	 */
 	patterns: {
 		[k: string]: string
 	}

@@ -31,7 +31,7 @@ const runAction = async (
 export type ActionFn<T> = (
 	context: Grit,
 	action: T,
-	config: GeneratorConfig
+	config?: GeneratorConfig
 ) => Promise<void>
 
 export const runActions = async (
