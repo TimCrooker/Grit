@@ -15,13 +15,12 @@ const config = {
 	favicon: 'img/favicon.ico',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
-	trailingSlash: true, 
-	// plugins: ['@docusaurus/plugin-google-analytics'],
+
 	presets: [
 		[
 			'@docusaurus/preset-classic',
 			/** @type {import('@docusaurus/preset-classic').Options} */
-			{
+			({
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
 					// Please change this to your repo.
@@ -30,7 +29,7 @@ const config = {
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
 				},
-			},
+			}),
 		],
 	],
 
@@ -41,14 +40,14 @@ const config = {
 				title: 'Grit',
 				logo: {
 					alt: 'My Site Logo',
-					src: '/img/logo.svg',
+					src: 'img/logo.svg',
 				},
 				items: [
 					{
 						type: 'doc',
 						docId: 'intro',
-						position: 'right',
-						label: 'Docs',
+						position: 'left',
+						label: 'Tutorial',
 					},
 					{
 						href: 'https://github.com/TimCrooker/grit',
@@ -69,6 +68,36 @@ const config = {
 							},
 						],
 					},
+					{
+						title: 'Community',
+						items: [
+							{
+								label: 'Stack Overflow',
+								href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+							},
+							{
+								label: 'Discord',
+								href: 'https://discordapp.com/invite/docusaurus',
+							},
+							{
+								label: 'Twitter',
+								href: 'https://twitter.com/docusaurus',
+							},
+						],
+					},
+					{
+						title: 'More',
+						items: [
+							{
+								label: 'Blog',
+								to: '/blog',
+							},
+							{
+								label: 'GitHub',
+								href: 'https://github.com/facebook/docusaurus',
+							},
+						],
+					},
 				],
 				copyright: `Copyright © ${new Date().getFullYear()} Botsea, Inc.`,
 			},
@@ -76,11 +105,11 @@ const config = {
 				theme: lightCodeTheme,
 				darkTheme: darkCodeTheme,
 			},
-			googleAnalytics: {
-				trackingID: 'G-T5F55J3XVN',
-				// Optional fields.
-				anonymizeIP: false, // Should IPs be anonymized?
-			},
+			// googleAnalytics: {
+			// 	trackingID: 'G-T5F55J3XVN',
+			// 	// Optional fields.
+			// 	anonymizeIP: false, // Should IPs be anonymized?
+			// },
 		}),
 }
 
