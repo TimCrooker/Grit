@@ -15,11 +15,13 @@ import { getGitUser, GitUser } from '@/utils/git-user'
 import { exec } from 'child_process'
 import spawn from 'cross-spawn'
 import { Answers } from 'inquirer'
+import Prompt from 'inquirer/lib/prompts/base'
 import { glob } from 'majo'
 import { tmpdir } from 'os'
 import path from 'path'
 import { SetRequired } from 'type-fest'
 import { promisify } from 'util'
+import { Action } from './generator/actions'
 
 import { CreateAction } from './generator/actions/createAction'
 import { ensureGeneratorExists } from './generator/ensureGenerator'
@@ -197,9 +199,7 @@ export class Grit {
 
 		// Run generator supplied actions
 		if (config.actions) {
-			const { runActions } = await import(
-				'./generator/actions/runActions'
-			)
+			const { runActions } = await import('./generator/actions/runActions')
 
 			await runActions(this, config)
 		}
@@ -431,4 +431,4 @@ export class Grit {
 }
 
 export { runCLI } from '@/cli/cli'
-export { GeneratorConfig, handleError, store }
+export { GeneratorConfig, handleError, store, Prompt, Action }

@@ -15,7 +15,7 @@ const config = {
 	favicon: 'img/favicon.ico',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
-	trailingSlash: true,
+	trailingSlash: true, 
 	// plugins: ['@docusaurus/plugin-google-analytics'],
 	presets: [
 		[
