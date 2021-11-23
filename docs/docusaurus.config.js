@@ -16,7 +16,7 @@ const config = {
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
 	trailingSlash: true, 
-	plugins: ['@docusaurus/plugin-google-analytics'],
+	// plugins: ['@docusaurus/plugin-google-analytics'],
 	presets: [
 		[
 			'@docusaurus/preset-classic',
