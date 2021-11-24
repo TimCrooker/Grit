@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const path = require('path')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -15,7 +16,17 @@ const config = {
 	favicon: 'img/favicon.ico',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
-
+	plugins: [
+		'docusaurus-plugin-sass',
+		[
+			'docusaurus-plugin-module-alias',
+			{
+				alias: {
+					'@': path.resolve(__dirname, './src/'),
+				},
+			},
+		],
+	],
 	presets: [
 		[
 			'@docusaurus/preset-classic',
@@ -27,7 +38,7 @@ const config = {
 					editUrl: 'https://github.com/TimCrooker/Grit/edit/master/docs/',
 				},
 				theme: {
-					customCss: require.resolve('./src/css/custom.css'),
+					customCss: require.resolve('./src/css/custom.scss'),
 				},
 			}),
 		],
@@ -88,10 +99,6 @@ const config = {
 					{
 						title: 'More',
 						items: [
-							{
-								label: 'Blog',
-								to: '/blog',
-							},
 							{
 								label: 'GitHub',
 								href: 'https://github.com/facebook/docusaurus',
