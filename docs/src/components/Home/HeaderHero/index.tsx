@@ -1,6 +1,4 @@
-import IMAGES from '@/../static/img/images'
 import React from 'react'
-import { SuperImage, TwoColumns } from '../../core'
 import { HomeCallToAction } from '../components'
 import { HeaderHeroWrapper } from './styles'
 

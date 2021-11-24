@@ -1,8 +1,9 @@
 import React from 'react'
-import Layout from '@theme/Layout'
 import '@/fonts/Axiforma/stylesheet.css'
+import Layout from '@theme/Layout'
 import HeaderHero from '@/components/Home/HeaderHero'
 import BuildStack from '@/components/Home/BuildStack'
+
 
 function HomeWrapper(): React.ReactElement {
 	return (
