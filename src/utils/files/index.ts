@@ -3,6 +3,7 @@ import fs from 'fs'
 import { ensureDir, outputFile, remove } from 'majo'
 import move from 'move-file'
 import path from 'path'
+import { transpileModule } from 'typescript'
 import { promisify } from 'util'
 
 /**
@@ -10,27 +11,59 @@ import { promisify } from 'util'
  */
 
 /** check if a path represents a file asynchronously */
-export const isFile = async (path: string): Promise<boolean> => {
+export const isFile = async (cwd: string): Promise<boolean> => {
 	try {
-		return (await promisify(fs.lstat)(path)).isFile()
+		return (await promisify(fs.lstat)(cwd)).isFile()
 	} catch (e) {
 		return false
 	}
 }
 
 /** check if a path represents a file syncronously */
-export const isFileSync = (path: string): boolean => {
+export const isFileSync = (cwd: string): boolean => {
 	try {
-		return fs.lstatSync(path).isFile()
+		return fs.lstatSync(cwd).isFile()
 	} catch (e) {
 		return false
 	}
 }
 
-/** strip the extension from a file name. Works on both paths and fileNames */
-export const stripFileExtension = (name: string): string => {
-	const basePath = path.basename(name)
-	return basePath.replace(/\.[^/.]+$/, '')
+/** remove a file at given path asynchronously */
+export const removeFile = async (cwd: string): Promise<void> => {
+	if (!(await isFile(cwd))) {
+		if (await isDirectory(cwd)) {
+			throw new Error(
+				`Given path is a directory, use 'removeDirectory' on this path to delete the directory: ${cwd}`
+			)
+		}
+		throw new Error(`Given path does not exist: ${cwd}`)
+	}
+	try {
+		await promisify(fs.unlink)(cwd)
+	} catch (e) {
+		throw new Error(
+			`Failed to remove file, ${path.basename(cwd)}, at path:  ${cwd}`
+		)
+	}
+}
+
+/** remove a file at given path synchronously */
+export const removeFileSync = (cwd: string): void => {
+	if (!isFileSync(cwd)) {
+		if (isDirectorySync(cwd)) {
+			throw new Error(
+				`Given path is a directory, use 'removeDirectory' on this path to delete the directory: ${cwd}`
+			)
+		}
+		throw new Error(`Given path does not exist: ${cwd}`)
+	}
+	try {
+		fs.unlinkSync(cwd)
+	} catch (e) {
+		throw new Error(
+			`Failed to remove file, ${path.basename(cwd)}, at path:  ${cwd}`
+		)
+	}
 }
 
 // TODO impliment read file sync and async functions
@@ -42,9 +75,9 @@ export { outputFile }
  */
 
 /** Check if a path is valid and exists asynchronously */
-export const pathExists = async (path: string): Promise<boolean> => {
+export const pathExists = async (cwd: string): Promise<boolean> => {
 	try {
-		await promisify(fs.access)(path)
+		await promisify(fs.access)(cwd)
 		return true
 	} catch (e) {
 		return false
@@ -52,12 +85,23 @@ export const pathExists = async (path: string): Promise<boolean> => {
 }
 
 /** Check if a path is valid and exists asynchronously */
-export const pathExistsSync = (path: string): boolean => {
+export const pathExistsSync = (cwd: string): boolean => {
 	try {
-		return fs.lstatSync(path).isFile()
+		return fs.lstatSync(cwd).isFile()
 	} catch (e) {
 		return false
 	}
+}
+
+/** strip the extension from a file name. Works on both paths and fileNames */
+export const removeFileExtension = (cwd: string): string => {
+	const basePath = path.basename(cwd)
+	return basePath.replace(/\.[^/.]+$/, '')
+}
+
+/** strip the extension from a file name. Works on both paths and fileNames */
+export const getFileExtension = (cwd: string): string => {
+	return path.extname(cwd)
 }
 
 /**
@@ -66,18 +110,18 @@ export const pathExistsSync = (path: string): boolean => {
 
 /** Get the names of all items in a directory asynchronously */
 export const readDir = async (
-	path: string,
+	cwd: string,
 	onlyFiles?: boolean,
 	onlyDirectories?: boolean
 ): Promise<string[]> => {
 	try {
-		const contents = await promisify(fs.readdir)(path)
+		const contents = await promisify(fs.readdir)(cwd)
 
 		if (onlyFiles) {
-			return contents.filter(async (name) => await isFile(`${path}/${name}`))
+			return contents.filter(async (name) => await isFile(`${cwd}/${name}`))
 		} else if (onlyDirectories) {
 			return contents.filter(
-				async (name) => await isDirectory(`${path}/${name}`)
+				async (name) => await isDirectory(`${cwd}/${name}`)
 			)
 		}
 		return contents
@@ -88,17 +132,17 @@ export const readDir = async (
 
 /** Get the names of all items in a directory asynchronously */
 export const readDirSync = (
-	path: string,
+	cwd: string,
 	onlyFiles?: boolean,
 	onlyDirectories?: boolean
 ): string[] => {
 	try {
-		const contents = fs.readdirSync(path)
+		const contents = fs.readdirSync(cwd)
 
 		if (onlyFiles) {
-			return contents.filter((name) => isFileSync(`${path}/${name}`))
+			return contents.filter((name) => isFileSync(`${cwd}/${name}`))
 		} else if (onlyDirectories) {
-			return contents.filter(async (name) => isDirectorySync(`${path}/${name}`))
+			return contents.filter(async (name) => isDirectorySync(`${cwd}/${name}`))
 		}
 		return contents
 	} catch (e) {
@@ -108,15 +152,15 @@ export const readDirSync = (
 
 /** Get the names of all items in a directory and all of its sub-directories asynchronously*/
 export const readDirRecursive = async (
-	path: string,
+	cwd: string,
 	filterFunction?: (name: string) => boolean
 ): Promise<(string | string[])[]> => {
 	try {
 		const files = []
-		const directories = await readDir(path, true, false)
+		const directories = await readDir(cwd, true, false)
 		for (const directory of directories) {
 			const subFiles = await readDirRecursive(
-				`${path}/${directory}`,
+				`${cwd}/${directory}`,
 				filterFunction
 			)
 			files.push(
@@ -133,15 +177,15 @@ export const readDirRecursive = async (
 
 /** Get the names of all items in a directory and all of its sub-directories synchronously*/
 export const readDirRecursiveSync = (
-	path: string,
+	cwd: string,
 	filterFunction?: (name: string) => boolean
 ): (string | string[])[] => {
 	try {
 		const files = []
-		const directories = readDirSync(path, true, false)
+		const directories = readDirSync(cwd, true, false)
 		for (const directory of directories) {
 			const subFiles = readDirRecursiveSync(
-				`${path}/${directory}`,
+				`${cwd}/${directory}`,
 				filterFunction
 			)
 			files.push(
@@ -157,30 +201,60 @@ export const readDirRecursiveSync = (
 }
 
 /** check if a path represents a directory asyncronously */
-export const isDirectory = async (path: string): Promise<boolean> => {
+export const isDirectory = async (cwd: string): Promise<boolean> => {
 	try {
-		return (await promisify(fs.lstat)(path)).isDirectory()
+		return (await promisify(fs.lstat)(cwd)).isDirectory()
 	} catch (e) {
 		return false
 	}
 }
 
 /** check if a path represents a directory syncronously */
-export const isDirectorySync = (path: string): boolean => {
+export const isDirectorySync = (cwd: string): boolean => {
 	try {
-		return fs.lstatSync(path).isDirectory()
+		return fs.lstatSync(cwd).isDirectory()
 	} catch (e) {
 		return false
 	}
 }
 
-// export const createDirecory = async (path: string): Promise<void> => {
-// 	try {
+/** remove a directory and its contents at given path asynchronously */
+export const removeDir = async (cwd: string): Promise<void> => {
+	if (!(await isFile(cwd))) {
+		if (await isDirectory(cwd)) {
+			throw new Error(
+				`Given path is a directory, use 'removeFile' on this path to delete the file: ${cwd}`
+			)
+		}
+		throw new Error(`Given path does not exist: ${cwd}`)
+	}
+	try {
+		await promisify(fs.rmdir)(cwd, { recursive: true })
+	} catch (e) {
+		throw new Error(
+			`Failed to remove file, ${path.basename(cwd)}, at path:  ${cwd}`
+		)
+	}
+}
 
-// 	} catch (e) {
-
-// 	}
-// }
+/** remove a directory and its contents at given path synchronously */
+export const removeDirSync = (cwd: string): void => {
+	if (!isDirectorySync(cwd)) {
+		if (isFileSync(cwd)) {
+			throw new Error(
+				`Given path is a file, use 'removeFile' on this path to delete the file: ${cwd}`
+			)
+		}
+		throw new Error(`Given path does not exist: ${cwd}`)
+	}
+	try {
+		fs.rmdirSync(cwd, { recursive: true })
+	} catch (e) {
+		throw new Error(
+			`Failed to remove directory, ${path.basename(cwd)}, at path: ${cwd}`
+		)
+	}
+}
 
 export { ensureDir }
 
@@ -188,10 +262,92 @@ export { ensureDir }
  *  MISC
  */
 
+/** Delete an item at the given path */
+export const deleteItem = async (cwd: string): Promise<void> => {
+	try {
+		if (await isDirectory(cwd)) {
+			await removeDir(cwd)
+		} else if (await isFile(cwd)) {
+			await removeFile(cwd)
+		}
+	} catch (e) {
+		throw new Error(`Failed to delete item at path: ${cwd}`)
+	}
+}
+
+/** Delete an item at the given path syncronously */
+export const deleteItemSync = (cwd: string): void => {
+	try {
+		if (isDirectorySync(cwd)) {
+			removeDirSync(cwd)
+		} else if (isFileSync(cwd)) {
+			removeFileSync(cwd)
+		}
+	} catch (e) {
+		throw new Error(`Failed to delete item at path: ${cwd}`)
+	}
+}
+
 /** a require statement that will reload contents if they are changed during execution */
 export const requireUncached = (module: any): any => {
 	delete require.cache[require.resolve(module)]
 	return require(module)
+}
+
+/** require statement will work properly with both javascript files and typescript files and returns a javascript module */
+export const globalRequire = async (
+	cwd: string
+): Promise<{ filePath: string; data: any }> => {
+	if (getFileExtension(cwd) === 'ts') {
+		return {
+			filePath: cwd,
+			data: await tsRequire(cwd),
+		}
+	}
+	return {
+		filePath: cwd,
+		data: require(cwd),
+	}
+}
+
+/** Import a typscript module as transpiled javascript asynchronously */
+export const tsRequire = async (
+	tsCodePath: string
+): Promise<{ filePath: string; data: any }> => {
+	if (!path.resolve(tsCodePath))
+		throw new Error(`Couldn't find tsFile at path: ${tsCodePath}`)
+
+	// get the ts code
+	const tsCode = await readFile(tsCodePath, 'utf8')
+
+	// transpile the ts code into a js string
+	const { outputText: jsText } = await transpileModule(tsCode, {
+		compilerOptions: {
+			target: 5,
+			module: 1,
+			resolveJsonModule: true,
+			strict: true,
+			esModuleInterop: true,
+			skipLibCheck: true,
+			forceConsistentCasingInFileNames: true,
+			moduleResolution: 2,
+			noImplicitAny: false,
+		},
+	})
+
+	// set js file path to the same as ts file path but as temp.js
+	const jsCodePath = path.join(tsCodePath, '../temp.js')
+
+	// write the js code to the temp file
+	fs.writeFileSync(jsCodePath, jsText)
+
+	// turn the file path into a module with import
+	const jsModule = await import(jsCodePath)
+
+	// remove the temp file
+	removeFileSync(jsCodePath)
+
+	return { filePath: jsCodePath, data: jsModule }
 }
 
 const readFile = fs.promises.readFile

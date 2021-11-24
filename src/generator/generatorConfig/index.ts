@@ -3,10 +3,7 @@ import JoyCon from 'joycon'
 import pa from 'path'
 import { Action } from '../actions'
 import { Prompt } from '../prompts/prompt'
-import { ModuleKind, transpileModule } from 'typescript'
-import { readFile } from '@/utils/files'
-import { unlinkSync, writeFileSync } from 'fs'
-import module from 'module'
+import { globalRequire } from '@/utils/files'
 
 export type DataFunction = (this: Grit, context: Grit) => object
 
@@ -58,45 +55,6 @@ const joycon = new JoyCon({
 	files: ['generator.js', 'generator.ts', 'generator.json'],
 })
 
-const tsTranspile = async (
-	tsCodePath: string
-): Promise<{ path: string; data: any }> => {
-	if (!pa.resolve(tsCodePath))
-		throw new Error(`Couldn't find tsFile at path: ${tsCodePath}`)
-
-	// get the ts code
-	const tsCode = await readFile(tsCodePath, 'utf8')
-
-	// transpile the ts code into a js string
-	const { outputText: jsText } = await transpileModule(tsCode, {
-		compilerOptions: {
-			target: 5,
-			module: 1,
-			resolveJsonModule: true,
-			strict: true,
-			esModuleInterop: true,
-			skipLibCheck: true,
-			forceConsistentCasingInFileNames: true,
-			moduleResolution: 2,
-			noImplicitAny: false,
-		},
-	})
-
-	// set js file path to the same as ts file path but as temp.js
-	const jsCodePath = pa.join(tsCodePath, '../temp.js')
-
-	// write the js code to the temp file
-	writeFileSync(jsCodePath, jsText)
-
-	// turn the file path into a module with import
-	const jsModule = await import(jsCodePath)
-
-	// // remove the temp file
-	unlinkSync(jsCodePath)
-
-	return { path: jsCodePath, data: jsModule }
-}
-
 /** load the generator config file */
 export const loadConfig = async (
 	cwd: string
@@ -106,11 +64,7 @@ export const loadConfig = async (
 		stopDir: pa.dirname(cwd),
 	})
 
-	if (path && pa.extname(path) === '.ts') {
-		return await tsTranspile(path)
-	}
-
-	return { path, data }
+	return await globalRequire(cwd)
 }
 
 /** Check generator has config file */
