@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[599],{1589:function(a){a.exports=JSON.parse('{"allTagsPath":"/Grit/blog/tags","slug":"/Grit/blog/tags/facebook","name":"facebook","count":1,"permalink":"/Grit/blog/tags/facebook"}')}}]);
