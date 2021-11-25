@@ -1,46 +1,50 @@
 import { Action } from '..'
-import { AddAction } from '../add'
-import { CopyAction } from '../copy'
-import { ModifyAction } from '../modify'
-import { MoveAction } from '../move'
-import { RemoveAction } from '../remove'
+import {
+	AddAction,
+	MoveAction,
+	CopyAction,
+	ModifyAction,
+	RemoveAction,
+} from '../action'
 
 type RemoveActionType<T extends Action> = Omit<T, 'type'>
 
 /** Simple type-safe creation of actions */
 export class CreateAction {
-	static add(action: RemoveActionType<AddAction>): AddAction {
+	add(action: RemoveActionType<AddAction>): AddAction {
 		return {
 			...action,
 			type: 'add',
 		}
 	}
 
-	static move(action: RemoveActionType<MoveAction>): MoveAction {
+	move(action: RemoveActionType<MoveAction>): MoveAction {
 		return {
 			...action,
 			type: 'move',
 		}
 	}
 
-	static copy(action: RemoveActionType<CopyAction>): CopyAction {
+	copy(action: RemoveActionType<CopyAction>): CopyAction {
 		return {
 			...action,
 			type: 'copy',
 		}
 	}
 
-	static modify(action: RemoveActionType<ModifyAction>): ModifyAction {
+	modify(action: RemoveActionType<ModifyAction>): ModifyAction {
 		return {
 			...action,
 			type: 'modify',
 		}
 	}
 
-	static remove(action: RemoveActionType<RemoveAction>): RemoveAction {
+	remove(action: RemoveActionType<RemoveAction>): RemoveAction {
 		return {
 			...action,
 			type: 'remove',
 		}
 	}
 }
+
+export const createAction = new CreateAction()

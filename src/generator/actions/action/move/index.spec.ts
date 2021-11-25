@@ -1,7 +1,7 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator/index'
 import path from 'path'
 import { moveAction } from '.'
-import { CreateAction } from '../createAction'
+import { createAction } from '../../createAction'
 
 // jest.mock('@/index')
 let context: Grit
@@ -15,7 +15,7 @@ describe('move Action', () => {
 	})
 
 	it('should move file to output', async () => {
-		const action = CreateAction.move({
+		const action = createAction.move({
 			patterns: {
 				'foo.txt': 'newDir/foo.txt',
 			},
@@ -31,7 +31,7 @@ describe('move Action', () => {
 	})
 
 	it('should remove old item', async () => {
-		const action = CreateAction.move({
+		const action = createAction.move({
 			patterns: {
 				'foo.txt': 'newDir/foo.txt',
 			},
@@ -45,7 +45,7 @@ describe('move Action', () => {
 	})
 
 	it('should move and rename file', async () => {
-		const action = CreateAction.move({
+		const action = createAction.move({
 			patterns: {
 				'foo.txt': 'fo.txt',
 			},

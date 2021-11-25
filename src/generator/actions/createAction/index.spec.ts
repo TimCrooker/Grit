@@ -1,4 +1,4 @@
-import { CreateAction } from '.'
+import { createAction } from '.'
 
 describe('Create actions', () => {
 	it('add', () => {
@@ -13,7 +13,7 @@ describe('Create actions', () => {
 				answers: context.answers,
 			}),
 		}
-		const actionOut = CreateAction.add(action)
+		const actionOut = createAction.add(action)
 
 		expect(actionOut).toEqual({
 			...action,
@@ -25,7 +25,7 @@ describe('Create actions', () => {
 		const action = {
 			patterns: { 'path.js': 'file.ts' },
 		}
-		const actionOut = CreateAction.move(action)
+		const actionOut = createAction.move(action)
 
 		expect(actionOut).toEqual({
 			...action,
@@ -37,7 +37,7 @@ describe('Create actions', () => {
 		const action = {
 			patterns: { 'path.js': 'file.ts' },
 		}
-		const actionOut = CreateAction.copy(action)
+		const actionOut = createAction.copy(action)
 
 		expect(actionOut).toEqual({
 			...action,
@@ -55,7 +55,7 @@ describe('Create actions', () => {
 				}
 			},
 		}
-		const actionOut = CreateAction.modify(action)
+		const actionOut = createAction.modify(action)
 
 		expect(actionOut).toEqual({
 			...action,
@@ -67,7 +67,7 @@ describe('Create actions', () => {
 		const action = {
 			files: ['path.js'],
 		}
-		const actionOut = CreateAction.remove(action)
+		const actionOut = createAction.remove(action)
 
 		expect(actionOut).toEqual({
 			...action,

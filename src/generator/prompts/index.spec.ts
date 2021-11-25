@@ -1,5 +1,5 @@
+import { Grit } from '@/generator'
 import path from 'path'
-import { Grit } from '@/index'
 
 const generator = path.join(__dirname, 'fixtures')
 

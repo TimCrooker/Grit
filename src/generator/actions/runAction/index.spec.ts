@@ -1,4 +1,4 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator/index'
 import path from 'path'
 
 let context: Grit

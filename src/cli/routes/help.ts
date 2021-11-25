@@ -3,7 +3,7 @@ import Choice from 'inquirer/lib/objects/choice'
 import { GritRoute } from '..'
 import open from 'open'
 import { ExitChoice, HomeChoice } from '.'
-import { BackChoice } from '@/CLI_FRAMEWORK/router'
+import { BackChoice } from '@/cli/BaseCLI/router'
 
 export const help: GritRoute = async (app, { args, options }) => {
 	const choices = [

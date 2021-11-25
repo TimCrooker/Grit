@@ -12,6 +12,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": "./src",
 		"moduleResolution": "node",
+		"noImplicitAny": false,
 		"types": [
 			"node",
 			"jest"

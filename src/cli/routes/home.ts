@@ -1,8 +1,6 @@
 import { UserFirstName } from '@/config'
-import { Grit, GritOptions } from '@'
+import { Grit, GritOptions } from '@/generator'
 import { store } from '@/store'
-import chalk from 'chalk'
-import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice, FindChoice } from '.'
 import { generatorChoiceList } from '../utils/generator'
@@ -15,9 +13,9 @@ import { GritRoute } from '../cli'
 export const home: GritRoute = async (app) => {
 	// get the top 3 most used generators from store and present them as choices
 	const RunGeneratorChoices = [
-		new inquirer.Separator('Run Generator'),
+		new app.inquirer.Separator('Run Generator'),
 		...(await generatorChoiceList()).slice(0, 100),
-		new inquirer.Separator(),
+		new app.inquirer.Separator(),
 	] as Choice[]
 
 	const choices = [

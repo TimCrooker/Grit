@@ -1,14 +1,14 @@
 import { GritError } from '@/error'
 import { logger } from '@/logger'
 import inquirer from 'inquirer'
-import { CheckboxPrompt } from './array/checkbox'
+import { CheckboxPrompt } from './withChoices/checkbox'
 import { ConfirmPrompt } from './confirm'
 import { InputPrompt } from './input'
-import { ListPrompt } from './array/list'
+import { ListPrompt } from './withChoices/list'
 import { NumberPrompt } from './number'
 import { PasswordPrompt } from './password'
 
-export type Answers = Record<string, any>
+export type Answers = Record<string, any> & { plugins?: string[] }
 
 export type Answer<T = any> = Record<string, T>
 
@@ -71,15 +71,14 @@ export const prompt = async ({
 	if (typeof injectedAnswers === 'string') {
 		injectedAnswers = JSON.parse(injectedAnswers)
 	}
-
 	logger.debug('Generator injected answers:', injectedAnswers)
 
 	const parsedPrompts: Prompt[] = prompts.map((prompt: Prompt, index) => {
 		validatePrompt(prompt, index)
 
-		// Push mock values to the injected answers
+		// When mock, use the mock maually provided mock value or the default if it exists
 		if (mock) {
-			let injectMock
+			let injectMock: string | number | boolean | string[] | undefined
 			if (prompt.mock) injectMock = prompt.mock
 			else if (typeof prompt.default !== 'function') {
 				injectMock = prompt.default
@@ -120,7 +119,33 @@ export const prompt = async ({
 	})
 
 	// if there are injected answers, then automatically answer the prompts included with the injected answers
-	const answers = await inquirer.prompt(parsedPrompts, injectedAnswers)
+	const answers: Answers = await inquirer.prompt(parsedPrompts, injectedAnswers)
+
+	// get the list of prompts where it is of type list or chekcbox and plugin property is set to true
+	const pluginPrompts = parsedPrompts.filter(
+		(prompt) =>
+			prompt.type === 'list' ||
+			(prompt.type === 'checkbox' && prompt.plugin === true)
+	)
+
+	// get answers where the key is equal to the name of a propmt in pluginPrompts
+	const pluginAnswers = pluginPrompts.reduce((acc, prompt) => {
+		acc[prompt.name] = answers[prompt.name]
+		return acc
+	}, {})
+
+	// get an array of plugins from the pluginAnswers values
+	const plugins = Object.entries(pluginAnswers).reduce(
+		(acc: string[], [key, value]) => {
+			if (typeof value === 'boolean' && value) return [...acc, key]
+			if (typeof value === 'string') return [...(acc as string[]), value]
+			if (Array.isArray(value)) return [...(acc as string[]), ...value]
+			return acc
+		},
+		[]
+	)
+
+	if (plugins.length > 0) answers.plugins = plugins
 
 	return answers
 }

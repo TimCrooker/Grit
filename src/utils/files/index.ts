@@ -99,7 +99,7 @@ export const removeFileExtension = (cwd: string): string => {
 	return basePath.replace(/\.[^/.]+$/, '')
 }
 
-/** strip the extension from a file name. Works on both paths and fileNames */
+/** return the extension from a file name. Works on both paths to files and fileNames */
 export const getFileExtension = (cwd: string): string => {
 	return path.extname(cwd)
 }
@@ -295,25 +295,19 @@ export const requireUncached = (module: any): any => {
 }
 
 /** require statement will work properly with both javascript files and typescript files and returns a javascript module */
-export const globalRequire = async (
-	cwd: string
-): Promise<{ filePath: string; data: any }> => {
-	if (getFileExtension(cwd) === 'ts') {
-		return {
-			filePath: cwd,
-			data: await tsRequire(cwd),
-		}
+export const globalRequire = async (cwd: string): Promise<any> => {
+	if (!(await isFile(cwd))) {
+		throw new Error(`Require failed, item at path is not a file: ${cwd}`)
 	}
-	return {
-		filePath: cwd,
-		data: require(cwd),
+	if (cwd && getFileExtension(cwd) === '.ts') {
+		return await tsRequire(cwd)
 	}
+	const module = await import(cwd)
+	return module
 }
 
 /** Import a typscript module as transpiled javascript asynchronously */
-export const tsRequire = async (
-	tsCodePath: string
-): Promise<{ filePath: string; data: any }> => {
+export const tsRequire = async (tsCodePath: string): Promise<any> => {
 	if (!path.resolve(tsCodePath))
 		throw new Error(`Couldn't find tsFile at path: ${tsCodePath}`)
 
@@ -345,9 +339,9 @@ export const tsRequire = async (
 	const jsModule = await import(jsCodePath)
 
 	// remove the temp file
-	removeFileSync(jsCodePath)
+	await removeFile(jsCodePath)
 
-	return { filePath: jsCodePath, data: jsModule }
+	return jsModule
 }
 
 const readFile = fs.promises.readFile

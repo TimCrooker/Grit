@@ -1,4 +1,4 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator/index'
 import JoyCon from 'joycon'
 import pa from 'path'
 import { Action } from '../actions'
@@ -59,12 +59,13 @@ const joycon = new JoyCon({
 export const loadConfig = async (
 	cwd: string
 ): Promise<{ path?: string; data?: GeneratorConfig }> => {
-	const { path, data } = await joycon.load({
+	const { path } = await joycon.load({
 		cwd,
 		stopDir: pa.dirname(cwd),
 	})
+	const data = path ? await globalRequire(path) : undefined
 
-	return await globalRequire(cwd)
+	return { path, data }
 }
 
 /** Check generator has config file */

@@ -1,14 +1,4 @@
-describe('Home', async () => {
-	// inquirer.prompt.mockResolvedValue(() => Promise.resolve({ answer: 'test' }))
-
-	// const cli = new CLI({ pkg })
-
-	// cli.addRoute('home', home)
-
-	// await cli.navigate('home')
-
-	// expect(inquirer.prompt).toHaveBeenCalled()
-
+describe('Home', () => {
 	it('should ', () => {
 		expect(true)
 	})

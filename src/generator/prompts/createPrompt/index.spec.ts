@@ -1,4 +1,4 @@
-import { CreatePrompt } from '.'
+import { createPrompt } from '.'
 
 describe('Create prompts', () => {
 	it('input', () => {
@@ -7,7 +7,7 @@ describe('Create prompts', () => {
 			message: 'message',
 			default: 'default',
 		}
-		const promptOut = CreatePrompt.input(prompt)
+		const promptOut = createPrompt.input(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,
@@ -22,7 +22,7 @@ describe('Create prompts', () => {
 			mask: '*',
 			default: 'default',
 		}
-		const promptOut = CreatePrompt.password(prompt)
+		const promptOut = createPrompt.password(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,
@@ -36,7 +36,7 @@ describe('Create prompts', () => {
 			message: 'message',
 			default: 1,
 		}
-		const promptOut = CreatePrompt.number(prompt)
+		const promptOut = createPrompt.number(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,
@@ -50,7 +50,7 @@ describe('Create prompts', () => {
 			message: 'message',
 			default: true,
 		}
-		const promptOut = CreatePrompt.confirm(prompt)
+		const promptOut = createPrompt.confirm(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,
@@ -72,7 +72,7 @@ describe('Create prompts', () => {
 				{ name: 'name', value: 'value', short: 'hello world', checked: false },
 			],
 		}
-		const promptOut = CreatePrompt.checkbox(prompt)
+		const promptOut = createPrompt.checkbox(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,
@@ -90,7 +90,7 @@ describe('Create prompts', () => {
 			],
 		}
 
-		const promptOut = CreatePrompt.list(prompt)
+		const promptOut = createPrompt.list(prompt)
 
 		expect(promptOut).toEqual({
 			...prompt,

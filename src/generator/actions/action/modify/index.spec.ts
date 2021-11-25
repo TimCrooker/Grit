@@ -1,9 +1,8 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator'
 import path from 'path'
 import { modifyAction } from '.'
-import { CreateAction } from '../createAction'
+import { createAction } from '../../createAction'
 
-// jest.mock('@/index')
 let context: Grit
 
 describe('Modify Action', () => {
@@ -15,7 +14,7 @@ describe('Modify Action', () => {
 	})
 
 	it('should modify text file contents', async () => {
-		const action = CreateAction.modify({
+		const action = createAction.modify({
 			files: ['foo.txt'],
 			handler: (data, filepath) => {
 				return 'bar'
@@ -34,7 +33,7 @@ describe('Modify Action', () => {
 	})
 
 	it('should modify JSON file contents', async () => {
-		const action = CreateAction.modify({
+		const action = createAction.modify({
 			files: ['bar.json'],
 			handler: (data, filepath) => {
 				console.log(data, filepath)

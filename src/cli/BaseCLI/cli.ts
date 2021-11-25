@@ -5,18 +5,17 @@ import { logger } from './logger'
 import { commander } from './commander'
 import { Route, Router, RouterOptions } from './router'
 import { spinner } from './spinner'
+import { SetRequired } from 'type-fest'
 
 export interface CLIOptions<RuntimeEnvInstance = any> {
 	pkg: Package
 	debug?: boolean
-	/** renders prompts to  */
 	mock?: boolean
 	env?: RuntimeEnvInstance
 }
 
 export class CLI<RuntimeEnvInstance = any> {
-	opts: CLIOptions
-	env: RuntimeEnvInstance
+	opts: SetRequired<CLIOptions, 'debug' | 'mock'>
 
 	private router: Router<RuntimeEnvInstance>
 	logger = logger
@@ -32,11 +31,11 @@ export class CLI<RuntimeEnvInstance = any> {
 			mock: opts.mock || false,
 		}
 
-		// Set the runtime enviroment
-		this.env = opts.env
-
 		// Configure logger
-		this.logger.options = { logLevel: opts.debug ? 4 : 1, mock: false }
+		logger.options = {
+			logLevel: this.opts.debug ? 4 : 1,
+			mock: this.opts.mock,
+		}
 
 		// Configure CLI router
 		const routerOpts = { logger: this.logger } as RouterOptions
@@ -51,27 +50,30 @@ export class CLI<RuntimeEnvInstance = any> {
 	}
 
 	async run(): Promise<void> {
+		(!this.opts.debug) && console.clear()
+
+		console.log('runnings')
 		this.logger.debug('CLI running...')
 
-		this.updateCheck()
+		await this.updateCheck()
 
 		this.commander.parse()
 	}
 
 	/** Check for updates and inform the user if there are any */
-	updateCheck(pkg = this.opts.pkg): void {
-		const notifier = updateNotifier({ pkg })
-		const message = []
+	async updateCheck(pkg = this.opts.pkg): Promise<void> {
+		const notifier = await updateNotifier({ pkg }).fetchInfo()
 
-		if (notifier.update) {
-			message.push(
-				'Update available: ' +
-					chalk.green.bold(notifier.update.latest) +
-					chalk.gray(' (current: ' + notifier.update.current + ')'),
-				'Run ' + chalk.magenta('npm install -g ' + pkg.name) + ' to update.'
-			)
-			console.log(message.join(' '))
-		}
+		// if (notifier.type !== 'latest') {
+		this.logger.log(
+			'Update available: ',
+			this.chalk.green.bold(notifier.latest),
+			chalk.gray(' (current: ' + notifier.current + ')'),
+			'Run',
+			this.chalk.magenta('npm install -g ' + pkg.name),
+			'to update.'
+		)
+		// }
 	}
 
 	/** Add a CLI Route */

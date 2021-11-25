@@ -3,6 +3,7 @@ import { ListChoice } from './list'
 
 export interface CheckboxPrompt extends BasePrompt {
 	type: 'checkbox'
+	plugin?: boolean
 	mock?: Array<string>
 	choices: WithAnswers<CheckboxChoice[]>
 	default?: WithAnswers<string[]>

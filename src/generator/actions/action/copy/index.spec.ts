@@ -1,7 +1,7 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator'
 import path from 'path'
 import { copyAction } from '.'
-import { CreateAction } from '../createAction'
+import { createAction } from '../../createAction'
 
 // jest.mock('@/index')
 let context: Grit
@@ -15,7 +15,7 @@ describe('Copy Action', () => {
 	})
 
 	it('should copy file to output', async () => {
-		const action = CreateAction.copy({
+		const action = createAction.copy({
 			patterns: {
 				'foo.txt': 'newDir/foo.txt',
 			},
@@ -31,7 +31,7 @@ describe('Copy Action', () => {
 	})
 
 	it('should error on overwrite', async () => {
-		const action = CreateAction.copy({
+		const action = createAction.copy({
 			patterns: {
 				'foo.txt': 'foo.txt',
 			},
@@ -43,7 +43,7 @@ describe('Copy Action', () => {
 	})
 
 	it('should copy and rename file', async () => {
-		const action = CreateAction.copy({
+		const action = createAction.copy({
 			patterns: {
 				'foo.txt': 'fo.txt',
 			},

@@ -1,11 +1,11 @@
-import { BackChoice } from '@/CLI_FRAMEWORK/router'
-import { handleError } from '@/error'
-import { Grit } from '@'
+import { BackChoice } from '@/cli/BaseCLI/router'
+import { GritError, handleError } from '@/error'
+import { Grit } from '@/generator'
 import { store } from '@/store'
-import axios from 'axios'
 import chalk from 'chalk'
 import { ExitChoice, HelpChoice, HomeChoice } from '.'
 import { GritRoute } from '../cli'
+import { NpmSearch } from '../utils/npm'
 
 /**
  *  This route lets the user search for generators using npm search.
@@ -20,14 +20,15 @@ export const find: GritRoute = async (app, { options }) => {
 
 		// get the generators from npm)
 		app.spinner.start('searching for grit-generators')
-		const { data } = await axios.get(
-			'http://registry.npmjs.com/-/v1/search?text=keywords:grit-generator&size=20'
-		)
+		const data = await NpmSearch({
+			keywords: ['grit-generator'],
+			resultCount: 50,
+		})
 		app.spinner.stop()
 
 		// Create inquirer choices with search results
 		const choices = [
-			...data.objects.map(({ package: { name, description } }) => {
+			...data.map(({ package: { name, description } }) => {
 				name = name.replace('grit-', '')
 				const alreadyInstalled = installedNpmGenerators.includes(name)
 
@@ -83,8 +84,10 @@ export const find: GritRoute = async (app, { options }) => {
 
 		// Go home after running the generator
 		return await app.navigate('home')
-	} catch (error) {
-		handleError(error)
+	} catch (e) {
+		if (e instanceof GritError || e instanceof Error) {
+			handleError(e)
+		}
 	}
 }
 

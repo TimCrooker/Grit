@@ -5,8 +5,8 @@ import isBinaryPath from 'is-binary-path'
 import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
-import { DataFunction } from '../../generatorConfig'
-import { ActionFn } from '../runActions'
+import { DataFunction } from '../../../generatorConfig'
+import { ActionFn } from '../../runAction'
 
 /**  */
 export interface AddAction {

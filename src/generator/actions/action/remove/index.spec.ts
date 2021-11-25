@@ -1,7 +1,7 @@
-import { Grit } from '@/index'
+import { Grit } from '@/generator/index'
 import path from 'path'
 import { removeAction } from '.'
-import { CreateAction } from '../createAction'
+import { createAction } from '../../createAction'
 
 let context: Grit
 
@@ -14,7 +14,7 @@ describe('Remove Action', () => {
 	})
 
 	it('should remove file from output directory', async () => {
-		const action = CreateAction.remove({
+		const action = createAction.remove({
 			files: 'foo.txt',
 		})
 

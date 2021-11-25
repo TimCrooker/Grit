@@ -1,26 +1,20 @@
 import pkg from '@/../package.json'
-import { CLI, CLIOptions } from '@/CLI_FRAMEWORK/cli'
+import { CLI } from '@/cli/BaseCLI/cli'
 import { generate } from './routes/generate'
 import { exit, find, help, home } from './routes'
-import { Route } from '../CLI_FRAMEWORK/router'
+import { Route } from './BaseCLI/router'
 import { checkPkgForUpdates } from './utils/updater'
-import { Grit } from '@/index'
+import { Grit } from '@/generator/index'
 
 export type RuntimeEnv = Grit
 
 export type GritRoute = Route<RuntimeEnv>
 
 export const runCLI = async (): Promise<void> => {
-	const debugMode = process.env.NODE_ENV === 'development'
-
-	const cliOpts = {
+	const cli = new CLI({
 		pkg,
-		debug: debugMode,
-	} as CLIOptions
-
-	const cli = new CLI(cliOpts)
-
-	!debugMode && console.clear()
+		debug: true,
+	})
 
 	cli.logger.log(await checkPkgForUpdates(pkg))
 
@@ -30,13 +24,8 @@ export const runCLI = async (): Promise<void> => {
 		.addRoute('help', help)
 		.addRoute('exit', exit)
 		.addRoute('find', find)
-
-	cli.commander.name('grit').version(pkg.version)
-
-	/**
-	 * Command routes
-	 */
-
+		.commander.name('grit')
+		.version(pkg.version)
 	// List command for listing your generators
 	cli.commander.command('find').action(() => cli.navigate('find'))
 
@@ -49,7 +38,7 @@ export const runCLI = async (): Promise<void> => {
 		.option('-d, --debug', 'run the generator with more logging')
 		.option('-u, --update', 'force generator update')
 		.option('-c, --clone', 'git clone repo instead of downloading it')
-		.option('-y, --yes', 'uses default answers for all generator questions')
+		.option('-y, --yes', 'use default answers for all generator questions')
 		.option(
 			'--npm-client <client>',
 			`use a specific npm client ('yarn', 'npm')`

@@ -4,11 +4,11 @@ import { GeneratorConfig } from '@/generator/generatorConfig'
 module.exports = {
 	actions() {
 		return [
-			this.createAction.add({
+			this.actions.create.add({
 				files: '**',
 				data: (context) => ({ name: 'Tim' }),
 			}),
-			this.createAction.move({
+			this.actions.create.move({
 				patterns: {
 					'bar.json': 'buz.json',
 				},

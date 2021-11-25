@@ -5,6 +5,7 @@ import { Answers, BasePrompt, WithAnswers, WithFullContext } from '..'
 export interface ListPrompt extends BasePrompt {
 	type: 'list' | 'rawlist'
 	mock?: string
+	plugin?: boolean
 	choices: WithAnswers<ListChoice[]>
 	/** Must be the index or value of desired choice */
 	default?: WithAnswers<number | string>
