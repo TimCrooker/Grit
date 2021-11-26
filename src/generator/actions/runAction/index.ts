@@ -1,5 +1,4 @@
 import { Grit } from '@/generator'
-import { GeneratorConfig } from '@/generator/generatorConfig'
 import { Action } from '@/index'
 import { logger } from '@/logger'
 import {
@@ -12,25 +11,20 @@ import {
 
 export const runAction = async (
 	context: Grit,
-	action: Action,
-	config: GeneratorConfig
+	action: Action
 ): Promise<void> => {
 	logger.debug('Running action:', action)
 	if (action.type === 'add' && action.files) {
-		await addAction(context, action, config)
+		await addAction(context, action)
 	} else if (action.type === 'modify' && action.handler) {
-		await modifyAction(context, action, config)
+		await modifyAction(context, action)
 	} else if (action.type === 'move' && action.patterns) {
-		await moveAction(context, action, config)
+		await moveAction(context, action)
 	} else if (action.type === 'copy' && action.patterns) {
-		await copyAction(context, action, config)
+		await copyAction(context, action)
 	} else if (action.type === 'remove' && action.files) {
-		await removeAction(context, action, config)
+		await removeAction(context, action)
 	}
 }
 
-export type ActionFn<T> = (
-	context: Grit,
-	action: T,
-	config?: GeneratorConfig
-) => Promise<void>
+export type ActionFn<T> = (context: Grit, action: T) => Promise<void>

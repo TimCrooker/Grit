@@ -36,11 +36,9 @@ describe('Add Action', () => {
 
 		const name = 'Tim'
 
-		context.answers = {
-			name,
-		}
+		context.answers = { name }
 
-		await addAction(context, action, {})
+		await addAction(context, action)
 
 		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(name)
 

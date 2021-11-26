@@ -1,3 +1,5 @@
+import { Grit } from '@/generator'
+import { DataType } from '@/generator/generatorConfig'
 import { logger } from '@/logger'
 import { getGlobPatterns } from '@/utils/glob'
 import ejs from 'ejs'
@@ -5,7 +7,6 @@ import isBinaryPath from 'is-binary-path'
 import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
-import { DataFunction } from '../../../generatorConfig'
 import { ActionFn } from '../../runAction'
 
 /**  */
@@ -30,14 +31,12 @@ export interface AddAction {
 	/**
 	 * Custom data to use in template transformation
 	 */
-	data?: DataFunction | object
+	data?: DataType | ((ctx: Grit) => DataType)
 }
 
-export const addAction: ActionFn<AddAction> = async (
-	context,
-	action,
-	config = {}
-) => {
+export const addAction: ActionFn<AddAction> = async (context, action) => {
+	const config = context.config
+
 	const stream = majo()
 	stream.source(['!**/node_modules/**'].concat(action.files), {
 		baseDir: path.resolve(
@@ -66,7 +65,7 @@ export const addAction: ActionFn<AddAction> = async (
 	const shouldTransform =
 		typeof action.transform === 'boolean'
 			? action.transform
-			: config.transform !== false
+			: config?.transform !== false
 	// use EJS to transform files with action.data variables availiable
 	if (shouldTransform) {
 		stream.use(({ files }) => {

@@ -1,11 +1,13 @@
 import { Grit } from '@/generator/index'
 import JoyCon from 'joycon'
 import pa from 'path'
-import { Action } from '../actions'
+import { Action, Actions } from '../actions'
 import { Prompt } from '../prompts/prompt'
 import { globalRequire } from '@/utils/files'
+import { Prompts } from '../prompts'
+import { Data } from '../data'
 
-export type DataFunction = (this: Grit, context: Grit) => object
+export type DataType = Record<string, any>
 
 export interface GeneratorConfig {
 	/**
@@ -26,15 +28,28 @@ export interface GeneratorConfig {
 	/**
 	 * Extra data to use in template transformation
 	 */
-	data?: DataFunction
+	data?: (
+		this: Data,
+		ctx: Grit
+	) => DataType | Promise<DataType> | void | Promise<void>
 	/**
 	 * Use prompts to ask questions before generating project
 	 */
-	prompts?: Prompt[] | ((this: Grit, ctx: Grit) => Prompt[] | Promise<Prompt[]>)
+	prompts?:
+		| Prompt[]
+		| ((
+				this: Prompts,
+				ctx: Grit
+		  ) => Prompt[] | Promise<Prompt[]> | void | Promise<void>)
 	/**
 	 * Use actions to control how files are generated
 	 */
-	actions?: Action[] | ((this: Grit, ctx: Grit) => Action[] | Promise<Action[]>)
+	actions?:
+		| Action[]
+		| ((
+				this: Actions,
+				ctx: Grit
+		  ) => Action[] | Promise<Action[]> | void | Promise<void>)
 	/**
 	 * Directory to template folder
 	 * Defaults to `./template` in your generator folder

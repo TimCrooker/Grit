@@ -1,12 +1,12 @@
 import { GritError } from '@/error'
 import { logger } from '@/logger'
 import inquirer from 'inquirer'
-import { CheckboxPrompt } from './withChoices/checkbox'
 import { ConfirmPrompt } from './confirm'
 import { InputPrompt } from './input'
-import { ListPrompt } from './withChoices/list'
 import { NumberPrompt } from './number'
 import { PasswordPrompt } from './password'
+import { CheckboxPrompt } from './withChoices/checkbox'
+import { ListPrompt } from './withChoices/list'
 
 export type Answers = Record<string, any> & { plugins?: string[] }
 
@@ -28,6 +28,7 @@ export interface BasePrompt {
 	type: string
 	name: string
 	message: WithAnswers<string>
+	/** Skips the question when false is returned */
 	when?: WithAnswers<boolean>
 	prefix?: string
 	suffix?: string
@@ -62,7 +63,7 @@ interface PromptOptions {
 }
 
 /** Use inquirer to get answers to the prompts from the user */
-export const prompt = async ({
+export const runPrompts = async ({
 	prompts,
 	cachedAnswers,
 	injectedAnswers = {},

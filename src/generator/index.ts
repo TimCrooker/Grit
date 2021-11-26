@@ -31,6 +31,7 @@ import {
 } from './parseGenerator'
 import { Prompts } from './prompts'
 import { Actions } from './actions'
+import { Data } from './data'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -77,10 +78,20 @@ export interface GritOptions<T = Record<string, any>> {
 	extras?: T
 }
 
-const EMPTY_ANSWERS = Symbol()
-const EMPTY_DATA = Symbol()
+const IDLE = 'idle'
+const PREPARE = 'prepare'
+const PROMPT = 'prompt'
+const DATA = 'data'
+const ACTION = 'action'
+const COMPLETE = 'complete'
 
-export type Data = Record<string, any>
+type GenState =
+	| typeof IDLE
+	| typeof PREPARE
+	| typeof PROMPT
+	| typeof DATA
+	| typeof ACTION
+	| typeof COMPLETE
 
 export class Grit {
 	opts: SetRequired<GritOptions, 'outDir' | 'logLevel'>
@@ -92,13 +103,14 @@ export class Grit {
 	log = logger
 	/** Access Grit local storage */
 	store = store
-	/**  */
-	prompts = new Prompts()
-	/**  */
-	actions = new Actions()
+	/** Generator config file loaded from */
+	config: GeneratorConfig = {}
 
-	private _answers: Answers | symbol = EMPTY_ANSWERS
-	private _data: Data | symbol = EMPTY_DATA
+	private prompts = new Prompts(this)
+	private actions = new Actions(this)
+	private _data = new Data(this)
+
+	private state: GenState = IDLE
 
 	parsedGenerator: ParsedGenerator
 
@@ -165,6 +177,9 @@ export class Grit {
 				? loadedConfig.data
 				: defautGeneratorFile
 
+		// set generator config
+		this.config = config
+
 		return config
 	}
 
@@ -172,41 +187,75 @@ export class Grit {
 	 * Run the generator with the configured options
 	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
 	 */
-	async runGenerator(config: GeneratorConfig): Promise<void> {
+	async runGenerator(config: GeneratorConfig = this.config): Promise<void> {
 		if (config.description) {
 			logger.status('green', 'Generator', config.description)
 		}
 
 		// Run generator prepare
 		if (typeof config.prepare === 'function') {
+			this.state = PREPARE
 			await config.prepare.call(this, this)
 		}
 
-		// Run generator supplied prompts
+		/**
+		 * Run generator prompt section
+		 *
+		 * `this` key is used to access the prompts class methods for creating new
+		 * prompts and for accessing the answers object
+		 *
+		 * for functional prompt sections, you are passed the grit generator as a prop
+		 * to access its methods and propertiesS
+		 */
 		if (config.prompts) {
-			this._answers = await this.prompts.run(this, config)
-		} else {
-			this._answers = {}
+			this.state = PROMPT
+			await this.prompts.run()
 		}
 
-		this._data = config.data ? config.data.call(this, this) : {}
+		// Run generator data section
+		if (config.data) {
+			this.state = DATA
+			await this._data.run()
+		}
 
 		// Run generator supplied actions
 		if (config.actions) {
-			await this.actions.run(this, config)
+			this.state = ACTION
+			await this.actions.run()
 		}
 
 		if (!this.opts.mock && config.completed) {
+			this.state = COMPLETE
 			await config.completed.call(this, this)
 		}
 	}
 
 	/** Method to run when instantiated with a generator */
 	async run(): Promise<void> {
-		const config = await this.getGenerator()
-		await this.runGenerator(config)
+		await this.runGenerator(await this.getGenerator())
 	}
 
+	accessPermissions(
+		accessItem: string,
+		denyStates?: string[],
+		allowStates?: string[]
+	): void {
+		// Check if the current state is one of the denied states
+		if (denyStates && denyStates.includes(this.state)) {
+			throw new Error(
+				`You cannot access ${accessItem} in the ${this.state} section`
+			)
+		}
+
+		// Check if the current state is one of the allowed states
+		if (allowStates && !allowStates.includes(this.state)) {
+			throw new Error(
+				`You cannot access ${accessItem} in the ${this.state} section`
+			)
+		}
+
+		return
+	}
 	/**Hot Reloading */
 
 	/** Watch plugin directories for changes */
@@ -257,14 +306,12 @@ export class Grit {
 	 * You can't access this in `prompts` function
 	 */
 	get answers(): { [k: string]: any } {
-		if (typeof this._answers === 'symbol') {
-			throw new GritError(`You can't access \`.answers\` here`)
-		}
-		return this._answers
+		this.accessPermissions('answers', [PREPARE])
+		return this.prompts.answers
 	}
 
 	set answers(value: { [k: string]: any }) {
-		this._answers = value
+		this.prompts.answers = value
 	}
 
 	/**
@@ -273,12 +320,10 @@ export class Grit {
 	 * Used to give generator functions more custom data to work with
 	 */
 	get data(): any {
-		if (typeof this._data === 'symbol') {
-			throw new GritError(`You can't call \`.data\` here`)
-		}
+		this.accessPermissions('data', [PREPARE, PROMPT])
 		return {
 			...this.answers,
-			...this._data,
+			...this._data.data,
 		}
 	}
 
@@ -287,7 +332,7 @@ export class Grit {
 	 *
 	 * Returns an empty object when it doesn't exist
 	 */
-	get pkg(): { [k: string]: any } | undefined {
+	get pkg(): Record<string, any> {
 		try {
 			return require(path.join(this.outDir, 'package.json'))
 		} catch (err) {
