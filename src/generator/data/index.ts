@@ -32,7 +32,8 @@ export class Data {
 	 */
 
 	/** Helper method to instantly add data to the data section*/
-	add(): this {
+	add(value: Record<string, any>): this {
+		this._data = { ...this._data, ...value }
 		return this
 	}
 

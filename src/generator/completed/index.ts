@@ -1,6 +1,11 @@
 import { GeneratorConfig, Grit } from '@/index'
+import { logger } from '@/logger'
+import { RunNpmScriptOptions, runNpmScript } from '@/utils/cmd'
+import { exec } from 'child_process'
+import spawn from 'cross-spawn'
+import { promisify } from 'util'
 
-export class Prepare {
+export class Completed {
 	grit: Grit
 
 	constructor(context: Grit) {
@@ -9,7 +14,7 @@ export class Prepare {
 
 	async run(
 		grit: Grit = this.grit,
-		config: GeneratorConfig['prepare'] = this.grit.config.prepare
+		config: GeneratorConfig['completed'] = this.grit.config.completed
 	): Promise<void> {
 		// Runs completed section from the generator config
 		typeof config === 'function' && (await config.call(this, grit))

@@ -15,8 +15,6 @@ import {
 	InstallOptions,
 	installPackages,
 	NPM_CLIENT,
-	runNpmScript,
-	RunNpmScriptOptions,
 } from '@/utils/cmd'
 import { pathExists, readFile } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
@@ -32,6 +30,8 @@ import {
 import { Prompts } from './prompts'
 import { Actions } from './actions'
 import { Data } from './data'
+import { Completed } from './completed'
+import { Prepare } from './prepare'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -109,8 +109,10 @@ export class Grit {
 	private prompts = new Prompts(this)
 	private actions = new Actions(this)
 	private _data = new Data(this)
+	private completed = new Completed(this)
+	private prepare = new Prepare(this)
 
-	private state: GenState = IDLE
+	state: GenState = IDLE
 
 	parsedGenerator: ParsedGenerator
 
@@ -161,7 +163,7 @@ export class Grit {
 	): Promise<GeneratorConfig> {
 		await ensureGeneratorExists(generator, this.opts)
 
-		// Increment the run count of the generator
+		// Increment the run count of the generator in the store
 		this.store.generators.set(
 			generator.hash + '.runCount',
 			store.generators.get(generator.hash + '.runCount') + 1 || 1
@@ -193,20 +195,12 @@ export class Grit {
 		}
 
 		// Run generator prepare
-		if (typeof config.prepare === 'function') {
+		if (config.prepare) {
 			this.state = PREPARE
-			await config.prepare.call(this, this)
+			await this.prepare.run()
 		}
 
-		/**
-		 * Run generator prompt section
-		 *
-		 * `this` key is used to access the prompts class methods for creating new
-		 * prompts and for accessing the answers object
-		 *
-		 * for functional prompt sections, you are passed the grit generator as a prop
-		 * to access its methods and propertiesS
-		 */
+		// Run generator prompt section
 		if (config.prompts) {
 			this.state = PROMPT
 			await this.prompts.run()
@@ -218,24 +212,26 @@ export class Grit {
 			await this._data.run()
 		}
 
-		// Run generator supplied actions
+		// Run generator actions section
 		if (config.actions) {
 			this.state = ACTION
 			await this.actions.run()
 		}
 
+		// Run generator completed section
 		if (!this.opts.mock && config.completed) {
 			this.state = COMPLETE
-			await config.completed.call(this, this)
+			await this.completed.run()
 		}
 	}
 
 	/** Method to run when instantiated with a generator */
 	async run(): Promise<void> {
 		await this.runGenerator(await this.getGenerator())
+		this.state = IDLE
 	}
 
-	accessPermissions(
+	setPermissions(
 		accessItem: string,
 		denyStates?: string[],
 		allowStates?: string[]
@@ -256,47 +252,6 @@ export class Grit {
 
 		return
 	}
-	/**Hot Reloading */
-
-	/** Watch plugin directories for changes */
-	// private async watchPlugins(): Promise<void> {
-	// this.logger.info('Watching files in for changes')
-	// const pluginDirectories = this.selectedPluginsPaths
-	// // add the template directory to the list
-	// pluginDirectories.push(path.resolve(this.sourcePath, 'template'))
-	// // add the prompt.js file to the list
-	// // pluginDirectories.push(path.resolve(this.sourcePath, 'prompt.js'))
-	// const event = new EventEmitter()
-	// // event triggered by file changes in plugins
-	// event.on('Rebuild', async (pluginPath, filename) => {
-	// 	await this.rerunGenerator(path.basename(pluginPath), filename).catch(
-	// 		(err: Error) => {
-	// 			logger.error('Rebuild encountered the following error', err)
-	// 			// process.exit(1)
-	// 		}
-	// 	)
-	// 	logger.info('Watching for changes')
-	// })
-	// begin watching plugin pack directories for changes
-	// await watchDirectories(pluginDirectories, true, event)
-	// }
-
-	/** Rebuild project */
-	// async rerunGenerator(pluginName: string, filename: string): Promise<void> {
-	// logger.info('Changes detected now rebuilding')
-	// // update generator options with previous run's answers
-	// this.opts = {
-	// 	...this.opts,
-	// 	answers: { ...this.answers },
-	// }
-	// // run rebuild in quiet mode
-	// this.grit.logger.options.logLevel = 1
-	// // run the rebuild
-	// await this.grit.run()
-	// !this.debug &&
-	// 	['package.json', '_package.json'].includes(filename) &&
-	// 	(await this.installPackages())
-	// }
 
 	/** Generator Instance Properties */
 
@@ -306,7 +261,7 @@ export class Grit {
 	 * You can't access this in `prompts` function
 	 */
 	get answers(): { [k: string]: any } {
-		this.accessPermissions('answers', [PREPARE])
+		this.setPermissions('answers', [PREPARE, PROMPT])
 		return this.prompts.answers
 	}
 
@@ -320,7 +275,7 @@ export class Grit {
 	 * Used to give generator functions more custom data to work with
 	 */
 	get data(): any {
-		this.accessPermissions('data', [PREPARE, PROMPT])
+		this.setPermissions('data', [PREPARE, PROMPT])
 		return {
 			...this.answers,
 			...this._data.data,
@@ -340,13 +295,21 @@ export class Grit {
 		}
 	}
 
+	get generatorPkg(): Record<string, any> {
+		try {
+			return require(path.join(this.parsedGenerator.path, 'package.json'))
+		} catch (err) {
+			return {}
+		}
+	}
+
 	/** Get the information of system git user */
 	get gitUser(): GitUser {
 		return getGitUser(this.opts.mock)
 	}
 
 	/** The basename of output directory */
-	get appName(): string {
+	get projectName(): string {
 		return path.basename(this.opts.outDir)
 	}
 
@@ -364,6 +327,7 @@ export class Grit {
 
 	/**	Run `git init` in output directly */
 	gitInit(): void {
+		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug) {
 			logger.debug('Skipping git init')
 			return
@@ -382,6 +346,7 @@ export class Grit {
 
 	/** Run a git commit with a custom commit message in output directory */
 	async gitCommit(commitMessage?: string): Promise<void> {
+		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug) {
 			logger.debug('Skipping git commit')
 			return
@@ -410,6 +375,7 @@ export class Grit {
 	async npmInstall(
 		opts?: Omit<InstallOptions, 'cwd' | 'registry'>
 	): Promise<{ code: number }> {
+		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug) {
 			logger.debug('npm install skipped')
 			return { code: 0 }
@@ -426,17 +392,9 @@ export class Grit {
 		)
 	}
 
-	/** Run any npm script from package.json of the output directory */
-	async runScript(opts: Omit<RunNpmScriptOptions, 'cwd'>): Promise<void> {
-		if (this.opts.debug) {
-			logger.debug(`skipping run script`)
-			return
-		}
-		await runNpmScript({ ...opts, cwd: this.outDir })
-	}
-
 	/** Display a success message */
 	showProjectTips(): void {
+		this.setPermissions('gitInit', [], [COMPLETE])
 		spinner.stop() // Stop when necessary
 		logger.success(`Generated into ${colors.underline(this.outDir)}`)
 	}
@@ -445,6 +403,8 @@ export class Grit {
 	createError(message: string): GritError {
 		return new GritError(message)
 	}
+
+	/** Testing Helpers */
 
 	/** Get file list of output directory */
 	async getOutputFiles(): Promise<string[]> {

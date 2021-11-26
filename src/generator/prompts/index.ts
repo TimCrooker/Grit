@@ -86,7 +86,7 @@ export class Prompts {
 	}
 
 	/** Get the list of prompts from the generator file */
-	async getPrompts(
+	private async getPrompts(
 		context: Grit = this.grit,
 		config: GeneratorConfig['prompts'] = this.grit.config.prompts
 	): Promise<void> {

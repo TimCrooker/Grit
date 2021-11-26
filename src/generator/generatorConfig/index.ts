@@ -6,6 +6,8 @@ import { Prompt } from '../prompts/prompt'
 import { globalRequire } from '@/utils/files'
 import { Prompts } from '../prompts'
 import { Data } from '../data'
+import { Completed } from '../completed'
+import { Prepare } from '../prepare'
 
 export type DataType = Record<string, any>
 
@@ -58,12 +60,12 @@ export interface GeneratorConfig {
 	/**
 	 * Run some operations before running actions
 	 */
-	prepare?: (this: Grit, ctx: Grit) => Promise<void> | void
+	prepare?: (this: Prepare, ctx: Grit) => Promise<void> | void
 	/**
 	 * Run some operations when completed
 	 * e.g. log some success message
 	 */
-	completed?: (this: Grit, ctx: Grit) => Promise<void> | void
+	completed?: (this: Completed, ctx: Grit) => Promise<void> | void
 }
 
 const joycon = new JoyCon({
