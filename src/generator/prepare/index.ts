@@ -1,7 +1,7 @@
 import { GeneratorConfig, Grit } from '@/index'
 
 export class Prepare {
-	grit: Grit
+	private grit: Grit
 
 	constructor(context: Grit) {
 		this.grit = context

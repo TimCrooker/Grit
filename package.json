@@ -33,6 +33,7 @@
 		"cli-table3": "^0.6.0",
 		"commander": "^8.3.0",
 		"cosmiconfig": "^7.0.1",
+		"cp-file": "^9.1.0",
 		"cross-spawn": "^7.0.3",
 		"dot-prop": "^5.3.0",
 		"ejs": "^3.1.2",

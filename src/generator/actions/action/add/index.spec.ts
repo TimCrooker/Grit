@@ -3,11 +3,11 @@ import path from 'path'
 import { addAction } from '.'
 import { createAction } from '../../createAction'
 
-let context: Grit
+let grit: Grit
 
 describe('Add Action', () => {
 	beforeEach(() => {
-		context = new Grit({
+		grit = new Grit({
 			generator: path.join(__dirname, 'fixtures', 'generator'),
 			mock: true,
 		})
@@ -20,12 +20,12 @@ describe('Add Action', () => {
 			transform: false,
 		})
 
-		context.answers = {}
+		grit.answers = {}
 
-		await addAction(context, action, {})
+		await addAction(grit, action)
 
-		await expect(context.hasOutputFile('foo.txt')).resolves.toBeTruthy()
-		await expect(context.hasOutputFile('bar.json')).resolves.toBeTruthy()
+		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeTruthy()
+		await expect(grit.hasOutputFile('bar.json')).resolves.toBeTruthy()
 	})
 
 	it('should transform file', async () => {
@@ -36,13 +36,13 @@ describe('Add Action', () => {
 
 		const name = 'Tim'
 
-		context.answers = { name }
+		grit.answers = { name }
 
-		await addAction(context, action)
+		await addAction(grit, action)
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(name)
+		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await context.readOutputFile('bar.json'))
+		const output = JSON.parse(await grit.readOutputFile('bar.json'))
 		expect(output).toEqual({ bar: name })
 	})
 
@@ -55,17 +55,15 @@ describe('Add Action', () => {
 
 		const name = 'Tim'
 
-		context.answers = {
+		grit.answers = {
 			name,
 		}
 
-		await addAction(context, action, {})
+		await addAction(grit, action)
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(
-			'<%= name %>'
-		)
+		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual('<%= name %>')
 
-		const output = JSON.parse(await context.readOutputFile('bar.json'))
+		const output = JSON.parse(await grit.readOutputFile('bar.json'))
 		expect(output).toEqual({ bar: name })
 	})
 
@@ -78,15 +76,15 @@ describe('Add Action', () => {
 
 		const name = 'Tim'
 
-		context.answers = {
+		grit.answers = {
 			name,
 		}
 
-		await addAction(context, action, {})
+		await addAction(grit, action)
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(name)
+		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await context.readOutputFile('bar.json'))
+		const output = JSON.parse(await grit.readOutputFile('bar.json'))
 		expect(output).toEqual({ bar: '<%= name %>' })
 	})
 
@@ -95,16 +93,16 @@ describe('Add Action', () => {
 		const action = createAction.add({
 			files: '**',
 			templateDir: path.join(__dirname, 'fixtures', 'generator', 'template'),
-			data: (context) => ({ name }),
+			data: () => ({ name }),
 		})
 
-		context.answers = {}
+		grit.answers = {}
 
-		await addAction(context, action, {})
+		await addAction(grit, action, {})
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toEqual(name)
+		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await context.readOutputFile('bar.json'))
+		const output = JSON.parse(await grit.readOutputFile('bar.json'))
 		expect(output).toEqual({ bar: name })
 	})
 })

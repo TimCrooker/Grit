@@ -1,8 +1,6 @@
 import { createAction } from '.'
 
 describe('Create actions', () => {
-	beforeEach(() => {})
-
 	it('add', () => {
 		const action = {
 			files: ['file.ts'],

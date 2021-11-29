@@ -79,26 +79,6 @@ export class Logger {
 		}
 		this.log(colors[color](label), ...args)
 	}
-
-	fileAction(color: ColorType, type: string, fp: string): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.info(
-			`${colors[color](type)} ${colors.green(path.relative(process.cwd(), fp))}`
-		)
-	}
-
-	fileMoveAction(from: string, to: string): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.info(
-			`${colors.blue('Moved')} ${colors.green(
-				path.relative(process.cwd(), from)
-			)} ${colors.dim('->')} ${colors.green(path.relative(process.cwd(), to))}`
-		)
-	}
 }
 
 export { colors }

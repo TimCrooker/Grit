@@ -99,6 +99,17 @@ export class Logger {
 			)} ${colors.dim('->')} ${colors.green(path.relative(process.cwd(), to))}`
 		)
 	}
+
+	fileCopyAction(from: string, to: string): void {
+		if (this.options.logLevel < 3) {
+			return
+		}
+		this.info(
+			`${colors.blue('Copied')} ${colors.green(
+				path.relative(process.cwd(), from)
+			)} ${colors.dim('->')} ${colors.green(path.relative(process.cwd(), to))}`
+		)
+	}
 }
 
 export { colors }

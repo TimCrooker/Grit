@@ -2,6 +2,7 @@
 import fs from 'fs'
 import { ensureDir, outputFile, remove } from 'majo'
 import move from 'move-file'
+import cpFile from 'cp-file'
 import path from 'path'
 import { transpileModule } from 'typescript'
 import { promisify } from 'util'
@@ -346,4 +347,4 @@ export const tsRequire = async (tsCodePath: string): Promise<any> => {
 
 const readFile = fs.promises.readFile
 
-export { move, readFile, remove }
+export { move, readFile, remove, cpFile as copy }

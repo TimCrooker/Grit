@@ -1,5 +1,5 @@
 import { logger } from '@/logger'
-import { move } from '@/utils/files'
+import { copy } from '@/utils/files'
 import { glob } from 'majo'
 import path from 'path'
 import { ActionFn } from '../../runAction'
@@ -38,10 +38,10 @@ export const copyAction: ActionFn<CopyAction> = async (context, action) => {
 			} else if (files.length === 1) {
 				const from = files[0]
 				const to = path.join(context.opts.outDir, action.patterns[pattern])
-				await move(from, to, {
-					overwrite: false,
+				await copy(from, to, {
+					overwrite: true,
 				})
-				logger.fileMoveAction(from, to)
+				logger.fileCopyAction(from, to)
 			}
 		})
 	)

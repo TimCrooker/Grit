@@ -17,8 +17,8 @@ export type Action =
 	| RemoveAction
 
 export class Actions {
-	actions: Action[] = []
-	grit: Grit
+	private actions: Action[] = []
+	private grit: Grit
 
 	constructor(context: Grit) {
 		this.grit = context
@@ -32,7 +32,7 @@ export class Actions {
 		}
 	}
 
-	async getActions(
+	private async getActions(
 		context: Grit = this.grit,
 		config: GeneratorConfig['actions'] = this.grit.config.actions
 	): Promise<void> {
