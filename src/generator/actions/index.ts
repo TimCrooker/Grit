@@ -9,6 +9,8 @@ import {
 import { createAction, RemoveActionType } from './createAction'
 import { runAction } from './runAction'
 
+export type ActionProvider = (context: Grit) => Promise<Action[]> | Action[]
+
 export type Action =
 	| AddAction
 	| MoveAction
@@ -18,13 +20,14 @@ export type Action =
 
 export class Actions {
 	private actions: Action[] = []
-	private grit: Grit
+	private context: Grit
+	private actionProviders: ActionProvider[] = []
 
 	constructor(context: Grit) {
-		this.grit = context
+		this.context = context
 	}
 
-	async run(grit = this.grit): Promise<void> {
+	async run(grit = this.context): Promise<void> {
 		await this.getActions()
 
 		for (const action of this.actions) {
@@ -33,15 +36,32 @@ export class Actions {
 	}
 
 	private async getActions(
-		context: Grit = this.grit,
-		config: GeneratorConfig['actions'] = this.grit.config.actions
+		context: Grit = this.context,
+		config: GeneratorConfig['actions'] = this.context.config.actions
 	): Promise<void> {
 		const actionsArray =
 			typeof config === 'function' ? await config.call(this, context) : config
-		if (!actionsArray || actionsArray.length === 0) return
+		if (actionsArray && actionsArray.length > 0)
+			this.actions = [...this.actions, ...actionsArray]
 
-		this.actions = [...this.actions, ...actionsArray]
+		for (const actionProvider of this.actionProviders) {
+			const actions = await actionProvider(context)
+			this.actions.push(...actions)
+		}
 	}
+
+	/**
+	 * Register Action providing functions to be executed in the actions section of the generator
+	 *
+	 * this allows you to hook into the actions section of a generator to add new functionality
+	 */
+	registerActionProvider(actionProvider: ActionProvider): void {
+		this.actionProviders.push(actionProvider)
+	}
+
+	/**
+	 * Runtime availiable methods
+	 */
 
 	/** Add a action or an array of actions to the generator */
 	newAction(action: Action | Action[]): void {
@@ -82,4 +102,9 @@ export class Actions {
 		this.newAction(createAction.remove(action))
 		return this
 	}
+
+	// pluginActions(): this {
+	// 	this.newAction(this.grit.plugins.)
+	// 	return this
+	// }
 }

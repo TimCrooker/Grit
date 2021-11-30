@@ -35,6 +35,7 @@ describe('Copy Action', () => {
 			patterns: {
 				'foo.txt': 'foo.txt',
 			},
+			overwrite: false,
 		})
 
 		await context.run()

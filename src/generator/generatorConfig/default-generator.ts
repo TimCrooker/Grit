@@ -8,11 +8,11 @@ export const defautGeneratorFile: GeneratorConfig = {
 			files: '**',
 		},
 	],
-	async completed() {
-		this.gitInit()
-		if (await this.hasOutputFile('package.json')) {
-			await this.npmInstall()
+	async completed(grit) {
+		grit.gitInit()
+		if (await grit.hasOutputFile('package.json')) {
+			await grit.npmInstall()
 		}
-		this.showProjectTips()
+		grit.showProjectTips()
 	},
 }

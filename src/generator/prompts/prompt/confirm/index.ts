@@ -1,4 +1,4 @@
-import { BasePrompt, WithAnswers } from '.'
+import { BasePrompt, WithAnswers } from '..'
 
 export interface ConfirmPrompt extends BasePrompt {
 	type: 'confirm'

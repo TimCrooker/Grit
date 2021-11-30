@@ -8,6 +8,7 @@ import { Prompts } from '../prompts'
 import { Data } from '../data'
 import { Completed } from '../completed'
 import { Prepare } from '../prepare'
+import { logger } from '@/logger'
 
 export type DataType = Record<string, any>
 
@@ -28,12 +29,19 @@ export interface GeneratorConfig {
 	 */
 	transform?: boolean
 	/**
-	 * Extra data to use in template transformation
+	 * Directory to template folder
+	 * Defaults to `./template` in your generator folder
 	 */
-	data?: (
-		this: Data,
-		ctx: Grit
-	) => DataType | Promise<DataType> | void | Promise<void>
+	templateDir?: string
+	/**
+	 * Directory where plugins are located
+	 * Defaults to `./plugins` in your generator folder
+	 */
+	pluginsDir?: string
+	/**
+	 * Run some operations before running actions
+	 */
+	prepare?: (this: Prepare, ctx: Grit) => Promise<void> | void
 	/**
 	 * Use prompts to ask questions before generating project
 	 */
@@ -44,6 +52,17 @@ export interface GeneratorConfig {
 				ctx: Grit
 		  ) => Prompt[] | Promise<Prompt[]> | void | Promise<void>)
 	/**
+	 * Extra data to use in template transformation
+	 */
+	data?: (
+		this: Data,
+		ctx: Grit
+	) => DataType | Promise<DataType> | void | Promise<void>
+	/**
+	 *
+	 */
+	plugins?: any
+	/**
 	 * Use actions to control how files are generated
 	 */
 	actions?:
@@ -52,15 +71,6 @@ export interface GeneratorConfig {
 				this: Actions,
 				ctx: Grit
 		  ) => Action[] | Promise<Action[]> | void | Promise<void>)
-	/**
-	 * Directory to template folder
-	 * Defaults to `./template` in your generator folder
-	 */
-	templateDir?: string
-	/**
-	 * Run some operations before running actions
-	 */
-	prepare?: (this: Prepare, ctx: Grit) => Promise<void> | void
 	/**
 	 * Run some operations when completed
 	 * e.g. log some success message
@@ -76,6 +86,7 @@ const joycon = new JoyCon({
 export const loadConfig = async (
 	cwd: string
 ): Promise<{ path?: string; data?: GeneratorConfig }> => {
+	logger.debug('loading generator from path:', cwd)
 	const { path } = await joycon.load({
 		cwd,
 		stopDir: pa.dirname(cwd),

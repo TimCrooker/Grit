@@ -1,12 +1,7 @@
 import { GeneratorConfig, Grit } from '@/index'
-import { logger } from '@/logger'
-import { RunNpmScriptOptions, runNpmScript } from '@/utils/cmd'
-import { exec } from 'child_process'
-import spawn from 'cross-spawn'
-import { promisify } from 'util'
 
 export class Completed {
-	grit: Grit
+	private grit: Grit
 
 	constructor(context: Grit) {
 		this.grit = context

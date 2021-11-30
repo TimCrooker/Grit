@@ -32,6 +32,7 @@ import { Actions } from './actions'
 import { Data } from './data'
 import { Completed } from './completed'
 import { Prepare } from './prepare'
+import { Plugins } from './plugins'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -94,23 +95,24 @@ type GenState =
 	| typeof COMPLETE
 
 export class Grit {
-	opts: SetRequired<GritOptions, 'outDir' | 'logLevel'>
+	opts: SetRequired<GritOptions, 'outDir' | 'logLevel' | 'mock' | 'debug'>
 	/** Use a console spinner to make asyncronous calls more user friendly */
 	spinner = spinner
 	/** Colorize your console output */
 	colors = colors
 	/** Log to the console with Grit */
-	log = logger
+	logger = logger
 	/** Access Grit local storage */
 	store = store
 	/** Generator config file loaded from */
 	config: GeneratorConfig = {}
 
-	private prompts = new Prompts(this)
-	private actions = new Actions(this)
-	private _data = new Data(this)
-	private completed = new Completed(this)
-	private prepare = new Prepare(this)
+	private prepare: Prepare
+	private prompts: Prompts
+	private _data: Data
+	private actions: Actions
+	private plugins: Plugins
+	private completed: Completed
 
 	state: GenState = IDLE
 
@@ -122,6 +124,7 @@ export class Grit {
 			outDir: path.resolve(opts.outDir || '.'),
 			logLevel: opts.logLevel || 3,
 			mock: typeof opts.mock === 'boolean' ? opts.mock : false,
+			debug: typeof opts.debug === 'boolean' ? opts.debug : false,
 		}
 
 		// Set log level from run mode
@@ -139,6 +142,7 @@ export class Grit {
 
 		// redirect outDir to temp dir when mock mode is enabled
 		if (this.opts.mock) {
+			this.opts.debug = true
 			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
@@ -151,6 +155,14 @@ export class Grit {
 			if (this.opts.update) generator.version = 'latest'
 			this.parsedGenerator = generator
 		}
+
+		// Instantiate generator runtime environments
+		this.prompts = new Prompts(this)
+		this.actions = new Actions(this)
+		this._data = new Data(this)
+		this.completed = new Completed(this)
+		this.prepare = new Prepare(this)
+		this.plugins = new Plugins({ context: this })
 	}
 
 	/**
@@ -170,9 +182,6 @@ export class Grit {
 		)
 
 		// load actual generator from generator path
-		logger.debug(`Loading generator from ${generator.path}`)
-
-		// load generator config file from generator path
 		const loadedConfig = await loadConfig(generator.path)
 		const config: GeneratorConfig =
 			loadedConfig.path && loadedConfig.data
@@ -206,6 +215,10 @@ export class Grit {
 			await this.prompts.run()
 		}
 
+		this._data.registerDataProvider(
+			await this.plugins.addPluginData(this.prompts.prompts, this.answers)
+		)
+
 		// Run generator data section
 		if (config.data) {
 			this.state = DATA
@@ -217,6 +230,8 @@ export class Grit {
 			this.state = ACTION
 			await this.actions.run()
 		}
+
+		this.actions.registerActionProvider(await this.plugins.addPluginActions())
 
 		// Run generator completed section
 		if (!this.opts.mock && config.completed) {
@@ -253,7 +268,9 @@ export class Grit {
 		return
 	}
 
-	/** Generator Instance Properties */
+	/**
+	 * Generator Instance Properties
+	 */
 
 	/**
 	 * Retrive the answers
@@ -261,7 +278,7 @@ export class Grit {
 	 * You can't access this in `prompts` function
 	 */
 	get answers(): { [k: string]: any } {
-		this.setPermissions('answers', [PREPARE, PROMPT])
+		this.setPermissions('answers', [PROMPT])
 		return this.prompts.answers
 	}
 
@@ -280,6 +297,10 @@ export class Grit {
 			...this.answers,
 			...this._data.data,
 		}
+	}
+
+	set data(value: { [k: string]: any }) {
+		this.prompts.answers = value
 	}
 
 	/**
@@ -323,7 +344,9 @@ export class Grit {
 		return getNpmClient()
 	}
 
-	/** Generator Instance Methods */
+	/**
+	 * Generator Instance Methods
+	 */
 
 	/**	Run `git init` in output directly */
 	gitInit(): void {

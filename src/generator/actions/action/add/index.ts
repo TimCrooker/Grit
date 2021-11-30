@@ -1,12 +1,12 @@
-import { Grit } from '@/generator'
-import { DataType } from '@/generator/generatorConfig'
-import { logger } from '@/logger'
-import { getGlobPatterns } from '@/utils/glob'
 import ejs from 'ejs'
 import isBinaryPath from 'is-binary-path'
 import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
+import { Grit } from '@/generator'
+import { DataType } from '@/generator/generatorConfig'
+import { logger } from '@/logger'
+import { getGlobPatterns } from '@/utils/glob'
 import { ActionFn } from '../../runAction'
 
 /**  */
@@ -15,9 +15,7 @@ export interface AddAction {
 	templateDir?: string
 	files: string[] | string
 	/**  */
-	filters?: {
-		[k: string]: string | boolean | null | undefined
-	}
+	filters?: Record<string, string | boolean | null | undefined>
 	/** Transform the template contents with ejs */
 	transform?: boolean
 	/**

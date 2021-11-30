@@ -15,57 +15,46 @@ import {
 } from './prompt'
 
 export class Prompts {
-	prompts: Prompt[] = []
-	grit: Grit
+	private _prompts: Prompt[] = []
+	private grit: Grit
 	private _answers: Answers = {}
+	private mock: boolean
+	/**
+	 *  answers provided at generator instantiation that will
+	 * automatically be used instead of respective prompts
+	 */
+	private injectedAnswers?: Record<string, any>
 
 	constructor(context: Grit) {
 		this.grit = context
+		this.mock = context.opts.mock || false
+		this.injectedAnswers = context.opts.answers
 	}
 
-	async run(grit: Grit = this.grit): Promise<void> {
-		const { mock, answers: injectedAnswers } = grit.opts
-
+	async run(): Promise<void> {
 		// Gets prompts from the generator config
 		await this.getPrompts()
 
 		// Gets cached answers from the store
-		const pkgPath = resolveFrom.silent(
-			grit.parsedGenerator.path,
-			'./package.json'
-		)
-		const pkgVersion = pkgPath ? require(pkgPath).version : ''
-		const CACHED_ANSWERS_ID = `${
-			grit.parsedGenerator.hash + pkgVersion.replace(/\./g, '\\.')
-		}`
-		const cachedAnswers = store.answers.get(CACHED_ANSWERS_ID)
-		if (!mock) {
-			logger.debug('Loaded cached answers:', cachedAnswers)
-		}
+		const cachedAnswers = this.getCachedAnswers()
 
 		// Run prompts supplied by the generator
 		const answers = await runPrompts({
-			prompts: this.prompts,
+			prompts: this._prompts,
 			cachedAnswers,
-			injectedAnswers,
-			mock,
+			injectedAnswers: this.injectedAnswers,
+			mock: this.mock,
 		})
 		logger.debug(`Retrived answers:`, answers)
 
 		// Cache new answers
 		const answersToStore: Answers = {}
-		for (const p of this.prompts) {
-			if (!Object.prototype.hasOwnProperty.call(answers, p.name)) {
-				answers[p.name] = undefined
-			}
-			if (p.store) {
-				answersToStore[p.name] = answers[p.name]
+		for (const prompt of this._prompts) {
+			if (prompt.store) {
+				answersToStore[prompt.name] = answers[prompt.name]
 			}
 		}
-		if (!mock) {
-			store.answers.set(CACHED_ANSWERS_ID, answersToStore)
-			logger.debug('Caching prompt answers:', answersToStore)
-		}
+		this.setCachedAnswers(answersToStore)
 
 		this._answers = answers
 	}
@@ -77,15 +66,17 @@ export class Prompts {
 		}
 
 		if (!prompt.message) {
-			throw new Error(`Missing property "message" on prompt (index: ${index})`)
+			throw new Error(
+				`Missing property "message" on prompt # (index: ${index})`
+			)
 		}
 
 		if (!prompt.name) {
-			throw new Error(`Missing property "name" on prompt (index: ${index})`)
+			throw new Error(`Missing property "name" on prompt # (index: ${index})`)
 		}
 	}
 
-	/** Get the list of prompts from the generator file */
+	/** Get the list of valid prompts from the generator file */
 	private async getPrompts(
 		context: Grit = this.grit,
 		config: GeneratorConfig['prompts'] = this.grit.config.prompts
@@ -95,7 +86,40 @@ export class Prompts {
 
 		if (!promptsArray || promptsArray.length === 0) return
 
-		this.prompts = [...this.prompts, ...promptsArray]
+		const prompts = [...this._prompts, ...promptsArray]
+		for (const prompt of prompts) {
+			try {
+				this.validate(prompt, prompts.indexOf(prompt))
+				this._prompts.push(prompt)
+			} catch (error) {
+				logger.debug(error)
+			}
+		}
+	}
+
+	/** Get previosly stored answers for the generator */
+	private getCachedAnswers(): Record<string, any> {
+		const cachedAnswers = store.answers.get(this.answersCacheID)
+		if (!this.mock) {
+			logger.debug('Loaded cached answers:', cachedAnswers)
+		}
+		return cachedAnswers
+	}
+
+	/** set new answers to store in the cache for the generator */
+	private setCachedAnswers(answers): void {
+		if (!this.mock) {
+			logger.debug('Caching prompt answers:', answers)
+			store.answers.set(this.answersCacheID, answers)
+		}
+	}
+
+	/** Unique id for storing answers in the cache */
+	private get answersCacheID(): string {
+		const generator = this.grit.parsedGenerator
+		const pkgPath = resolveFrom.silent(generator.path, './package.json')
+		const pkgVersion = pkgPath ? require(pkgPath).version : ''
+		return `${generator.hash + pkgVersion.replace(/\./g, '\\.')}`
 	}
 
 	/**
@@ -105,8 +129,8 @@ export class Prompts {
 	/** Add a prompt or an array of prompts to the generator */
 	newPrompt(prompt: Prompt | Prompt[]): void {
 		const validateAndPush = (prompt: Prompt): void => {
-			this.validate(prompt, this.prompts.length)
-			this.prompts.push(prompt)
+			this.validate(prompt, this._prompts.length)
+			this._prompts.push(prompt)
 		}
 
 		if (Array.isArray(prompt)) {
@@ -149,6 +173,10 @@ export class Prompts {
 	}
 
 	/** Runtime availiable Properties */
+
+	get prompts(): Prompt[] {
+		return this._prompts
+	}
 
 	get answers(): Answers {
 		return this._answers

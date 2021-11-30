@@ -14,7 +14,7 @@ export interface ModifyAction {
 	 *
 	 * @param filePath: The relative path to the file that matched the glob pattern
 	 */
-	handler: (data: any, filepath: string) => any
+	handler: (data: Record<string, any> | string, filepath: string) => any
 }
 
 export const modifyAction: ActionFn<ModifyAction> = async (context, action) => {

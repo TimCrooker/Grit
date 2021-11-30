@@ -4,12 +4,12 @@ import { moveAction } from '.'
 import { createAction } from '../../createAction'
 
 // jest.mock('@/index')
-let context: Grit
+let grit: Grit
 
 describe('move Action', () => {
 	beforeEach(() => {
-		context = new Grit({
-			generator: path.join(__dirname, 'fixtures', 'generator'),
+		grit = new Grit({
+			generator: path.join(__dirname, 'fixtures'),
 			mock: true,
 		})
 	})
@@ -21,11 +21,11 @@ describe('move Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await moveAction(context, action)
+		await moveAction(grit, action)
 
-		const hasFile = await context.hasOutputFile('newDir/foo.txt')
+		const hasFile = await grit.hasOutputFile('newDir/foo.txt')
 
 		expect(hasFile).toBeTruthy()
 	})
@@ -37,11 +37,36 @@ describe('move Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await moveAction(context, action)
+		await moveAction(grit, action)
 
-		await expect(context.hasOutputFile('foo.txt')).resolves.toBeFalsy()
+		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeFalsy()
+	})
+
+	it('should error on overwrite', async () => {
+		const action = createAction.move({
+			patterns: {
+				'foo.txt': 'foo.txt',
+			},
+			overwrite: false,
+		})
+
+		await grit.run()
+
+		await expect(moveAction(grit, action)).rejects.toThrow()
+	})
+
+	it('should succeed on overwrite', async () => {
+		const action = createAction.move({
+			patterns: {
+				'foo.txt': 'foo.txt',
+			},
+		})
+
+		await grit.run()
+
+		await expect(moveAction(grit, action)).resolves.not.toThrow()
 	})
 
 	it('should move and rename file', async () => {
@@ -51,11 +76,11 @@ describe('move Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await moveAction(context, action)
+		await moveAction(grit, action)
 
-		const hasFile = await context.hasOutputFile('fo.txt')
+		const hasFile = await grit.hasOutputFile('fo.txt')
 
 		expect(hasFile).toBeTruthy()
 	})

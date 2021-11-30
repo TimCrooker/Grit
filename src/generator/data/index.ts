@@ -1,9 +1,14 @@
 import { GeneratorConfig, Grit } from '@/index'
 
+export type DataProvider = (
+	context: Grit
+) => Promise<Record<string, any>> | Record<string, any>
+
 /** Data section runtime class */
 export class Data {
-	grit: Grit
+	private grit: Grit
 	private _data: Record<string, any> = {}
+	private dataFunctions: DataProvider[] = []
 
 	constructor(context: Grit) {
 		this.grit = context
@@ -14,7 +19,7 @@ export class Data {
 		await this.getData(grit)
 	}
 
-	/** Get the list of prompts from the generator file */
+	/** Get the data from the generator file */
 	async getData(
 		context: Grit = this.grit,
 		config: GeneratorConfig['data'] = this.grit.config.data
@@ -22,9 +27,21 @@ export class Data {
 		const dataObject =
 			typeof config === 'function' ? await config.call(this, context) : config
 
-		if (!dataObject) return
+		if (dataObject) this.data = { ...this.data, ...dataObject }
 
-		this._data = { ...this.data, ...dataObject }
+		for (const dataFn of this.dataFunctions) {
+			const data = (await dataFn(context)) ?? {}
+			this.data = { ...this.data, ...data }
+		}
+	}
+
+	/**
+	 * Provide data providing functions to be executed at the end of the data section
+	 *
+	 * this allows you to hook into the data section of a generator to add new functionality
+	 */
+	registerDataProvider(dataProvider: DataProvider): void {
+		this.dataFunctions.push(dataProvider)
 	}
 
 	/**

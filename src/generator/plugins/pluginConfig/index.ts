@@ -35,13 +35,20 @@ export interface PluginFileConfig<T> {
 	 */
 	extend?: Extend<T>
 	/**
-	 *
+	 * This method is used to make direct modifications to the plugin package.json file.
 	 */
-	apply?: Apply<T>
+	package?: Apply<T>
 }
 
+export const pluginFileName = [
+	'pluginFile.ts',
+	'pluginFile.js',
+	'pluginfile.ts',
+	'pluginfile.js',
+]
+
 const joycon = new JoyCon({
-	files: ['pluginFile.ts', 'pluginFile.js', 'pluginfile.ts', 'pluginfile.js'],
+	files: pluginFileName,
 })
 
 /** load the generator config file */

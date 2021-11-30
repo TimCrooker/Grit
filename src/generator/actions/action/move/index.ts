@@ -23,6 +23,12 @@ export interface MoveAction {
 	patterns: {
 		[k: string]: string
 	}
+	/**
+	 * should this action overwrite existing files
+	 *
+	 * default: true
+	 */
+	overwrite?: boolean
 }
 
 export const moveAction: ActionFn<MoveAction> = async (context, action) => {
@@ -39,7 +45,7 @@ export const moveAction: ActionFn<MoveAction> = async (context, action) => {
 				const from = files[0]
 				const to = path.join(context.opts.outDir, action.patterns[pattern])
 				await move(from, to, {
-					overwrite: true,
+					overwrite: action.overwrite ?? true,
 				})
 				logger.fileMoveAction(from, to)
 			}

@@ -347,4 +347,6 @@ export const tsRequire = async (tsCodePath: string): Promise<any> => {
 
 const readFile = fs.promises.readFile
 
-export { move, readFile, remove, cpFile as copy }
+const readFileSync = fs.readFileSync
+
+export { move, readFile, remove, cpFile as copy, readFileSync }

@@ -1,4 +1,4 @@
-import { BasePrompt, WithAnswers, WithFullContext, Answer } from '.'
+import { BasePrompt, WithAnswers, WithFullContext, Answer } from '..'
 
 export interface NumberPrompt extends BasePrompt {
 	type: 'number'

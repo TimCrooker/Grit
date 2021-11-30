@@ -1,4 +1,4 @@
-import { BasePrompt, WithAnswers, WithFullContext, Answer } from '.'
+import { BasePrompt, WithAnswers, WithFullContext, Answer } from '..'
 
 export interface InputPrompt extends BasePrompt {
 	type: 'input'
