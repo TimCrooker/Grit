@@ -4,12 +4,11 @@ import path from 'path'
 const generator = path.join(__dirname, 'fixtures')
 
 const injectedAnswers = {
-	name: 'user',
-	age: '35',
+	number: 14,
 }
 
-describe('run prompts in generator instance', () => {
-	it('Mock', async () => {
+describe('run number prompt in generator instance', () => {
+	it('Should use default for mock', async () => {
 		const grit = new Grit({
 			generator,
 			mock: true,
@@ -17,10 +16,7 @@ describe('run prompts in generator instance', () => {
 
 		await grit.run()
 
-		expect(grit.answers).toStrictEqual({
-			name: 'my name',
-			age: '28',
-		})
+		expect(grit.answers).toStrictEqual(injectedAnswers)
 	})
 
 	it('inject answers', async () => {

@@ -19,7 +19,7 @@ export type Action =
 	| RemoveAction
 
 export class Actions {
-	private actions: Action[] = []
+	private _actions: Action[] = []
 	private context: Grit
 	private actionProviders: ActionProvider[] = []
 
@@ -27,6 +27,7 @@ export class Actions {
 		this.context = context
 	}
 
+	/** Execute the current actions stack */
 	async run(grit = this.context): Promise<void> {
 		await this.getActions()
 
@@ -35,15 +36,18 @@ export class Actions {
 		}
 	}
 
+	/** Get the actions stack from the generator and any action providers */
 	private async getActions(
 		context: Grit = this.context,
 		config: GeneratorConfig['actions'] = this.context.config.actions
 	): Promise<void> {
-		const actionsArray =
+		// get actions from the generator file
+		const configActions =
 			typeof config === 'function' ? await config.call(this, context) : config
-		if (actionsArray && actionsArray.length > 0)
-			this.actions = [...this.actions, ...actionsArray]
+		if (configActions && configActions.length > 0)
+			this.actions.push(...configActions)
 
+		// get actions from any registered action providers
 		for (const actionProvider of this.actionProviders) {
 			const actions = await actionProvider(context)
 			this.actions.push(...actions)
@@ -51,9 +55,9 @@ export class Actions {
 	}
 
 	/**
-	 * Register Action providing functions to be executed in the actions section of the generator
-	 *
+	 * Register Action providing functions to be executed in the actions section of the generator.
 	 * this allows you to hook into the actions section of a generator to add new functionality
+	 * without putting it directly inside a gernertor file.
 	 */
 	registerActionProvider(actionProvider: ActionProvider): void {
 		this.actionProviders.push(actionProvider)
@@ -66,7 +70,7 @@ export class Actions {
 	/** Add a action or an array of actions to the generator */
 	newAction(action: Action | Action[]): void {
 		const validateAndPush = (prompt: Action): void => {
-			this.actions.push(prompt)
+			this._actions.push(prompt)
 		}
 
 		if (Array.isArray(action)) {
@@ -78,33 +82,37 @@ export class Actions {
 		}
 	}
 
+	/** Create a new add action and add it to the actions stack */
 	add(action: RemoveActionType<AddAction>): this {
 		this.newAction(createAction.add(action))
 		return this
 	}
 
+	/** Create a new move action and add it to the actions stack */
 	move(action: RemoveActionType<MoveAction>): this {
 		this.newAction(createAction.move(action))
 		return this
 	}
 
+	/** Create a new copy action and add it to the actions stack */
 	copy(action: RemoveActionType<CopyAction>): this {
 		this.newAction(createAction.copy(action))
 		return this
 	}
 
+	/** Create a new modify action and add it to the actions stack */
 	modify(action: RemoveActionType<ModifyAction>): this {
 		this.newAction(createAction.modify(action))
 		return this
 	}
 
+	/** Create a new remove action and add it to the actions stack */
 	remove(action: RemoveActionType<RemoveAction>): this {
 		this.newAction(createAction.remove(action))
 		return this
 	}
 
-	// pluginActions(): this {
-	// 	this.newAction(this.grit.plugins.)
-	// 	return this
-	// }
+	get actions(): Action[] {
+		return this._actions
+	}
 }

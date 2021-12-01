@@ -1,6 +1,6 @@
 import { DynamicQuestionProperty } from 'inquirer'
-import { ChoiceOptions } from '.'
-import { Answers, BasePrompt, WithAnswers, WithFullContext } from '..'
+import { ChoiceOptions } from '..'
+import { Answers, BasePrompt, WithAnswers, WithFullContext } from '../..'
 
 export interface ListPrompt extends BasePrompt {
 	type: 'list' | 'rawlist'

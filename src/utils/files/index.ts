@@ -88,7 +88,7 @@ export const pathExists = async (cwd: string): Promise<boolean> => {
 /** Check if a path is valid and exists asynchronously */
 export const pathExistsSync = (cwd: string): boolean => {
 	try {
-		return fs.lstatSync(cwd).isFile()
+		return fs.existsSync(cwd)
 	} catch (e) {
 		return false
 	}

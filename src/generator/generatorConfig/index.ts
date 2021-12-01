@@ -6,9 +6,10 @@ import { Prompt } from '../prompts/prompt'
 import { globalRequire } from '@/utils/files'
 import { Prompts } from '../prompts'
 import { Data } from '../data'
-import { Completed } from '../completed'
+import { Completed } from '../data/completed'
 import { Prepare } from '../prepare'
 import { logger } from '@/logger'
+import { PluginConfig } from '../plugins/pluginConfig'
 
 export type DataType = Record<string, any>
 
@@ -34,11 +35,6 @@ export interface GeneratorConfig {
 	 */
 	templateDir?: string
 	/**
-	 * Directory where plugins are located
-	 * Defaults to `./plugins` in your generator folder
-	 */
-	pluginsDir?: string
-	/**
 	 * Run some operations before running actions
 	 */
 	prepare?: (this: Prepare, ctx: Grit) => Promise<void> | void
@@ -52,16 +48,16 @@ export interface GeneratorConfig {
 				ctx: Grit
 		  ) => Prompt[] | Promise<Prompt[]> | void | Promise<void>)
 	/**
+	 *
+	 */
+	plugins?: PluginConfig
+	/**
 	 * Extra data to use in template transformation
 	 */
 	data?: (
 		this: Data,
 		ctx: Grit
 	) => DataType | Promise<DataType> | void | Promise<void>
-	/**
-	 *
-	 */
-	plugins?: any
 	/**
 	 * Use actions to control how files are generated
 	 */

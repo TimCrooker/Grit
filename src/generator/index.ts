@@ -1,6 +1,5 @@
 import { exec } from 'child_process'
 import spawn from 'cross-spawn'
-import { Answers } from 'inquirer'
 import { glob } from 'majo'
 import { tmpdir } from 'os'
 import path from 'path'
@@ -27,12 +26,14 @@ import {
 	NpmGenerator,
 	RepoGenerator,
 } from './parseGenerator'
-import { Prompts } from './prompts'
-import { Actions } from './actions'
+import { Prompt, Prompts } from './prompts'
+import { Action, Actions } from './actions'
 import { Data } from './data'
-import { Completed } from './completed'
+import { Completed } from './data/completed'
 import { Prepare } from './prepare'
 import { Plugins } from './plugins'
+import { addPluginData } from './plugins/pluginDataProvider'
+import { Answers } from './prompts/prompt'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -71,8 +72,7 @@ export interface GritOptions<T = Record<string, any>> {
 	 */
 	mock?: boolean
 	/**
-	 * User-supplied answers
-	 * `true` means using default answers for prompts
+	 * User-supplied answers to prompts
 	 */
 	answers?: Answers
 	/** Extra data payload to provide the generator at runtime */
@@ -108,13 +108,12 @@ export class Grit {
 	config: GeneratorConfig = {}
 
 	private prepare: Prepare
-	private prompts: Prompts
+	private _prompts: Prompts
+	private plugins?: Plugins
 	private _data: Data
-	private actions: Actions
-	private plugins: Plugins
+	private _actions: Actions
 	private completed: Completed
-
-	state: GenState = IDLE
+	private _state: GenState = IDLE
 
 	parsedGenerator: ParsedGenerator
 
@@ -157,12 +156,11 @@ export class Grit {
 		}
 
 		// Instantiate generator runtime environments
-		this.prompts = new Prompts(this)
-		this.actions = new Actions(this)
-		this._data = new Data(this)
-		this.completed = new Completed(this)
 		this.prepare = new Prepare(this)
-		this.plugins = new Plugins({ context: this })
+		this._prompts = new Prompts(this)
+		this._data = new Data(this)
+		this._actions = new Actions(this)
+		this.completed = new Completed(this)
 	}
 
 	/**
@@ -205,47 +203,73 @@ export class Grit {
 
 		// Run generator prepare
 		if (config.prepare) {
-			this.state = PREPARE
+			this._state = PREPARE
 			await this.prepare.run()
+			this._state = IDLE
 		}
 
 		// Run generator prompt section
 		if (config.prompts) {
-			this.state = PROMPT
-			await this.prompts.run()
+			this._state = PROMPT
+			await this._prompts.run()
+			this._state = IDLE
 		}
 
+		// Register the plugin data provider
 		this._data.registerDataProvider(
-			await this.plugins.addPluginData(this.prompts.prompts, this.answers)
+			await addPluginData(this._prompts.prompts, this.answers)
 		)
 
 		// Run generator data section
-		if (config.data) {
-			this.state = DATA
-			await this._data.run()
+		this._state = DATA
+		await this._data.run()
+		this._state = IDLE
+
+		// Load plugin data then register actions provider
+		if (this.data.selectedPlugins && this.data.selectedPlugins.length > 0) {
+			this.plugins = new Plugins({
+				config: this.config.plugins,
+				selectedPlugins: this.data.selectedPlugins,
+				generatorPath: this.parsedGenerator.path,
+			})
+			await this.plugins.loadPlugins()
+			this._actions.registerActionProvider(
+				await this.plugins.addPluginActions()
+			)
 		}
 
 		// Run generator actions section
 		if (config.actions) {
-			this.state = ACTION
-			await this.actions.run()
+			this._state = ACTION
+			await this._actions.run()
+			this._state = IDLE
 		}
-
-		this.actions.registerActionProvider(await this.plugins.addPluginActions())
 
 		// Run generator completed section
 		if (!this.opts.mock && config.completed) {
-			this.state = COMPLETE
+			this._state = COMPLETE
 			await this.completed.run()
+			this._state = IDLE
 		}
 	}
 
-	/** Method to run when instantiated with a generator */
-	async run(): Promise<void> {
+	/**
+	 * Method to run when instantiated with a generator
+	 */
+	async run(): Promise<this> {
 		await this.runGenerator(await this.getGenerator())
-		this.state = IDLE
+		this._state = IDLE
+		return this
 	}
 
+	/**
+	 * Block execution for inside generator runtimes for particular states
+	 * Will throw an error if access is blocked
+	 *
+	 * @param accessItem name of the item attempting to be accessed
+	 * @param denyStates states in which access is denied
+	 * @param allowStates states in which access is exclusivly allowed
+	 */
 	setPermissions(
 		accessItem: string,
 		denyStates?: string[],
@@ -268,9 +292,7 @@ export class Grit {
 		return
 	}
 
-	/**
-	 * Generator Instance Properties
-	 */
+	/** Generator Instance Properties */
 
 	/**
 	 * Retrive the answers
@@ -279,11 +301,11 @@ export class Grit {
 	 */
 	get answers(): { [k: string]: any } {
 		this.setPermissions('answers', [PROMPT])
-		return this.prompts.answers
+		return this._prompts.answers
 	}
 
 	set answers(value: { [k: string]: any }) {
-		this.prompts.answers = value
+		this._prompts.answers = value
 	}
 
 	/**
@@ -299,8 +321,20 @@ export class Grit {
 		}
 	}
 
-	set data(value: { [k: string]: any }) {
-		this.prompts.answers = value
+	// set data(value: Record<string, any>) {
+	// 	this._prompts.answers = value
+	// }
+
+	get prompts(): Prompt[] {
+		return this._prompts.prompts
+	}
+
+	get actions(): Action[] {
+		return this._actions.actions
+	}
+
+	get state(): GenState {
+		return this._state
 	}
 
 	/**
@@ -324,17 +358,23 @@ export class Grit {
 		}
 	}
 
-	/** Get the information of system git user */
+	/**
+	 *  Get the information of system git user
+	 */
 	get gitUser(): GitUser {
 		return getGitUser(this.opts.mock)
 	}
 
-	/** The basename of output directory */
+	/**
+	 *  The basename of output directory
+	 */
 	get projectName(): string {
 		return path.basename(this.opts.outDir)
 	}
 
-	/** The absolute path to output directory */
+	/**
+	 * The absolute path to output directory
+	 */
 	get outDir(): string {
 		return path.resolve(this.opts.outDir)
 	}
@@ -344,11 +384,11 @@ export class Grit {
 		return getNpmClient()
 	}
 
-	/**
-	 * Generator Instance Methods
-	 */
+	/** Generator Instance Methods */
 
-	/**	Run `git init` in output directly */
+	/**
+	 * 	Run `git init` in output directly
+	 */
 	gitInit(): void {
 		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug) {
@@ -367,7 +407,9 @@ export class Grit {
 		}
 	}
 
-	/** Run a git commit with a custom commit message in output directory */
+	/**
+	 * Run a git commit with a custom commit message in output directory
+	 */
 	async gitCommit(commitMessage?: string): Promise<void> {
 		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug) {
@@ -422,14 +464,18 @@ export class Grit {
 		logger.success(`Generated into ${colors.underline(this.outDir)}`)
 	}
 
-	/** Create an Grit Error so we can pretty print the error message instead of showing full error stack */
+	/**
+	 * Create an Grit Error so we can pretty print the error message instead of showing full error stack
+	 */
 	createError(message: string): GritError {
 		return new GritError(message)
 	}
 
 	/** Testing Helpers */
 
-	/** Get file list of output directory */
+	/**
+	 * Get file list of output directory
+	 */
 	async getOutputFiles(): Promise<string[]> {
 		const files = await glob(['**/*', '!**/node_modules/**', '!**/.git/**'], {
 			cwd: this.opts.outDir,
@@ -439,12 +485,16 @@ export class Grit {
 		return files.sort()
 	}
 
-	/** Check if a file exists in output directory */
+	/**
+	 * Check if a file exists in output directory
+	 */
 	async hasOutputFile(file: string): Promise<boolean> {
 		return await pathExists(path.join(this.opts.outDir, file))
 	}
 
-	/** Read a file in output directory */
+	/**
+	 *  Read a file in output directory
+	 */
 	async readOutputFile(file: string): Promise<string> {
 		return await readFile(path.join(this.opts.outDir, file), 'utf8')
 	}

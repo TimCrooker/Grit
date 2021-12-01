@@ -8,7 +8,7 @@ export type DataProvider = (
 export class Data {
 	private grit: Grit
 	private _data: Record<string, any> = {}
-	private dataFunctions: DataProvider[] = []
+	private dataProviders: DataProvider[] = []
 
 	constructor(context: Grit) {
 		this.grit = context
@@ -27,11 +27,11 @@ export class Data {
 		const dataObject =
 			typeof config === 'function' ? await config.call(this, context) : config
 
-		if (dataObject) this.data = { ...this.data, ...dataObject }
+		if (dataObject) this.add(dataObject)
 
-		for (const dataFn of this.dataFunctions) {
-			const data = (await dataFn(context)) ?? {}
-			this.data = { ...this.data, ...data }
+		for (const provider of this.dataProviders) {
+			const providerData = (await provider(context)) ?? {}
+			this.add(providerData)
 		}
 	}
 
@@ -41,7 +41,7 @@ export class Data {
 	 * this allows you to hook into the data section of a generator to add new functionality
 	 */
 	registerDataProvider(dataProvider: DataProvider): void {
-		this.dataFunctions.push(dataProvider)
+		this.dataProviders.push(dataProvider)
 	}
 
 	/**
@@ -50,7 +50,7 @@ export class Data {
 
 	/** Helper method to instantly add data to the data section*/
 	add(value: Record<string, any>): this {
-		this._data = { ...this._data, ...value }
+		this.data = { ...this.data, ...value }
 		return this
 	}
 

@@ -1,48 +1,55 @@
-import { Grit, Prompt } from '@/index'
-import { pathExists } from '@/utils/files'
-import { mergePluginJsonFiles } from '@/utils/merge'
-import { pathExistsSync } from 'fs-extra'
+import { GeneratorConfig, Grit } from '@/index'
+import { pathExists, pathExistsSync } from '@/utils/files'
+import { mergePackages, mergePluginJsonFiles } from '@/utils/merge'
 import path from 'path'
 import { Action, ActionProvider } from '../actions'
 import { AddAction } from '../actions/action'
-import { DataProvider } from '../data'
-import { defautPluginFile } from './defaultPluginFile'
+import { Ignore } from './pluginConfig'
+import { defautPluginFile } from './pluginFile/defaultPluginFile'
 import {
 	hasConfig,
 	loadConfig,
 	PluginFileConfig,
 	pluginFileName,
-} from './pluginConfig'
+} from './pluginFile/pluginConfig'
 
-type PluginData = {
+export type PluginData = {
 	name: string
 	dirPath: string
-	pluginFileData: any
+	pluginFileData: PluginFileConfig
+}
+
+interface PluginsOptions {
+	selectedPlugins: string[]
+	generatorPath: string
+	config?: GeneratorConfig['plugins']
 }
 
 export class Plugins {
-	grit: Grit
-	pluginsPath: string
-	selectedPlugins: string[] = []
+	pluginsDir: string
+	ignores: Ignore[]
+
+	selectedPlugins: string[]
 	pluginData: PluginData[] = []
 
-	constructor(context: Grit) {
-		this.grit = context
-		this.pluginsPath = path.resolve(
-			this.grit.parsedGenerator.path,
-			this.grit.config.pluginsDir ?? 'plugins'
-		)
+	constructor(options: PluginsOptions) {
+		this.pluginsDir = path.resolve(options.generatorPath, 'plugins')
 
-		// check if pluginsPath is a valid path and thow error if it is not
-		if (!pathExistsSync(this.pluginsPath)) {
-			throw new Error(`Plugins path ${this.pluginsPath} does not exist`)
+		this.ignores = options.config?.ignores || []
+		this.selectedPlugins = options.selectedPlugins
+
+		// Check if the pluginsDir exists and if not then throw error
+		if (!pathExistsSync(this.pluginsDir)) {
+			throw new Error(`Plugins directory does not exist at ${this.pluginsDir}`)
 		}
 	}
 
-	async loadPlugins(plugins: string[] = this.selectedPlugins): Promise<void> {
+	async loadPlugins(plugins = this.selectedPlugins): Promise<void> {
+		const pluginData: PluginData[] = []
+		// load plugin data for selected plugins
 		for (const plugin of plugins) {
 			// check if selected plugin exists
-			const pluginPath = path.join(this.pluginsPath, plugin)
+			const pluginPath = path.join(this.pluginsDir, plugin)
 			if (!(await pathExists(pluginPath))) {
 				throw new Error(`Plugin ${plugin} does not exist`)
 			}
@@ -62,96 +69,77 @@ export class Plugins {
 			}
 
 			// add plugin data to pluginData array
-			this.pluginData.push({
+			pluginData.push({
 				name: plugin,
 				dirPath: pluginPath,
 				pluginFileData,
 			})
 		}
+
+		this.pluginData = pluginData
 	}
 
 	/** for each pluginData run the addAction function */
 	async addPluginActions(): Promise<ActionProvider> {
-		const mergeFiles: string[] = ['tsconfig.json', '.babelrc']
+		const mergeFiles: string[] = ['package.json', 'tsconfig.json', '.babelrc']
 
 		const pluginActions: Action[] = []
 		// for each pluginData run the addAction function
 
-		/**
-		 * Merge Plugins actions
-		 */
-		pluginActions.push(
-			...this.pluginData.map((plugin) => {
-				const action = {
-					type: 'add',
-					files: '**',
-					templateDir: plugin.dirPath,
-				} as AddAction
+		return (grit: Grit): Action[] => {
+			// Merge plugins files
+			pluginActions.push(
+				...this.pluginData.map((plugin) => {
+					const action = {
+						type: 'add',
+						files: '**',
+						templateDir: plugin.dirPath,
+					} as AddAction
 
-				// dont add `pluginfile` to output
-				for (const filename of pluginFileName) {
-					action.filters[filename] = false
-				}
+					action.filters = {}
 
-				// ignore generator supplied ignores
+					// dont add `pluginfile` to output
+					for (const filename of pluginFileName) {
+						action.filters[filename] = false
+					}
 
-				// ignore common json config files to they can be merged later
-				for (const filename of mergeFiles) {
-					action.filters[filename] = false
-				}
+					// ignore generator supplied ignores
 
-				return action
-			})
-		)
+					// ignore common json config files to they can be merged later
+					for (const filename of mergeFiles) {
+						action.filters[filename] = false
+					}
 
-		for (const mergeFile of mergeFiles) {
+					return action
+				})
+			)
+
+			// Sepecially handle the `package.json` file
 			pluginActions.push({
 				type: 'modify',
-				files: mergeFile,
+				files: 'package.json',
 				handler: (fileData) => {
-					return mergePluginJsonFiles(
-						fileData,
-						this.pluginsPath,
-						this.selectedPlugins,
-						mergeFile
-					)
+					return mergePackages(fileData, this.pluginData, grit.answers)
 				},
 			})
+
+			for (const mergeFile of mergeFiles) {
+				if (mergeFile === 'package.json') continue
+
+				pluginActions.push({
+					type: 'modify',
+					files: mergeFile,
+					handler: (fileData) => {
+						return mergePluginJsonFiles(
+							fileData,
+							this.pluginsDir,
+							this.selectedPlugins,
+							mergeFile
+						)
+					},
+				})
+			}
+			return pluginActions
 		}
-
-		return (): Action[] => pluginActions
 	}
-
-	async addPluginData(prompts: Prompt[], answers: any): Promise<DataProvider> {
-		// get the list of prompts where it is of type list or chekcbox and plugin property is set to true
-		const pluginPrompts = prompts.filter(
-			(prompt) =>
-				(prompt.type === 'list' || prompt.type === 'checkbox') &&
-				prompt.plugin === true
-		)
-
-		// get answers where the key is equal to the name of a propmt in pluginPrompts
-		const pluginAnswers = pluginPrompts.reduce((acc, prompt) => {
-			acc[prompt.name] = answers[prompt.name]
-			return acc
-		}, {})
-
-		// get an array of plugins from the pluginAnswers values
-		const plugins = Object.entries(pluginAnswers).reduce(
-			(acc: string[], [key, value]) => {
-				if (typeof value === 'boolean' && value) return [...acc, key]
-				if (typeof value === 'string') return [...(acc as string[]), value]
-				if (Array.isArray(value)) return [...(acc as string[]), ...value]
-				return acc
-			},
-			[]
-		)
-
-		return (): Record<string, any> => ({
-			selectedPlugins: plugins,
-		})
-	}
-
-	// add all plugin files to the main project
-	//
 }

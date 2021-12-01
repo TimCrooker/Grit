@@ -6,7 +6,7 @@ import { PasswordPrompt } from './password/password'
 import { CheckboxPrompt } from './withChoices/checkbox'
 import { ListPrompt } from './withChoices/list'
 
-export type Answers = Record<string, any> & { plugins?: string[] }
+export type Answers = Record<string, any>
 
 export type Answer<T = any> = Record<string, T>
 

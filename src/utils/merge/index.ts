@@ -1,5 +1,6 @@
-// type mergerFn = (base: Record<string, any>, ) => Record<string, any>
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
+import { PluginData } from '@/generator/plugins'
 import _ from 'lodash'
 import path from 'path'
 import { readFileSync, requireUncached } from '../files'
@@ -48,6 +49,26 @@ export const mergeJsonFiles = (
 }
 
 /**
+ *
+ * @param pluginPath path to the plugin pack directory
+ * @param pluginName name of the plugin to target
+ * @param fileName name of the file inside of a plugin to target
+ * @returns the file being targeted in the specified plugin
+ */
+const getPluginFile = (
+	pluginPath: string,
+	fileName: string
+): any | undefined => {
+	try {
+		const rawData = requireUncached(path.join(pluginPath, fileName))
+		// const pluginFile = JSON.parse(rawData)
+		return rawData
+	} catch (e) {
+		return undefined
+	}
+}
+
+/**
  * Merge the JSON files of a particular name housed in each specified plugin directory.
  *
  * @param base object to merge json files into
@@ -62,24 +83,40 @@ export const mergePluginJsonFiles = (
 	fileName: string
 ): Record<string, any> => {
 	const filePaths = pluginNames.map((pluginName) => {
-		return path.join(pluginsDir, pluginName, fileName)
+		return path.resolve(pluginsDir, pluginName, fileName)
 	})
 
 	return mergeJsonFiles(base, filePaths)
 }
 
-// const getPluginFile = (
-// 	pluginPath: string,
-// 	pluginName: string,
-// 	fileName: string
-// ): any | undefined => {
-// 	try {
-// 		const rawData = requireUncached(
-// 			path.join(pluginPath, 'plugins', pluginName, fileName)
-// 		)
-// 		// const pluginFile = JSON.parse(rawData)
-// 		return rawData
-// 	} catch (e) {
-// 		return undefined
-// 	}
-// }
+/**
+ * merge package.json and package.js files together into the final package.json
+ *
+ * @param base all of the data provided by the saoFile data function
+ * @param pluginsPath path to the directory containing the plugins
+ * @param plugins array of all selected plugins
+ * @param answers user provided answers from prompts
+ */
+export const mergePackages = (
+	base = {},
+	plugins: PluginData[],
+	answers: Record<string, any>
+): Record<string, any> => {
+	const basePkg = { ...base }
+	const pluginPkgs = plugins.map((plugin) => {
+		const pluginPkg = getPluginFile(plugin.dirPath, 'package.json')
+		const pluginPkgFn = plugin.pluginFileData?.apply || undefined
+
+		if (pluginPkgFn && pluginPkg) {
+			const fnPkg = pluginPkgFn(pluginPkg, answers)
+			return fnPkg
+		} else if (pluginPkg) {
+			return pluginPkg
+		}
+		return {}
+	})
+
+	const result = mergeObjects(basePkg, pluginPkgs) as Record<string, unknown>
+
+	return result
+}

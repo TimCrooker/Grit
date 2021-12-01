@@ -19,16 +19,10 @@ export class Prompts {
 	private grit: Grit
 	private _answers: Answers = {}
 	private mock: boolean
-	/**
-	 *  answers provided at generator instantiation that will
-	 * automatically be used instead of respective prompts
-	 */
-	private injectedAnswers?: Record<string, any>
 
 	constructor(context: Grit) {
 		this.grit = context
 		this.mock = context.opts.mock || false
-		this.injectedAnswers = context.opts.answers
 	}
 
 	async run(): Promise<void> {
@@ -98,7 +92,7 @@ export class Prompts {
 	}
 
 	/** Get previosly stored answers for the generator */
-	private getCachedAnswers(): Record<string, any> {
+	private getCachedAnswers(): Answers {
 		const cachedAnswers = store.answers.get(this.answersCacheID)
 		if (!this.mock) {
 			logger.debug('Loaded cached answers:', cachedAnswers)
@@ -107,7 +101,7 @@ export class Prompts {
 	}
 
 	/** set new answers to store in the cache for the generator */
-	private setCachedAnswers(answers): void {
+	private setCachedAnswers(answers: Answers): void {
 		if (!this.mock) {
 			logger.debug('Caching prompt answers:', answers)
 			store.answers.set(this.answersCacheID, answers)
@@ -120,6 +114,14 @@ export class Prompts {
 		const pkgPath = resolveFrom.silent(generator.path, './package.json')
 		const pkgVersion = pkgPath ? require(pkgPath).version : ''
 		return `${generator.hash + pkgVersion.replace(/\./g, '\\.')}`
+	}
+
+	/**
+	 *  answers provided at generator instantiation that will
+	 * automatically be used instead of respective prompts
+	 */
+	private get injectedAnswers(): Answers {
+		return this.grit.opts.answers || {}
 	}
 
 	/**

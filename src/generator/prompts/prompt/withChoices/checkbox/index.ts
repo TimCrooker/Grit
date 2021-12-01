@@ -1,5 +1,5 @@
-import { BasePrompt, WithAnswers, WithFullContext, Answers } from '..'
-import { ListChoice } from './list'
+import { BasePrompt, WithAnswers, WithFullContext, Answers } from '../..'
+import { ListChoice } from '../list'
 
 export interface CheckboxPrompt extends BasePrompt {
 	type: 'checkbox'
