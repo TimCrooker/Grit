@@ -24,8 +24,9 @@ export const runCLI = async (): Promise<void> => {
 		.addRoute('help', help)
 		.addRoute('exit', exit)
 		.addRoute('find', find)
-		.commander.name('grit')
-		.version(pkg.version)
+
+	cli.commander.name('grit').version(pkg.version)
+
 	// List command for listing your generators
 	cli.commander.command('find').action(() => cli.navigate('find'))
 

@@ -20,8 +20,6 @@ describe('Add Action', () => {
 			transform: false,
 		})
 
-		grit.answers = {}
-
 		await addAction(grit, action)
 
 		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeTruthy()
@@ -96,9 +94,7 @@ describe('Add Action', () => {
 			data: () => ({ name }),
 		})
 
-		grit.answers = {}
-
-		await addAction(grit, action, {})
+		await addAction(grit, action)
 
 		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 

@@ -1,5 +1,5 @@
 import { UserFirstName } from '@/config'
-import { Grit, GritOptions } from '@/generator'
+import { Grit } from '@/generator'
 import { store } from '@/store'
 import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice, FindChoice } from '.'
@@ -32,7 +32,7 @@ export const home: GritRoute = async (app) => {
 		{
 			name: 'answer',
 			type: 'list',
-			message: `Hi ${chalk.underline(
+			message: `Hi ${app.chalk.underline(
 				UserFirstName
 			)}, What would you like to do?`,
 			choices,
@@ -54,7 +54,7 @@ export const home: GritRoute = async (app) => {
 			{
 				name: 'update',
 				type: 'confirm',
-				message: `Do you want to update ${chalk.underline(
+				message: `Do you want to update ${app.chalk.underline(
 					answer.generator.name
 				)}?`,
 			},

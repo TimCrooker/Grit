@@ -81,18 +81,32 @@ export interface GritOptions<T = Record<string, any>> {
 
 const IDLE = 'idle'
 const PREPARE = 'prepare'
+const POST_PREPARE = 'post-prepare'
 const PROMPT = 'prompt'
+const POST_PROMPT = 'post-prompt'
 const DATA = 'data'
-const ACTION = 'action'
+const POST_DATA = 'post-data'
+const ACTIONS = 'action'
+const POST_ACTIONS = 'post-actions'
 const COMPLETE = 'complete'
+const FINISHED = 'completed'
 
 type GenState =
 	| typeof IDLE
 	| typeof PREPARE
+	| typeof POST_PREPARE
 	| typeof PROMPT
+	| typeof POST_PROMPT
 	| typeof DATA
-	| typeof ACTION
+	| typeof POST_DATA
+	| typeof ACTIONS
+	| typeof POST_ACTIONS
 	| typeof COMPLETE
+	| typeof FINISHED
+
+type StatefulMethod = (context: Grit) => Promise<void> | void
+
+type StatefulMethods = Record<GenState, StatefulMethod[]>
 
 export class Grit {
 	opts: SetRequired<GritOptions, 'outDir' | 'logLevel' | 'mock' | 'debug'>
@@ -106,16 +120,35 @@ export class Grit {
 	store = store
 	/** Generator config file loaded from */
 	config: GeneratorConfig = {}
-
-	private prepare: Prepare
-	private _prompts: Prompts
-	private plugins?: Plugins
-	private _data: Data
-	private _actions: Actions
-	private completed: Completed
-	private _state: GenState = IDLE
-
 	parsedGenerator: ParsedGenerator
+
+	// generator runtime environment instances
+	/** Runs operations inside the prepare section of a generator */
+	private prepare: Prepare
+	/** Runs operations inside the prompts section of a generator */
+	private _prompts: Prompts
+	/** Runs operations inside the data section of a generator */
+	private _data: Data
+	/** Runs operations inside the actions section of a generator */
+	private _actions: Actions
+	/** Runs operations inside the data section of a generator */
+	private completed: Completed
+
+	private plugins?: Plugins
+	private _state: GenState = IDLE
+	private statefulMethods: StatefulMethods = {
+		[IDLE]: [],
+		[PREPARE]: [],
+		[POST_PREPARE]: [],
+		[PROMPT]: [],
+		[POST_PROMPT]: [],
+		[DATA]: [],
+		[POST_DATA]: [],
+		[ACTIONS]: [],
+		[POST_ACTIONS]: [],
+		[COMPLETE]: [],
+		[FINISHED]: [],
+	}
 
 	constructor(opts: GritOptions) {
 		this.opts = {
@@ -163,6 +196,8 @@ export class Grit {
 		this.completed = new Completed(this)
 	}
 
+	/** Generator execution methods */
+
 	/**
 	 * Get actual generator to run and its config
 	 *
@@ -203,16 +238,16 @@ export class Grit {
 
 		// Run generator prepare
 		if (config.prepare) {
-			this._state = PREPARE
+			this.state = PREPARE
 			await this.prepare.run()
-			this._state = IDLE
+			this.state = POST_PREPARE
 		}
 
 		// Run generator prompt section
 		if (config.prompts) {
-			this._state = PROMPT
+			this.state = PROMPT
 			await this._prompts.run()
-			this._state = IDLE
+			this.state = POST_PROMPT
 		}
 
 		// Register the plugin data provider
@@ -221,9 +256,9 @@ export class Grit {
 		)
 
 		// Run generator data section
-		this._state = DATA
+		this.state = DATA
 		await this._data.run()
-		this._state = IDLE
+		this.state = POST_DATA
 
 		// Load plugin data then register actions provider
 		if (this.data.selectedPlugins && this.data.selectedPlugins.length > 0) {
@@ -240,16 +275,16 @@ export class Grit {
 
 		// Run generator actions section
 		if (config.actions) {
-			this._state = ACTION
+			this.state = ACTIONS
 			await this._actions.run()
-			this._state = IDLE
+			this.state = POST_ACTIONS
 		}
 
 		// Run generator completed section
 		if (!this.opts.mock && config.completed) {
-			this._state = COMPLETE
+			this.state = COMPLETE
 			await this.completed.run()
-			this._state = IDLE
+			this.state = FINISHED
 		}
 	}
 
@@ -258,7 +293,6 @@ export class Grit {
 	 */
 	async run(): Promise<this> {
 		await this.runGenerator(await this.getGenerator())
-		this._state = IDLE
 		return this
 	}
 
@@ -292,6 +326,11 @@ export class Grit {
 		return
 	}
 
+	/** Add a method that will run when the generator reached the specified state */
+	setStatefulMethod(state: GenState, method: StatefulMethod): void {
+		this.statefulMethods[state].push(method)
+	}
+
 	/** Generator Instance Properties */
 
 	/**
@@ -299,12 +338,12 @@ export class Grit {
 	 *
 	 * You can't access this in `prompts` function
 	 */
-	get answers(): { [k: string]: any } {
+	get answers(): Answers {
 		this.setPermissions('answers', [PROMPT])
 		return this._prompts.answers
 	}
 
-	set answers(value: { [k: string]: any }) {
+	set answers(value: Answers) {
 		this._prompts.answers = value
 	}
 
@@ -313,7 +352,7 @@ export class Grit {
 	 *
 	 * Used to give generator functions more custom data to work with
 	 */
-	get data(): any {
+	get data(): Answers {
 		this.setPermissions('data', [PREPARE, PROMPT])
 		return {
 			...this.answers,
@@ -321,9 +360,9 @@ export class Grit {
 		}
 	}
 
-	// set data(value: Record<string, any>) {
-	// 	this._prompts.answers = value
-	// }
+	set data(value: Answers) {
+		this._data.data = value
+	}
 
 	get prompts(): Prompt[] {
 		return this._prompts.prompts
@@ -335,6 +374,13 @@ export class Grit {
 
 	get state(): GenState {
 		return this._state
+	}
+
+	set state(newState: GenState) {
+		this._state = newState
+
+		// execute all of the functions in statefulMethods for the new state
+		this.statefulMethods[newState].forEach((method) => method(this))
 	}
 
 	/**
