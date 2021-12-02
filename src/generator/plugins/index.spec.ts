@@ -126,10 +126,6 @@ describe('Plugins', () => {
 				'package-a/package.json',
 				'package-b/package.json',
 				'package-c/package.json',
-				'package.json',
-				'package-a/package.json',
-				'package-b/package.json',
-				'package-c/package.json',
 			],
 		})
 	})

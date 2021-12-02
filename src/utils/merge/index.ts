@@ -40,10 +40,11 @@ export const mergeJsonFiles = (
 	return mergeObjects(
 		base,
 		filePaths.map((file) => {
-			if (file.endsWith('.json')) {
-				return requireUncached(file)
+			try {
+				return JSON.parse(readFileSync(file, 'utf8'))
+			} catch (e) {
+				return {}
 			}
-			return JSON.parse(readFileSync(file, 'utf8')) ?? {}
 		})
 	)
 }
