@@ -7,8 +7,13 @@ export const addPluginData = async (
 ): Promise<DataProvider> => {
 	// get the list of prompts where it is of type list or chekcbox and plugin property is set to true
 	const pluginPrompts = prompts.filter((prompt) => {
-		if (prompt.type === 'list' || prompt.type === 'checkbox')
+		if (
+			prompt.type === 'list' ||
+			prompt.type === 'checkbox' ||
+			prompt.type === 'confirm'
+		) {
 			return prompt.plugin === true
+		}
 	})
 
 	// get answers where the key is equal to the name of a propmt in pluginPrompts
