@@ -27,8 +27,11 @@ describe('Run Actions', () => {
 
 		await expect(grit.hasOutputFile('buz.json')).resolves.toBeTruthy()
 
-		const output = await grit.readOutputFile('buz.json')
-		expect(output).toEqual({ bar: 'Tim' })
+		const output = (await grit.readOutputFile('buz.json')) as Record<
+			string,
+			any
+		>
+		expect(output.bar).toEqual('Tim')
 	})
 
 	it('Should copy file', async () => {
@@ -38,8 +41,11 @@ describe('Run Actions', () => {
 		await expect(grit.hasOutputFile('bill.json')).resolves.toBeTruthy()
 		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeTruthy()
 
-		const output = await grit.readOutputFile('buz.json')
-		expect(output).toEqual({ bar: 'Tim' })
+		const output = (await grit.readOutputFile('buz.json')) as Record<
+			string,
+			any
+		>
+		expect(output.bar).toEqual('Tim')
 	})
 
 	it('Should add data to file with modify action', async () => {
@@ -48,13 +54,13 @@ describe('Run Actions', () => {
 		await expect(grit.hasOutputFile('buz.json')).resolves.toBeTruthy()
 		await expect(grit.hasOutputFile('bill.json')).resolves.toBeTruthy()
 
-		const buz = await grit.readOutputFile('buz.json')
-		expect(buz).toEqual({ extra: 'extra' })
-		expect(buz).toEqual({ bar: 'Tim' })
+		const buz = (await grit.readOutputFile('buz.json')) as Record<string, any>
+		expect(buz.extra).toEqual('extra')
+		expect(buz.bar).toEqual('Tim')
 
-		const bill = await grit.readOutputFile('bill.json')
-		expect(bill).toEqual({ extra: 'extra' })
-		expect(bill).toEqual({ bar: 'Tim' })
+		const bill = (await grit.readOutputFile('bill.json')) as Record<string, any>
+		expect(bill.extra).toEqual('extra')
+		expect(bill.bar).toEqual('Tim')
 	})
 
 	it('Should remove file', async () => {
