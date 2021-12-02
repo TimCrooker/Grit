@@ -520,6 +520,10 @@ export class Grit {
 	 *  Read a file in output directory
 	 */
 	async readOutputFile(file: string): Promise<string> {
-		return await readFile(path.join(this.opts.outDir, file), 'utf8')
+		const contents = await readFile(path.join(this.opts.outDir, file), 'utf8')
+		if (file.endsWith('.json')) {
+			return JSON.parse(contents)
+		}
+		return contents
 	}
 }

@@ -78,58 +78,56 @@ describe('Plugins', () => {
 			selectedPlugins: ['plugin1', 'plugin2', 'plugin3'],
 		})
 
-		await expect(grit.readOutputFile('package.json')).resolves
-			.toMatchInlineSnapshot(`
-            "{
-              \\"name\\": \\"package\\",
-              \\"dependencies\\": {
-                \\"package-a\\": \\"2.0.0\\",
-                \\"package-b\\": \\"1.0.0\\",
-                \\"package-d\\": \\"1.0.0\\"
-              },
-              \\"devDependencies\\": {
-                \\"package-c\\": \\"1.0.0\\"
-              },
-              \\"files\\": [
-                \\"package.json\\",
-                \\"package-a/package.json\\",
-                \\"package-b/package.json\\",
-                \\"package-c/package.json\\",
-                \\"newfile\\"
-              ]
-            }"
-          `)
+		const packageOutput = await grit.readOutputFile('package.json')
 
-		await expect(grit.readOutputFile('tsconfig.json')).resolves
-			.toMatchInlineSnapshot(`
-            "{
-              \\"name\\": \\"package\\",
-              \\"dependencies\\": {
-                \\"package-a\\": \\"1.0.0\\",
-                \\"package-b\\": \\"1.0.0\\"
-              },
-              \\"devDependencies\\": {
-                \\"package-c\\": \\"1.0.0\\"
-              },
-              \\"files\\": [
-                \\"package.json\\",
-                \\"package-a/package.json\\",
-                \\"package-b/package.json\\",
-                \\"package-c/package.json\\",
-                \\"package.json\\",
-                \\"package-a/package.json\\",
-                \\"package-b/package.json\\",
-                \\"package-c/package.json\\",
-                \\"package.json\\",
-                \\"package-a/package.json\\",
-                \\"package-b/package.json\\",
-                \\"package-c/package.json\\",
-                \\"package.json\\",
-                \\"package-a/package.json\\",
-                \\"package-b/package.json\\",
-                \\"package-c/package.json\\"
-              ]
-            }"
-          `)
+		expect(packageOutput).toEqual({
+			name: 'package',
+			dependencies: {
+				'package-a': '2.0.0',
+				'package-b': '1.0.0',
+				'package-d': '1.0.0',
+			},
+			devDependencies: {
+				'package-c': '1.0.0',
+			},
+			files: [
+				'package.json',
+				'package-a/package.json',
+				'package-b/package.json',
+				'package-c/package.json',
+				'newfile',
+			],
+		})
+
+		const tsConfigOutput = await grit.readOutputFile('tsconfig.json')
+
+		expect(tsConfigOutput).toEqual({
+			name: 'package',
+			dependencies: {
+				'package-a': '1.0.0',
+				'package-b': '1.0.0',
+			},
+			devDependencies: {
+				'package-c': '1.0.0',
+			},
+			files: [
+				'package.json',
+				'package-a/package.json',
+				'package-b/package.json',
+				'package-c/package.json',
+				'package.json',
+				'package-a/package.json',
+				'package-b/package.json',
+				'package-c/package.json',
+				'package.json',
+				'package-a/package.json',
+				'package-b/package.json',
+				'package-c/package.json',
+				'package.json',
+				'package-a/package.json',
+				'package-b/package.json',
+				'package-c/package.json',
+			],
+		})
 	})
 })
