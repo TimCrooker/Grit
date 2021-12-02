@@ -1,4 +1,3 @@
-export { runCLI } from '@/cli/cli'
 export { getGenerator } from '@/cli/utils/getGenerator'
 export { Grit, GritOptions } from '@/generator'
 export { GeneratorConfig } from '@/generator/generatorConfig'
