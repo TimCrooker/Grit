@@ -39,8 +39,11 @@ export const runCLI = async (): Promise<void> => {
 		.arguments('[generator] [outDir]')
 		.option('-d, --debug', 'run the generator with more logging')
 		.option('-u, --update', 'force generator update')
+		.option('-s, --silent', 'run the generator without any logging')
 		.option('-c, --clone', 'git clone repo instead of downloading it')
-		.option('-y, --yes', 'use default answers for all generator questions')
+		.option('-m, --mock', 'mock the generator for testing purposes')
+		// .option('--answers <answers>', 'inject answers into the generator')
+		.option('--registry', 'use preferred npm registry (yarn, npm)')
 		.option(
 			'--npm-client <client>',
 			`use a specific npm client ('yarn', 'npm')`

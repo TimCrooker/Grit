@@ -121,7 +121,7 @@ export class Prompts {
 	 * automatically be used instead of respective prompts
 	 */
 	private get injectedAnswers(): Answers {
-		return this.grit.opts.answers || {}
+		return (this.grit.opts.answers as Answers) || {}
 	}
 
 	/**

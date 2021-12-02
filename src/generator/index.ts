@@ -51,7 +51,7 @@ export interface GritOptions<T = Record<string, any>> {
 	 */
 	debug?: boolean
 	/** Least amount of logging to the console */
-	quiet?: boolean
+	silent?: boolean
 	/** generator string */
 	config: GeneratorConfig
 	/** generator information */
@@ -70,7 +70,7 @@ export interface GritOptions<T = Record<string, any>> {
 	/**
 	 * User-supplied answers to prompts
 	 */
-	answers?: Answers
+	answers?: Answers | string
 	/** Extra data payload to provide the generator at runtime */
 	extras?: T
 }
@@ -152,10 +152,14 @@ export class Grit {
 			debug: typeof opts.debug === 'boolean' ? opts.debug : false,
 		}
 
+		if (typeof this.opts.answers === 'string') {
+			this.opts.answers = JSON.parse(this.opts.answers)
+		}
+
 		// Set log level from run mode
 		if (opts.debug) {
 			this.opts.logLevel = 4
-		} else if (opts.quiet) {
+		} else if (opts.silent) {
 			this.opts.logLevel = 1
 		}
 
