@@ -5,10 +5,10 @@ import spawn from 'cross-spawn'
 import axios from 'axios'
 import extractZip from '@egoist/extract-zip'
 import { RepoGenerator } from '../parseGenerator'
-import { move } from '../../utils/files'
-import { logger } from '../../logger'
-import { APP_NAME } from '../../config'
-import { GritError } from '../../error'
+import { move } from '../../../utils/files'
+import { logger } from '../../../logger'
+import { APP_NAME } from '../../../config'
+import { GritError } from '../../../error'
 
 /** Build the repo url from the generator contents */
 function buildRepoUrlFromGenerator(

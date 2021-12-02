@@ -6,13 +6,18 @@ import {
 	NpmGenerator,
 	RepoGenerator,
 	ParsedGenerator,
-} from '@/generator/parseGenerator'
-import { SetRequired } from 'type-fest'
+} from '@/cli/utils/parseGenerator'
+import { UpdateInfo } from 'update-notifier'
 import { BaseStoreOptions, BaseStore } from '../baseStore'
 
-export type StoreNpmGenerator = SetRequired<NpmGenerator, 'runCount'>
+export interface StoreNpmGenerator extends NpmGenerator {
+	runCount: number
+	update?: UpdateInfo
+}
 
-export type StoreRepoGenerator = SetRequired<RepoGenerator, 'runCount'>
+export interface StoreRepoGenerator extends RepoGenerator {
+	runCount: number
+}
 
 export type StoreGenerator = StoreNpmGenerator | StoreRepoGenerator
 

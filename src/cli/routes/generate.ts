@@ -1,7 +1,7 @@
 import { GritError, handleError } from '@/error'
-import { Grit, GritOptions } from '@/generator'
 import { logger } from '@/logger'
 import { GritRoute } from '../cli'
+import { getGenerator } from '../utils/getGenerator'
 
 export const generate: GritRoute = async (app, { args, options }) => {
 	const generator = args[0]
@@ -9,15 +9,15 @@ export const generate: GritRoute = async (app, { args, options }) => {
 
 	logger.debug('Generator command', generator, outDir, options)
 
-	const gritOptions = {
-		generator,
-		outDir: outDir || '.',
-		answers: options.yes ? true : options.answers,
-		...options,
-	} as GritOptions
-
 	try {
-		await new Grit(gritOptions).run()
+		await (
+			await getGenerator({
+				generator: generator,
+				outDir: outDir || '.',
+				answers: options.yes ? true : options.answers,
+				...options,
+			})
+		).run()
 	} catch (e) {
 		if (e instanceof GritError || e instanceof Error) {
 			handleError(e)

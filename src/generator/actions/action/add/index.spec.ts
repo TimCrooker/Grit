@@ -1,3 +1,4 @@
+import { getGenerator } from '@/cli/utils/getGenerator'
 import { Grit } from '@/generator'
 import path from 'path'
 import { addAction } from '.'
@@ -6,8 +7,8 @@ import { createAction } from '../../createAction'
 let grit: Grit
 
 describe('Add Action', () => {
-	beforeEach(() => {
-		grit = new Grit({
+	beforeEach(async () => {
+		grit = await getGenerator({
 			generator: path.join(__dirname, 'fixtures', 'generator'),
 			mock: true,
 		})

@@ -17,15 +17,7 @@ import {
 } from '@/utils/cmd'
 import { pathExists, readFile } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
-import { ensureGeneratorExists } from './ensureGenerator'
-import { GeneratorConfig, loadConfig } from './generatorConfig'
-import { defautGeneratorFile } from './generatorConfig/default-generator'
-import {
-	ParsedGenerator,
-	parseGenerator,
-	NpmGenerator,
-	RepoGenerator,
-} from './parseGenerator'
+import { GeneratorConfig } from '../cli/utils/generatorConfig'
 import { Prompt, Prompts } from './prompts'
 import { Action, Actions } from './actions'
 import { Data } from './data'
@@ -34,6 +26,8 @@ import { Prepare } from './prepare'
 import { Plugins } from './plugins'
 import { addPluginData } from './plugins/pluginDataProvider'
 import { Answers } from './prompts/prompt'
+import { ParsedGenerator } from '@/cli/utils/parseGenerator'
+import pkg from '@/../package.json'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -59,7 +53,9 @@ export interface GritOptions<T = Record<string, any>> {
 	/** Least amount of logging to the console */
 	quiet?: boolean
 	/** generator string */
-	generator: string | ParsedGenerator
+	config: GeneratorConfig
+	/** generator information */
+	parsedGenerator: ParsedGenerator
 	/** Update cached generator before running */
 	update?: boolean
 	/** Use `git clone` to download repo */
@@ -118,9 +114,6 @@ export class Grit {
 	logger = logger
 	/** Access Grit local storage */
 	store = store
-	/** Generator config file loaded from */
-	config: GeneratorConfig = {}
-	parsedGenerator: ParsedGenerator
 
 	// generator runtime environment instances
 	/** Runs operations inside the prepare section of a generator */
@@ -178,16 +171,6 @@ export class Grit {
 			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
-		// use directly passed parsed generator or parse generator string
-		if (typeof opts.generator === 'string') {
-			this.parsedGenerator = parseGenerator(this.opts.generator as string)
-		} else {
-			const generator = this.opts.generator as NpmGenerator | RepoGenerator
-			// Tell the generator what version to update to if update is selected
-			if (this.opts.update) generator.version = 'latest'
-			this.parsedGenerator = generator
-		}
-
 		// Instantiate generator runtime environments
 		this.prepare = new Prepare(this)
 		this._prompts = new Prompts(this)
@@ -199,39 +182,12 @@ export class Grit {
 	/** Generator execution methods */
 
 	/**
-	 * Get actual generator to run and its config
-	 *
-	 * Download it if not yet cached
-	 */
-	async getGenerator(
-		generator: ParsedGenerator = this.parsedGenerator
-	): Promise<GeneratorConfig> {
-		await ensureGeneratorExists(generator, this.opts)
-
-		// Increment the run count of the generator in the store
-		this.store.generators.set(
-			generator.hash + '.runCount',
-			store.generators.get(generator.hash + '.runCount') + 1 || 1
-		)
-
-		// load actual generator from generator path
-		const loadedConfig = await loadConfig(generator.path)
-		const config: GeneratorConfig =
-			loadedConfig.path && loadedConfig.data
-				? loadedConfig.data
-				: defautGeneratorFile
-
-		// set generator config
-		this.config = config
-
-		return config
-	}
-
-	/**
 	 * Run the generator with the configured options
 	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
 	 */
-	async runGenerator(config: GeneratorConfig = this.config): Promise<void> {
+	async runGenerator(
+		config: GeneratorConfig = this.opts.config
+	): Promise<void> {
 		if (config.description) {
 			logger.status('green', 'Generator', config.description)
 		}
@@ -263,9 +219,9 @@ export class Grit {
 		// Load plugin data then register actions provider
 		if (this.data.selectedPlugins && this.data.selectedPlugins.length > 0) {
 			this.plugins = new Plugins({
-				config: this.config.plugins,
+				config: config.plugins,
 				selectedPlugins: this.data.selectedPlugins,
-				generatorPath: this.parsedGenerator.path,
+				generatorPath: this.opts.parsedGenerator.path,
 			})
 			await this.plugins.loadPlugins()
 			this._actions.registerActionProvider(
@@ -292,7 +248,7 @@ export class Grit {
 	 * Method to run when instantiated with a generator
 	 */
 	async run(): Promise<this> {
-		await this.runGenerator(await this.getGenerator())
+		await this.runGenerator()
 		return this
 	}
 
@@ -304,7 +260,7 @@ export class Grit {
 	 * @param denyStates states in which access is denied
 	 * @param allowStates states in which access is exclusivly allowed
 	 */
-	setPermissions(
+	private setPermissions(
 		accessItem: string,
 		denyStates?: string[],
 		allowStates?: string[]
@@ -324,11 +280,6 @@ export class Grit {
 		}
 
 		return
-	}
-
-	/** Add a method that will run when the generator reached the specified state */
-	setStatefulMethod(state: GenState, method: StatefulMethod): void {
-		this.statefulMethods[state].push(method)
 	}
 
 	/** Generator Instance Properties */
@@ -398,10 +349,14 @@ export class Grit {
 
 	get generatorPkg(): Record<string, any> {
 		try {
-			return require(path.join(this.parsedGenerator.path, 'package.json'))
+			return require(path.join(this.opts.parsedGenerator.path, 'package.json'))
 		} catch (err) {
 			return {}
 		}
+	}
+
+	get gritPkg(): Record<string, any> {
+		return pkg
 	}
 
 	/**
@@ -431,6 +386,11 @@ export class Grit {
 	}
 
 	/** Generator Instance Methods */
+
+	/** Add a method that will run when the generator reached the specified state */
+	setStatefulMethod(state: GenState, method: StatefulMethod): void {
+		this.statefulMethods[state].push(method)
+	}
 
 	/**
 	 * 	Run `git init` in output directly

@@ -4,7 +4,7 @@ import { majo } from 'majo'
 import matcher from 'micromatch'
 import path from 'path'
 import { Grit } from '@/generator'
-import { DataType } from '@/generator/generatorConfig'
+import { DataType } from '@/cli/utils/generatorConfig'
 import { logger } from '@/logger'
 import { getGlobPatterns } from '@/utils/glob'
 import { ActionFn } from '../../runAction'
@@ -33,12 +33,12 @@ export interface AddAction {
 }
 
 export const addAction: ActionFn<AddAction> = async (context, action) => {
-	const config = context.config
+	const config = context.opts.config
 
 	const stream = majo()
 	stream.source(['!**/node_modules/**'].concat(action.files), {
 		baseDir: path.resolve(
-			context.parsedGenerator.path,
+			context.opts.parsedGenerator.path,
 			action.templateDir || config.templateDir || 'template'
 		),
 	})

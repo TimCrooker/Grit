@@ -1,4 +1,5 @@
-import { ParsedGenerator } from '@/generator/parseGenerator'
+import { ParsedGenerator } from '@/cli/utils/parseGenerator'
+import { store } from '@/store'
 import { readFileSync } from 'fs'
 import path from 'path'
 import updateNotifier, { Package, UpdateInfo } from 'update-notifier'
@@ -13,7 +14,7 @@ export const checkPkgForUpdates = async (
 
 export const checkGeneratorForUpdates = async (
 	generator: ParsedGenerator
-): Promise<UpdateInfo | undefined> => {
+): Promise<void> => {
 	if (generator.type !== 'npm') return
 
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,5 +22,9 @@ export const checkGeneratorForUpdates = async (
 		readFileSync(path.join(generator.path, 'package.json'), 'utf8')
 	)
 
-	return await checkPkgForUpdates(pkg)
+	const update = await checkPkgForUpdates(pkg)
+
+	if (update) {
+		store.generators.set(generator.hash + '.update', update)
+	}
 }

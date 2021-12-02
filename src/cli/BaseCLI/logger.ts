@@ -1,5 +1,4 @@
 import colors, { Color } from 'chalk'
-import path from 'path'
 
 export type ColorType = typeof Color
 

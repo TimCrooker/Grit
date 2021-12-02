@@ -1,4 +1,4 @@
-import { Grit } from '@/index'
+import { getGenerator } from '@/cli/utils/getGenerator'
 import path from 'path'
 import { Plugins } from '.'
 
@@ -76,7 +76,7 @@ describe('Plugins', () => {
 		expect(actionProvider).toMatchInlineSnapshot(`[Function]`)
 
 		const result = actionProvider(
-			new Grit({ generator: 'generator', mock: true })
+			await getGenerator({ generator: 'generator', mock: true })
 		)
 
 		expect(result).toMatchInlineSnapshot(`
@@ -101,11 +101,13 @@ describe('Plugins', () => {
 	})
 
 	it('Should merge json files from plugins', async () => {
-		const grit = await new Grit({
-			generator: path.resolve(__dirname, 'fixtures'),
-			answers: { plugin: ['plugin1', 'plugin2', 'plugin3'] },
-			mock: true,
-		}).run()
+		const grit = await (
+			await getGenerator({
+				generator: path.resolve(__dirname, 'fixtures'),
+				answers: { plugin: ['plugin1', 'plugin2', 'plugin3'] },
+				mock: true,
+			})
+		).run()
 
 		expect(grit.data).toEqual({
 			plugin: ['plugin1', 'plugin2', 'plugin3'],

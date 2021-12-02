@@ -1,4 +1,4 @@
-import { ParsedGenerator } from '@/generator/parseGenerator'
+import { ParsedGenerator } from '@/cli/utils/parseGenerator'
 import path from 'path'
 import { GeneratorStore } from './'
 

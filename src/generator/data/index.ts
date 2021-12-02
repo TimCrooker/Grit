@@ -22,7 +22,7 @@ export class Data {
 	/** Get the data from the generator file */
 	async getData(
 		context: Grit = this.grit,
-		config: GeneratorConfig['data'] = this.grit.config.data
+		config: GeneratorConfig['data'] = this.grit.opts.config.data
 	): Promise<void> {
 		const dataObject =
 			typeof config === 'function' ? await config.call(this, context) : config

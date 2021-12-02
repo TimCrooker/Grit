@@ -3,8 +3,9 @@ import { CLI } from '@/cli/BaseCLI/cli'
 import { generate } from './routes/generate'
 import { exit, find, help, home } from './routes'
 import { Route } from './BaseCLI/router'
-import { checkPkgForUpdates } from './utils/updater'
 import { Grit } from '@/generator/index'
+import { CliError, handleError } from './BaseCLI/error'
+import { GritError } from '@/error'
 
 export type RuntimeEnv = Grit
 
@@ -16,7 +17,7 @@ export const runCLI = async (): Promise<void> => {
 		debug: true,
 	})
 
-	cli.logger.log(await checkPkgForUpdates(pkg))
+	// cli.logger.log(await checkPkgForUpdates(pkg))
 
 	cli
 		.addRoute('home', home)
@@ -53,5 +54,11 @@ export const runCLI = async (): Promise<void> => {
 			}
 		})
 
-	await cli.run()
+	try {
+		await cli.run()
+	} catch (e) {
+		if (e instanceof GritError || e instanceof CliError || e instanceof Error) {
+			handleError(e)
+		}
+	}
 }

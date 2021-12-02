@@ -73,7 +73,7 @@ export class Prompts {
 	/** Get the list of valid prompts from the generator file */
 	private async getPrompts(
 		context: Grit = this.grit,
-		config: GeneratorConfig['prompts'] = this.grit.config.prompts
+		config: GeneratorConfig['prompts'] = this.grit.opts.config.prompts
 	): Promise<void> {
 		const promptsArray =
 			typeof config === 'function' ? await config.call(this, context) : config
@@ -110,7 +110,7 @@ export class Prompts {
 
 	/** Unique id for storing answers in the cache */
 	private get answersCacheID(): string {
-		const generator = this.grit.parsedGenerator
+		const generator = this.grit.opts.parsedGenerator
 		const pkgPath = resolveFrom.silent(generator.path, './package.json')
 		const pkgVersion = pkgPath ? require(pkgPath).version : ''
 		return `${generator.hash + pkgVersion.replace(/\./g, '\\.')}`

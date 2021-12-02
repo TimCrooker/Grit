@@ -35,7 +35,7 @@ export const copyAction: ActionFn<CopyAction> = async (context, action) => {
 	await Promise.all(
 		Object.keys(action.patterns).map(async (pattern) => {
 			const files = await glob(pattern, {
-				cwd: context.opts.outDir,
+				cwd: context.outDir,
 				absolute: true,
 				onlyFiles: false,
 			})
@@ -43,7 +43,7 @@ export const copyAction: ActionFn<CopyAction> = async (context, action) => {
 				throw new Error('"copy" pattern can only match one file!')
 			} else if (files.length === 1) {
 				const from = files[0]
-				const to = path.join(context.opts.outDir, action.patterns[pattern])
+				const to = path.join(context.outDir, action.patterns[pattern])
 				await copy(from, to, {
 					overwrite: action.overwrite ?? true,
 				})

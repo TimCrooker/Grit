@@ -1,11 +1,11 @@
 import { UserFirstName } from '@/config'
-import { Grit } from '@/generator'
 import { store } from '@/store'
 import Choice from 'inquirer/lib/objects/choice'
 import { ExitChoice, HelpChoice, FindChoice } from '.'
 import { generatorChoiceList } from '../utils/generator'
 import { getWelcomeMessage } from '../utils/welcome'
 import { GritRoute } from '../cli'
+import { getGenerator } from '../utils/getGenerator'
 
 /**
  * This is the home route when users input just the `grit` keyword with no commands\
@@ -42,7 +42,7 @@ export const home: GritRoute = async (app) => {
 
 	// If the user chose to run a generator and it has no updates, run it
 	if (answer.method === 'run') {
-		await new Grit({ generator: answer.generator }).run()
+		await (await getGenerator({ generator: answer.generator })).run()
 
 		// Go home after generation
 		return await app.navigate('home')
@@ -50,7 +50,7 @@ export const home: GritRoute = async (app) => {
 
 	// Run when generators have an update available
 	if (answer.method === 'update') {
-		const updateGenerator = await app.prompt([
+		const { update } = await app.prompt([
 			{
 				name: 'update',
 				type: 'confirm',
@@ -60,10 +60,24 @@ export const home: GritRoute = async (app) => {
 			},
 		])
 
-		await new Grit({
+		const generator = await getGenerator({
 			generator: answer.generator,
-			update: updateGenerator.update,
-		}).run()
+			update,
+		})
+
+		const { run } = await app.prompt([
+			{
+				name: 'run',
+				type: 'confirm',
+				message: `Do you want to run ${app.chalk.underline(
+					answer.generator.name
+				)}?`,
+			},
+		])
+
+		if (run) {
+			await generator.run()
+		}
 
 		// Go home after generation
 		return await app.navigate('home')

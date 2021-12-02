@@ -39,13 +39,13 @@ async function ensureLocal(generator: LocalGenerator): Promise<void> {
 /** Check that the generator exists where it should be and download it if it isnt */
 export const ensureGeneratorExists = async (
 	generator: ParsedGenerator,
-	{ update, clone }: { update?: boolean; clone?: boolean }
+	update?: boolean
 ): Promise<void> => {
 	// if the generator already exists and no update is requested, we are done here
 	if ((await pathExists(generator.path)) && !update) return
 
 	if (generator.type === 'repo') {
-		await ensureRepo(generator, clone)
+		await ensureRepo(generator)
 	} else if (generator.type === 'npm') {
 		await ensurePackage(generator)
 	} else if (generator.type === 'local') {

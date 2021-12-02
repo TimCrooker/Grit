@@ -13,7 +13,7 @@ interface Basegenerator {
 	path: string
 	hash: string
 	subGenerator?: string
-	runCount?: number
+	// runCount?: number
 }
 
 export interface LocalGenerator extends Basegenerator {

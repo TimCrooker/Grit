@@ -1,4 +1,4 @@
-import { Grit } from '@/generator'
+import { getGenerator } from '@/cli/utils/getGenerator'
 import path from 'path'
 
 const generator = path.join(__dirname, 'fixtures')
@@ -9,8 +9,8 @@ const injectedAnswers = {
 
 describe('run number prompt in generator instance', () => {
 	it('Should use default for mock', async () => {
-		const grit = new Grit({
-			generator,
+		const grit = await getGenerator({
+			generator: generator,
 			mock: true,
 		})
 
@@ -20,8 +20,8 @@ describe('run number prompt in generator instance', () => {
 	})
 
 	it('inject answers', async () => {
-		const grit = new Grit({
-			generator,
+		const grit = await getGenerator({
+			generator: generator,
 			outDir: path.join(__dirname, 'fixtures', 'output'),
 			answers: injectedAnswers,
 		})

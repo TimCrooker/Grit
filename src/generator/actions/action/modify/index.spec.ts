@@ -1,13 +1,14 @@
+import { getGenerator } from '@/cli/utils/getGenerator'
 import { Grit } from '@/generator'
 import path from 'path'
 import { modifyAction } from '.'
 import { createAction } from '../../createAction'
 
-let context: Grit
+let grit: Grit
 
 describe('Modify Action', () => {
-	beforeEach(() => {
-		context = new Grit({
+	beforeEach(async () => {
+		grit = await getGenerator({
 			generator: path.join(__dirname, 'fixtures', 'generator'),
 			mock: true,
 		})
@@ -21,15 +22,15 @@ describe('Modify Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await expect(context.hasOutputFile('foo.txt')).resolves.toBeTruthy()
+		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeTruthy()
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toBe('foo')
+		await expect(grit.readOutputFile('foo.txt')).resolves.toBe('foo')
 
-		await modifyAction(context, action)
+		await modifyAction(grit, action)
 
-		await expect(context.readOutputFile('foo.txt')).resolves.toBe('bar')
+		await expect(grit.readOutputFile('foo.txt')).resolves.toBe('bar')
 	})
 
 	it('should modify JSON file contents', async () => {
@@ -41,19 +42,19 @@ describe('Modify Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await expect(context.hasOutputFile('bar.json')).resolves.toBeTruthy()
+		await expect(grit.hasOutputFile('bar.json')).resolves.toBeTruthy()
 
-		const beforeModify = JSON.parse(await context.readOutputFile('bar.json'))
+		const beforeModify = JSON.parse(await grit.readOutputFile('bar.json'))
 
 		expect(beforeModify).toEqual({
 			bar: false,
 		})
 
-		await modifyAction(context, action)
+		await modifyAction(grit, action)
 
-		const afterModify = JSON.parse(await context.readOutputFile('bar.json'))
+		const afterModify = JSON.parse(await grit.readOutputFile('bar.json'))
 
 		expect(afterModify).toEqual({
 			bar: true,

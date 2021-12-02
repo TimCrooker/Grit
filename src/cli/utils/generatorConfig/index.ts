@@ -1,15 +1,15 @@
 import { Grit } from '@/generator/index'
 import JoyCon from 'joycon'
 import pa from 'path'
-import { Action, Actions } from '../actions'
-import { Prompt } from '../prompts/prompt'
+import { Action, Actions } from '../../../generator/actions'
+import { Prompt } from '../../../generator/prompts/prompt'
 import { globalRequire } from '@/utils/files'
-import { Prompts } from '../prompts'
-import { Data } from '../data'
-import { Completed } from '../data/completed'
-import { Prepare } from '../prepare'
+import { Prompts } from '../../../generator/prompts'
+import { Data } from '../../../generator/data'
+import { Completed } from '../../../generator/data/completed'
+import { Prepare } from '../../../generator/prepare'
 import { logger } from '@/logger'
-import { PluginConfig } from '../plugins/pluginConfig'
+import { PluginConfig } from '../../../generator/plugins/pluginConfig'
 
 export type DataType = Record<string, any>
 

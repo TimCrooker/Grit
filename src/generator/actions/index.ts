@@ -39,7 +39,7 @@ export class Actions {
 	/** Get the actions stack from the generator and any action providers */
 	private async getActions(
 		context: Grit = this.context,
-		config: GeneratorConfig['actions'] = this.context.config.actions
+		config: GeneratorConfig['actions'] = this.context.opts.config.actions
 	): Promise<void> {
 		// get actions from the generator file
 		const configActions =

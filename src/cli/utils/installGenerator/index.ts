@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { PACKAGES_CACHE_PATH } from '@/config'
 import { GritError } from '@/error'
 import { logger } from '@/logger'
@@ -15,8 +16,8 @@ export const installNpmGenerator = async (
 	generator: NpmGenerator
 ): Promise<void> => {
 	const installPath = path.join(PACKAGES_CACHE_PATH, generator.hash)
-
 	const packagePath = path.join(installPath, 'package.json')
+	const packageJson = require(packagePath)
 
 	// write a package.json file in the store
 	await outputFile(
@@ -27,9 +28,8 @@ export const installNpmGenerator = async (
 		'utf8'
 	)
 
-	logger.debug('Installing generator at path', installPath)
-
 	// download the generator with npm install
+	logger.debug('Installing generator at path', installPath)
 	await installPackages({
 		cwd: installPath,
 		packages: [`${generator.name}@${generator.version}`],
@@ -37,16 +37,14 @@ export const installNpmGenerator = async (
 	})
 	logger.success('Generator installed')
 
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const packageJson = require(packagePath)
-
-	// in the store, add the generator and insert the true version
+	// in the store, add the generator and insert the true version and clear updates
 	store.generators
 		.add(generator)
 		.set(
 			generator.hash + '.version',
 			packageJson.dependencies[generator.name].replace(/^\^/, '')
 		)
+		.set(generator.hash + '.update', undefined)
 }
 
 /** Install a repo generator to the grit store */

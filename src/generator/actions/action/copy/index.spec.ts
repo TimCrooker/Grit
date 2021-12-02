@@ -1,14 +1,15 @@
+import { getGenerator } from '@/cli/utils/getGenerator'
 import { Grit } from '@/generator'
 import path from 'path'
 import { copyAction } from '.'
 import { createAction } from '../../createAction'
 
 // jest.mock('@/index')
-let context: Grit
+let grit: Grit
 
 describe('Copy Action', () => {
-	beforeEach(() => {
-		context = new Grit({
+	beforeEach(async () => {
+		grit = await getGenerator({
 			generator: path.join(__dirname, 'fixtures', 'generator'),
 			mock: true,
 		})
@@ -21,11 +22,11 @@ describe('Copy Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await copyAction(context, action)
+		await copyAction(grit, action)
 
-		const hasFile = await context.hasOutputFile('newDir/foo.txt')
+		const hasFile = await grit.hasOutputFile('newDir/foo.txt')
 
 		expect(hasFile).toBeTruthy()
 	})
@@ -38,9 +39,9 @@ describe('Copy Action', () => {
 			overwrite: false,
 		})
 
-		await context.run()
+		await grit.run()
 
-		await expect(copyAction(context, action)).rejects.toThrow()
+		await expect(copyAction(grit, action)).rejects.toThrow()
 	})
 
 	it('should copy and rename file', async () => {
@@ -50,11 +51,11 @@ describe('Copy Action', () => {
 			},
 		})
 
-		await context.run()
+		await grit.run()
 
-		await copyAction(context, action)
+		await copyAction(grit, action)
 
-		const hasFile = await context.hasOutputFile('fo.txt')
+		const hasFile = await grit.hasOutputFile('fo.txt')
 
 		expect(hasFile).toBeTruthy()
 	})

@@ -1,3 +1,4 @@
+import { getGenerator } from '@/cli/utils/getGenerator'
 import { Grit } from '@/generator'
 import path from 'path'
 
@@ -13,8 +14,8 @@ const injectedAnswers2 = {
 
 describe('run checkbox prompt in generator instance', () => {
 	it('Should use default for mock', async () => {
-		const grit = new Grit({
-			generator,
+		const grit = await getGenerator({
+			generator: generator,
 			mock: true,
 		})
 
@@ -24,8 +25,8 @@ describe('run checkbox prompt in generator instance', () => {
 	})
 
 	it('inject answers', async () => {
-		const grit = new Grit({
-			generator,
+		const grit = await getGenerator({
+			generator: generator,
 			outDir: path.join(__dirname, 'fixtures', 'output'),
 			answers: injectedAnswers,
 		})
@@ -36,8 +37,8 @@ describe('run checkbox prompt in generator instance', () => {
 	})
 
 	it('inject multiple answers', async () => {
-		const grit = new Grit({
-			generator,
+		const grit = await getGenerator({
+			generator: generator,
 			outDir: path.join(__dirname, 'fixtures', 'output'),
 			answers: injectedAnswers2,
 		})

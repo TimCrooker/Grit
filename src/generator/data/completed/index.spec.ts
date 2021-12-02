@@ -1,11 +1,12 @@
+import { getGenerator } from '@/cli/utils/getGenerator'
 import { Grit } from '@/index'
 import path from 'path'
 
 let grit: Grit
 
 describe('Completed sections', () => {
-	beforeEach(() => {
-		grit = new Grit({
+	beforeEach(async () => {
+		grit = await getGenerator({
 			generator: path.join(__dirname, 'fixtures'),
 		})
 	})

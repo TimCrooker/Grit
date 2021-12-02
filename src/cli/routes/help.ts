@@ -1,9 +1,9 @@
 import { DOCS_URL, GITHUB_URL } from '@/config'
 import Choice from 'inquirer/lib/objects/choice'
-import { GritRoute } from '..'
 import open from 'open'
 import { ExitChoice, HomeChoice } from '.'
 import { BackChoice } from '@/cli/BaseCLI/router'
+import { GritRoute } from '../cli'
 
 export const help: GritRoute = async (app, { args, options }) => {
 	const choices = [
@@ -40,7 +40,6 @@ export const help: GritRoute = async (app, { args, options }) => {
 			break
 		default:
 			return await app.navigate(answer)
-			break
 	}
 
 	return await app.navigate('home')

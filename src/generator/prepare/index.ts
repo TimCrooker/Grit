@@ -9,7 +9,7 @@ export class Prepare {
 
 	async run(
 		grit: Grit = this.grit,
-		config: GeneratorConfig['prepare'] = this.grit.config.prepare
+		config: GeneratorConfig['prepare'] = this.grit.opts.config.prepare
 	): Promise<void> {
 		// Runs completed section from the generator config
 		typeof config === 'function' && (await config.call(this, grit))
