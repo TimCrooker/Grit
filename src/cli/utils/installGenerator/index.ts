@@ -17,7 +17,6 @@ export const installNpmGenerator = async (
 ): Promise<void> => {
 	const installPath = path.join(PACKAGES_CACHE_PATH, generator.hash)
 	const packagePath = path.join(installPath, 'package.json')
-	const packageJson = require(packagePath)
 
 	// write a package.json file in the store
 	await outputFile(
@@ -37,6 +36,9 @@ export const installNpmGenerator = async (
 	})
 	logger.success('Generator installed')
 
+	// grab the new generator pakcage.json file
+	const packageJson = require(packagePath)
+
 	// in the store, add the generator and insert the true version and clear updates
 	store.generators
 		.add(generator)
@@ -54,20 +56,13 @@ export const installRepoGenerator = async (
 ): Promise<void> => {
 	// Download repo
 	spinner.start('Downloading Repo')
-	try {
-		await downloadRepoFromGenerator(generator, {
-			clone,
-			outDir: generator.path,
-		})
-		spinner.stop()
-		logger.success('Downloaded repo')
-	} catch (error) {
-		let message = error.message
-		if (error.host && error.path) {
-			message += '\n' + error.host + error.path
-		}
-		throw new GritError(message)
-	}
+
+	await downloadRepoFromGenerator(generator, {
+		clone,
+		outDir: generator.path,
+	})
+	spinner.stop()
+	logger.success('Downloaded repo')
 
 	// Only try to install dependencies for real generator
 	const hasConfigFile = hasConfig(generator.path)

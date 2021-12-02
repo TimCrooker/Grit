@@ -1,5 +1,3 @@
-import { Grit } from '@/generator'
-import path from 'path'
 import { getGenerator, loadGeneratorGrit } from '.'
 import { parseGenerator } from '../parseGenerator'
 
@@ -11,14 +9,12 @@ describe('Name of the group', () => {
 
 		const grit = new generator({
 			config: {},
-			parsedGenerator: parsedGenerator,
+			generator: parsedGenerator,
 			mock: true,
 		})
 
 		expect(grit).toBeDefined()
 	})
-
-
 
 	it('should load instantiated generator', async () => {
 		const grit = await getGenerator({ generator: 'generator', mock: true })

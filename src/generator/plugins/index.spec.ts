@@ -28,46 +28,10 @@ describe('Plugins', () => {
 
 	it('should load plugin data', async () => {
 		await pluginsWorker.loadPlugins()
-		expect(pluginsWorker.pluginData).toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "dirPath": "C:\\\\Users\\\\crook\\\\Documents\\\\Grit\\\\grit-cli\\\\src\\\\generator\\\\plugins\\\\fixtures\\\\plugins\\\\plugin1",
-          "name": "plugin1",
-          "pluginFileData": Object {
-            "default": Object {
-              "description": "plugin1 description",
-              "name": "plugin1",
-            },
-            "description": "plugin1 description",
-            "name": "plugin1",
-          },
-        },
-        Object {
-          "dirPath": "C:\\\\Users\\\\crook\\\\Documents\\\\Grit\\\\grit-cli\\\\src\\\\generator\\\\plugins\\\\fixtures\\\\plugins\\\\plugin2",
-          "name": "plugin2",
-          "pluginFileData": Object {
-            "default": Object {
-              "description": "plugin2 description",
-              "name": "plugin2",
-            },
-            "description": "plugin2 description",
-            "name": "plugin2",
-          },
-        },
-        Object {
-          "dirPath": "C:\\\\Users\\\\crook\\\\Documents\\\\Grit\\\\grit-cli\\\\src\\\\generator\\\\plugins\\\\fixtures\\\\plugins\\\\plugin3",
-          "name": "plugin3",
-          "pluginFileData": Object {
-            "default": Object {
-              "description": "plugin2 description",
-              "name": "plugin2",
-            },
-            "description": "plugin2 description",
-            "name": "plugin2",
-          },
-        },
-      ]
-    `)
+
+		expect(pluginsWorker.pluginData[0].name).toEqual('plugin1')
+		expect(pluginsWorker.pluginData[1].name).toEqual('plugin2')
+		expect(pluginsWorker.pluginData[2].name).toEqual('plugin3')
 	})
 
 	it('should create actions', async () => {

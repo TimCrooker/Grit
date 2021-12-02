@@ -1,7 +1,5 @@
 export { runCLI } from '@/cli/cli'
-export { handleError, GritError } from '@/error'
-export { store } from '@/store'
 export { Grit, GritOptions } from '@/generator'
 export { GeneratorConfig } from '@/cli/utils/generatorConfig'
-export { Prompt } from '@/generator/prompts'
+export * from '@/generator/prompts'
 export { Action } from '@/generator/actions'

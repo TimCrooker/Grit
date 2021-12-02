@@ -41,7 +41,7 @@ describe('Plugin data provider', () => {
 			notplugin: 'plugin2',
 		})
 
-		const data = dataProvider(new Grit({ parsedGenerator: 'generator', mock: true }))
+		const data = dataProvider(new Grit({ generator: 'generator', mock: true }))
 
 		expect(data).toMatchInlineSnapshot(`
       Object {

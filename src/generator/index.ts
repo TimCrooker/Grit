@@ -26,7 +26,12 @@ import { Prepare } from './prepare'
 import { Plugins } from './plugins'
 import { addPluginData } from './plugins/pluginDataProvider'
 import { Answers } from './prompts/prompt'
-import { ParsedGenerator } from '@/cli/utils/parseGenerator'
+import {
+	NpmGenerator,
+	ParsedGenerator,
+	parseGenerator,
+	RepoGenerator,
+} from '@/cli/utils/parseGenerator'
 import pkg from '@/../package.json'
 
 export interface GritOptions<T = Record<string, any>> {
@@ -55,7 +60,7 @@ export interface GritOptions<T = Record<string, any>> {
 	/** generator string */
 	config: GeneratorConfig
 	/** generator information */
-	parsedGenerator: ParsedGenerator
+	generator: ParsedGenerator | string
 	/** Update cached generator before running */
 	update?: boolean
 	/** Use `git clone` to download repo */
@@ -114,6 +119,8 @@ export class Grit {
 	logger = logger
 	/** Access Grit local storage */
 	store = store
+	/** information about the current generator */
+	generator: ParsedGenerator
 
 	// generator runtime environment instances
 	/** Runs operations inside the prepare section of a generator */
@@ -175,6 +182,13 @@ export class Grit {
 			this.opts.outDir = path.join(tmpdir(), `grit-out/${Date.now()}/out`)
 		}
 
+		// use directly passed parsed generator or parse generator string
+		if (typeof opts.generator === 'string') {
+			this.generator = parseGenerator(this.opts.generator as string)
+		} else {
+			this.generator = this.opts.generator as NpmGenerator | RepoGenerator
+		}
+
 		// Instantiate generator runtime environments
 		this.prepare = new Prepare(this)
 		this._prompts = new Prompts(this)
@@ -225,7 +239,7 @@ export class Grit {
 			this.plugins = new Plugins({
 				config: config.plugins,
 				selectedPlugins: this.data.selectedPlugins,
-				generatorPath: this.opts.parsedGenerator.path,
+				generatorPath: this.opts.generator.path,
 			})
 			await this.plugins.loadPlugins()
 			this._actions.registerActionProvider(
@@ -353,7 +367,7 @@ export class Grit {
 
 	get generatorPkg(): Record<string, any> {
 		try {
-			return require(path.join(this.opts.parsedGenerator.path, 'package.json'))
+			return require(path.join(this.opts.generator.path, 'package.json'))
 		} catch (err) {
 			return {}
 		}

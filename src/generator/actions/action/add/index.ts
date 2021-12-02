@@ -38,7 +38,7 @@ export const addAction: ActionFn<AddAction> = async (context, action) => {
 	const stream = majo()
 	stream.source(['!**/node_modules/**'].concat(action.files), {
 		baseDir: path.resolve(
-			context.opts.parsedGenerator.path,
+			context.opts.generator.path,
 			action.templateDir || config.templateDir || 'template'
 		),
 	})

@@ -78,5 +78,5 @@ export const getGenerator = async (
 			? loadedConfig.data
 			: defautGeneratorFile
 
-	return new Gen({ ...opts, config: config, parsedGenerator: parsedGenerator })
+	return new Gen({ ...opts, config: config, generator: parsedGenerator })
 }
