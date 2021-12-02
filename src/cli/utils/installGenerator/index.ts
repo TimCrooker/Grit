@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { PACKAGES_CACHE_PATH } from '@/config'
-import { GritError } from '@/error'
 import { logger } from '@/logger'
 import { spinner } from '@/spinner'
 import { store } from '@/store'
@@ -8,7 +7,11 @@ import { installPackages } from '@/utils/cmd'
 import { outputFile, pathExists } from '@/utils/files'
 import path from 'path'
 import { downloadRepoFromGenerator } from './downloadRepo'
-import { NpmGenerator, ParsedGenerator, RepoGenerator } from '../../../utils/parseGenerator'
+import {
+	NpmGenerator,
+	ParsedGenerator,
+	RepoGenerator,
+} from '../../../utils/parseGenerator'
 import { hasGeneratorConfig } from '../getGenerator'
 
 /** Install an NPM generator to the grit store */
