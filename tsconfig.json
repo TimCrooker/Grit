@@ -27,7 +27,7 @@
 		}
 	},
 	"include": [
-		"src/"
+		"src/index.ts"
 	],
 	"exclude": [
 		"dist/",

@@ -1,5 +1,5 @@
-import { ParsedGenerator } from '@/cli/parseGenerator'
 import { store } from '@/store'
+import { ParsedGenerator } from '@/utils/parseGenerator'
 import { readFileSync } from 'fs'
 import path from 'path'
 import updateNotifier, { Package, UpdateInfo } from 'update-notifier'

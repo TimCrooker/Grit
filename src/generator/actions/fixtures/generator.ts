@@ -24,7 +24,7 @@ module.exports = {
 		this.modify({
 			files: '**/*.json',
 			handler: (data) => {
-				return { ...data, extra: 'extra' }
+				return { ...(data as Record<string, any>), extra: 'extra' }
 			},
 		})
 

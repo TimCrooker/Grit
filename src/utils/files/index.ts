@@ -152,54 +152,54 @@ export const readDirSync = (
 }
 
 /** Get the names of all items in a directory and all of its sub-directories asynchronously*/
-export const readDirRecursive = async (
-	cwd: string,
-	filterFunction?: (name: string) => boolean
-): Promise<(string | string[])[]> => {
-	try {
-		const files = []
-		const directories = await readDir(cwd, true, false)
-		for (const directory of directories) {
-			const subFiles = await readDirRecursive(
-				`${cwd}/${directory}`,
-				filterFunction
-			)
-			files.push(
-				...subFiles.filter((file) => {
-					!Array.isArray(file) && filterFunction ? filterFunction(file) : true
-				})
-			)
-		}
-		return files
-	} catch (e) {
-		return []
-	}
-}
+// export const readDirRecursive = async (
+// 	cwd: string,
+// 	filterFunction?: (name: string) => boolean
+// ): Promise<(string | string[])[]> => {
+// 	try {
+// 		const files = []
+// 		const directories = await readDir(cwd, true, false)
+// 		for (const directory of directories) {
+// 			const subFiles = await readDirRecursive(
+// 				`${cwd}/${directory}`,
+// 				filterFunction
+// 			)
+// 			files.push(
+// 				...subFiles.filter((file) => {
+// 					!Array.isArray(file) && filterFunction ? filterFunction(file) : true
+// 				})
+// 			)
+// 		}
+// 		return files
+// 	} catch (e) {
+// 		return []
+// 	}
+// }
 
 /** Get the names of all items in a directory and all of its sub-directories synchronously*/
-export const readDirRecursiveSync = (
-	cwd: string,
-	filterFunction?: (name: string) => boolean
-): (string | string[])[] => {
-	try {
-		const files = []
-		const directories = readDirSync(cwd, true, false)
-		for (const directory of directories) {
-			const subFiles = readDirRecursiveSync(
-				`${cwd}/${directory}`,
-				filterFunction
-			)
-			files.push(
-				...subFiles.filter((file) => {
-					!Array.isArray(file) && filterFunction ? filterFunction(file) : true
-				})
-			)
-		}
-		return files
-	} catch (e) {
-		return []
-	}
-}
+// export const readDirRecursiveSync = (
+// 	cwd: string,
+// 	filterFunction?: (name: string) => boolean
+// ): (string | string[])[] => {
+// 	try {
+// 		const files = []
+// 		const directories = readDirSync(cwd, true, false)
+// 		for (const directory of directories) {
+// 			const subFiles = readDirRecursiveSync(
+// 				`${cwd}/${directory}`,
+// 				filterFunction
+// 			)
+// 			files.push(
+// 				...subFiles.filter((file) => {
+// 					!Array.isArray(file) && filterFunction ? filterFunction(file) : true
+// 				})
+// 			)
+// 		}
+// 		return files
+// 	} catch (e) {
+// 		return []
+// 	}
+// }
 
 /** check if a path represents a directory asyncronously */
 export const isDirectory = async (cwd: string): Promise<boolean> => {
