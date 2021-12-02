@@ -40,7 +40,10 @@ describe('Plugins', () => {
 		expect(actionProvider).toMatchInlineSnapshot(`[Function]`)
 
 		const result = actionProvider(
-			await getGenerator({ generator: 'generator', mock: true })
+			await getGenerator({
+				generator: path.resolve(__dirname, 'fixtures'),
+				mock: true,
+			})
 		)
 
 		expect(result).toMatchInlineSnapshot(`
