@@ -16,7 +16,7 @@
 		"start": "npm run build && npm run cli",
 		"build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
 		"cli": "node ./dist/cli/index.js",
-		"build": "npm run clean && tsup src/cli/index.ts src/index.ts --dts",
+		"build": "npm run clean && tsc src/cli/index.ts src/index.ts",
 		"clean": "rimraf ./dist",
 		"test": "jest",
 		"lint": "eslint . --fix",
