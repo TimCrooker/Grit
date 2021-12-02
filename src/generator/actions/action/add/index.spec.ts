@@ -41,7 +41,7 @@ describe('Add Action', () => {
 
 		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await grit.readOutputFile('bar.json'))
+		const output = await grit.readOutputFile('bar.json')
 		expect(output).toEqual({ bar: name })
 	})
 
@@ -62,7 +62,7 @@ describe('Add Action', () => {
 
 		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual('<%= name %>')
 
-		const output = JSON.parse(await grit.readOutputFile('bar.json'))
+		const output = await grit.readOutputFile('bar.json')
 		expect(output).toEqual({ bar: name })
 	})
 
@@ -83,7 +83,7 @@ describe('Add Action', () => {
 
 		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await grit.readOutputFile('bar.json'))
+		const output = await grit.readOutputFile('bar.json')
 		expect(output).toEqual({ bar: '<%= name %>' })
 	})
 
@@ -99,7 +99,7 @@ describe('Add Action', () => {
 
 		await expect(grit.readOutputFile('foo.txt')).resolves.toEqual(name)
 
-		const output = JSON.parse(await grit.readOutputFile('bar.json'))
+		const output = await grit.readOutputFile('bar.json')
 		expect(output).toEqual({ bar: name })
 	})
 })

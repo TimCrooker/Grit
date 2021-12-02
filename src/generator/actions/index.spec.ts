@@ -27,7 +27,7 @@ describe('Run Actions', () => {
 
 		await expect(grit.hasOutputFile('buz.json')).resolves.toBeTruthy()
 
-		const output = JSON.parse(await grit.readOutputFile('buz.json'))
+		const output = await grit.readOutputFile('buz.json')
 		expect(output.bar).toEqual('Tim')
 	})
 
@@ -38,7 +38,7 @@ describe('Run Actions', () => {
 		await expect(grit.hasOutputFile('bill.json')).resolves.toBeTruthy()
 		await expect(grit.hasOutputFile('foo.txt')).resolves.toBeTruthy()
 
-		const output = JSON.parse(await grit.readOutputFile('buz.json'))
+		const output = await grit.readOutputFile('buz.json')
 		expect(output.bar).toEqual('Tim')
 	})
 
@@ -48,11 +48,11 @@ describe('Run Actions', () => {
 		await expect(grit.hasOutputFile('buz.json')).resolves.toBeTruthy()
 		await expect(grit.hasOutputFile('bill.json')).resolves.toBeTruthy()
 
-		const buz = JSON.parse(await grit.readOutputFile('buz.json'))
+		const buz = await grit.readOutputFile('buz.json')
 		expect(buz.extra).toEqual('extra')
 		expect(buz.bar).toEqual('Tim')
 
-		const bill = JSON.parse(await grit.readOutputFile('bill.json'))
+		const bill = await grit.readOutputFile('bill.json')
 		expect(bill.extra).toEqual('extra')
 		expect(bill.bar).toEqual('Tim')
 	})

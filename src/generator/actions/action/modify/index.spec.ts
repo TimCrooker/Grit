@@ -46,7 +46,7 @@ describe('Modify Action', () => {
 
 		await expect(grit.hasOutputFile('bar.json')).resolves.toBeTruthy()
 
-		const beforeModify = JSON.parse(await grit.readOutputFile('bar.json'))
+		const beforeModify = await grit.readOutputFile('bar.json')
 
 		expect(beforeModify).toEqual({
 			bar: false,
@@ -54,7 +54,7 @@ describe('Modify Action', () => {
 
 		await modifyAction(grit, action)
 
-		const afterModify = JSON.parse(await grit.readOutputFile('bar.json'))
+		const afterModify = await grit.readOutputFile('bar.json')
 
 		expect(afterModify).toEqual({
 			bar: true,
