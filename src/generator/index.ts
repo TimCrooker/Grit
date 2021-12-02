@@ -17,11 +17,11 @@ import {
 } from '@/utils/cmd'
 import { pathExists, readFile } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
-import { GeneratorConfig } from '../cli/utils/generatorConfig'
+import { GeneratorConfig } from './generatorConfig'
 import { Prompt, Prompts } from './prompts'
 import { Action, Actions } from './actions'
 import { Data } from './data'
-import { Completed } from './data/completed'
+import { Completed } from './completed'
 import { Prepare } from './prepare'
 import { Plugins } from './plugins'
 import { addPluginData } from './plugins/pluginDataProvider'
@@ -31,7 +31,7 @@ import {
 	ParsedGenerator,
 	parseGenerator,
 	RepoGenerator,
-} from '@/cli/utils/parseGenerator'
+} from '@/utils/parseGenerator'
 import pkg from '@/../package.json'
 
 export interface GritOptions<T = Record<string, any>> {
@@ -239,7 +239,7 @@ export class Grit {
 			this.plugins = new Plugins({
 				config: config.plugins,
 				selectedPlugins: this.data.selectedPlugins,
-				generatorPath: this.opts.generator.path,
+				generatorPath: this.generator.path,
 			})
 			await this.plugins.loadPlugins()
 			this._actions.registerActionProvider(
@@ -367,7 +367,7 @@ export class Grit {
 
 	get generatorPkg(): Record<string, any> {
 		try {
-			return require(path.join(this.opts.generator.path, 'package.json'))
+			return require(path.join(this.generator.path, 'package.json'))
 		} catch (err) {
 			return {}
 		}

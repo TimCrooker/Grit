@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { GeneratorConfig } from '@/cli/utils/generatorConfig'
+import { GeneratorConfig } from '@/generator/generatorConfig'
 
 module.exports = {
 	actions() {

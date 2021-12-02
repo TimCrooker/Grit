@@ -1,6 +1,6 @@
 import { GeneratorConfig } from '.'
 
-export const defautGeneratorFile: GeneratorConfig = {
+export const defaultGeneratorFile: GeneratorConfig = {
 	templateDir: '.',
 	actions: [
 		{

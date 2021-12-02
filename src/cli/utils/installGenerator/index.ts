@@ -8,8 +8,8 @@ import { installPackages } from '@/utils/cmd'
 import { outputFile, pathExists } from '@/utils/files'
 import path from 'path'
 import { downloadRepoFromGenerator } from './downloadRepo'
-import { NpmGenerator, ParsedGenerator, RepoGenerator } from '../parseGenerator'
-import { hasConfig } from '../generatorConfig'
+import { NpmGenerator, ParsedGenerator, RepoGenerator } from '../../../utils/parseGenerator'
+import { hasGeneratorConfig } from '../getGenerator'
 
 /** Install an NPM generator to the grit store */
 export const installNpmGenerator = async (
@@ -65,7 +65,7 @@ export const installRepoGenerator = async (
 	logger.success('Downloaded repo')
 
 	// Only try to install dependencies for real generator
-	const hasConfigFile = hasConfig(generator.path)
+	const hasConfigFile = hasGeneratorConfig(generator.path)
 	const hasPackageJson = pathExists(path.join(generator.path, 'package.json'))
 	if (hasConfigFile && hasPackageJson) {
 		await installPackages({

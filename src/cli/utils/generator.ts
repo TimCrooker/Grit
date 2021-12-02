@@ -3,7 +3,7 @@ import { store } from '@/store'
 import { StoreGenerator } from '@/store/generatorStore'
 import { checkGeneratorForUpdates } from '@/cli/utils/update'
 import { spinner } from '@/spinner'
-import { RepoGenerator, NpmGenerator } from '@/cli/utils/parseGenerator'
+import { RepoGenerator, NpmGenerator } from '@/cli/parseGenerator'
 
 export function getRepoGeneratorName(generator: RepoGenerator): string {
 	return `${generator.prefix === 'github' ? '' : `${generator.prefix}:`}${

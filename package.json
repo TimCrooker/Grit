@@ -20,7 +20,7 @@
 		"clean": "rimraf ./dist",
 		"test": "jest",
 		"lint": "eslint . --fix",
-		"prepublishOnly": "yarn build",
+		"prepublishOnly": "npm run build && npm run test",
 		"release": "dotenv release-it",
 		"release:ci": "dotenv release-it --ci"
 	},

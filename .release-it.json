@@ -4,8 +4,8 @@
 	},
 	"hooks": {
 		"before:init": [
-			"npm run test",
-			"npm run build"
+			"npm run build",
+			"npm run test"
 		]
 	}
 }

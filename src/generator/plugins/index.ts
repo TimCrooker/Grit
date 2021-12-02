@@ -4,14 +4,41 @@ import { mergePackages, mergePluginJsonFiles } from '@/utils/merge'
 import path from 'path'
 import { Action, ActionProvider } from '../actions'
 import { AddAction } from '../actions/action'
-import { Ignore } from './pluginConfig'
+import { Answers } from '../prompts/prompt'
 import { defautPluginFile } from './pluginFile/defaultPluginFile'
-import {
-	hasConfig,
-	loadConfig,
-	PluginFileConfig,
-	pluginFileName,
-} from './pluginFile/pluginConfig'
+import { hasPluginConfig, loadPluginConfig } from './pluginFile/getPluginFile'
+import { PluginFileConfig, pluginFileName } from './pluginFile/pluginFileConfig'
+export * from './pluginFile'
+export * from './pluginDataProvider'
+
+export interface Ignore {
+	/**
+	 * List of plugins that the ignore applies to
+	 * Defaults to all plugins
+	 */
+	plugin?: string[]
+	/**
+	 * function to determine if the files in the pattern should be ignored
+	 *
+	 * @param answers answers to the prompts
+	 *
+	 * @returns true if the file should be ignored
+	 */
+	when: (answers: Answers) => boolean
+	/**'
+	 * Glob pattern to match files to ignore
+	 *
+	 * @example ['**\/*.ts', '**\/*.js'] will ignore all files with a .ts or .js extension
+	 */
+	pattern: string[]
+}
+
+export interface PluginConfig {
+	/**
+	 * List of files to ignore when moving plugins into the main generator output Directory
+	 */
+	ignores?: Ignore[]
+}
 
 export type PluginData = {
 	name: string
@@ -55,14 +82,14 @@ export class Plugins {
 			}
 
 			// ensure plugin has a pluginfile
-			if (!hasConfig(pluginPath)) {
+			if (!hasPluginConfig(pluginPath)) {
 				throw new Error(`Plugin ${plugin} does not have a pluginfile`)
 			}
 
 			// load plugin file
 			let pluginFileData: PluginFileConfig<unknown>
 			try {
-				const { data } = await loadConfig(pluginPath)
+				const { data } = await loadPluginConfig(pluginPath)
 				pluginFileData = data
 			} catch (e) {
 				pluginFileData = defautPluginFile

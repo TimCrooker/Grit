@@ -4,14 +4,45 @@ import { store } from '@/store'
 import { pathExists } from '@/utils/files'
 import path from 'path'
 import { ensureGeneratorExists } from '../ensureGenerator'
-import { loadConfig } from '../generatorConfig'
-import { defautGeneratorFile } from '../generatorConfig/default-generator'
+import { logger } from '@/logger'
+import { globalRequire } from '@/utils/files'
+import JoyCon from 'joycon'
+import pa from 'path'
 import {
 	NpmGenerator,
 	ParsedGenerator,
 	parseGenerator,
 	RepoGenerator,
-} from '../parseGenerator'
+} from '../../../utils/parseGenerator'
+import { defaultGeneratorFile } from '@/generator/generatorConfig'
+
+const joycon = new JoyCon({
+	files: ['generator.js', 'generator.ts', 'generator.json'],
+})
+
+/** load the generator config file */
+export const loadGeneratorConfig = async (
+	cwd: string
+): Promise<{ path?: string; data?: GeneratorConfig }> => {
+	logger.debug('loading generator from path:', cwd)
+	const { path } = await joycon.load({
+		cwd,
+		stopDir: pa.dirname(cwd),
+	})
+	const data = path ? await globalRequire(path) : undefined
+
+	return { path, data }
+}
+
+/** Check generator has config file */
+export const hasGeneratorConfig = (cwd: string): boolean => {
+	return Boolean(
+		joycon.resolve({
+			cwd,
+			stopDir: pa.dirname(cwd),
+		})
+	)
+}
 
 /**
  * Load local version of grit for npm packages and local generators
@@ -58,8 +89,6 @@ export const getGenerator = async (
 		parsedGenerator = parseGenerator(opts.generator as string)
 	} else {
 		parsedGenerator = opts.generator as NpmGenerator | RepoGenerator
-		// Tell the generator what version to update to if update is selected
-		// if (this.opts.update) generator.version = 'latest'
 	}
 
 	await ensureGeneratorExists(parsedGenerator, opts.update)
@@ -71,12 +100,12 @@ export const getGenerator = async (
 	)
 
 	// load actual generator from generator path
-	const loadedConfig = await loadConfig(parsedGenerator.path)
+	const loadedConfig = await loadGeneratorConfig(parsedGenerator.path)
 	const Gen = await loadGeneratorGrit(parsedGenerator)
 	const config: GeneratorConfig =
 		loadedConfig.path && loadedConfig.data
 			? loadedConfig.data
-			: defautGeneratorFile
+			: defaultGeneratorFile
 
 	return new Gen({ ...opts, config: config, generator: parsedGenerator })
 }

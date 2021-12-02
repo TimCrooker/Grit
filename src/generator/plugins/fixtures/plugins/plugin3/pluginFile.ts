@@ -1,4 +1,4 @@
-import { PluginFileConfig } from '@/generator/plugins/pluginFile/pluginConfig'
+import { PluginFileConfig } from '@/generator/plugins/pluginFile/pluginFileConfig'
 
 const config: PluginFileConfig<{}> = {
 	name: 'plugin2',

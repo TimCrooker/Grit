@@ -1,15 +1,11 @@
 import { Grit } from '@/generator/index'
-import JoyCon from 'joycon'
-import pa from 'path'
-import { Action, Actions } from '../../../generator/actions'
-import { Prompt } from '../../../generator/prompts/prompt'
-import { globalRequire } from '@/utils/files'
-import { Prompts } from '../../../generator/prompts'
-import { Data } from '../../../generator/data'
-import { Completed } from '../../../generator/data/completed'
-import { Prepare } from '../../../generator/prepare'
-import { logger } from '@/logger'
-import { PluginConfig } from '../../../generator/plugins/pluginConfig'
+import { Action, Actions } from '../actions'
+import { Prompt } from '../prompts/prompt'
+import { Prompts } from '../prompts'
+import { Data } from '../data'
+import { Completed } from '../completed'
+import { Prepare } from '../prepare'
+import { PluginConfig } from '../plugins'
 
 export type DataType = Record<string, any>
 
@@ -74,30 +70,4 @@ export interface GeneratorConfig {
 	completed?: (this: Completed, ctx: Grit) => Promise<void> | void
 }
 
-const joycon = new JoyCon({
-	files: ['generator.js', 'generator.ts', 'generator.json'],
-})
-
-/** load the generator config file */
-export const loadConfig = async (
-	cwd: string
-): Promise<{ path?: string; data?: GeneratorConfig }> => {
-	logger.debug('loading generator from path:', cwd)
-	const { path } = await joycon.load({
-		cwd,
-		stopDir: pa.dirname(cwd),
-	})
-	const data = path ? await globalRequire(path) : undefined
-
-	return { path, data }
-}
-
-/** Check generator has config file */
-export const hasConfig = (cwd: string): boolean => {
-	return Boolean(
-		joycon.resolve({
-			cwd,
-			stopDir: pa.dirname(cwd),
-		})
-	)
-}
+export { defaultGeneratorFile } from './defaultGenerator'

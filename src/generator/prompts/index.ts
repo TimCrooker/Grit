@@ -1,4 +1,5 @@
-import { GeneratorConfig, Grit } from '@/generator'
+import { Grit } from '@/generator'
+import { GeneratorConfig } from '@/index'
 import { logger } from '@/logger'
 import { store } from '@/store'
 import resolveFrom from 'resolve-from'
@@ -14,6 +15,7 @@ import {
 	Prompt,
 	runPrompts,
 } from './prompt'
+export * from './prompt'
 
 export class Prompts {
 	private _prompts: Prompt[] = []
@@ -111,7 +113,7 @@ export class Prompts {
 
 	/** Unique id for storing answers in the cache */
 	private get answersCacheID(): string {
-		const generator = this.grit.opts.generator
+		const generator = this.grit.generator
 		const pkgPath = resolveFrom.silent(generator.path, './package.json')
 		const pkgVersion = pkgPath ? require(pkgPath).version : ''
 		return `${generator.hash + pkgVersion.replace(/\./g, '\\.')}`

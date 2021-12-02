@@ -8,6 +8,7 @@ import {
 } from './action'
 import { createAction, RemoveActionType } from './createAction'
 import { runAction } from './runAction'
+export * from './action'
 
 export type ActionProvider = (context: Grit) => Promise<Action[]> | Action[]
 
@@ -116,3 +117,4 @@ export class Actions {
 		return this._actions
 	}
 }
+

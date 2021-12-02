@@ -1,5 +1,5 @@
+import { parseGenerator } from '@/utils/parseGenerator'
 import { getGenerator, loadGeneratorGrit } from '.'
-import { parseGenerator } from '../parseGenerator'
 
 describe('Name of the group', () => {
 	it('should load npm generator versioned instance', async () => {

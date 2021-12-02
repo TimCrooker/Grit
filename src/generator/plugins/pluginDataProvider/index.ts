@@ -1,5 +1,5 @@
 import { DataProvider } from '@/generator/data'
-import { Prompt } from '@/index'
+import { Prompt } from '@/generator/prompts'
 
 export const addPluginData = async (
 	prompts: Prompt[],

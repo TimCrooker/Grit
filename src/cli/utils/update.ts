@@ -1,4 +1,4 @@
-import { ParsedGenerator } from '@/cli/utils/parseGenerator'
+import { ParsedGenerator } from '@/cli/parseGenerator'
 import { store } from '@/store'
 import { readFileSync } from 'fs'
 import path from 'path'

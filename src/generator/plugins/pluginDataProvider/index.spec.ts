@@ -1,4 +1,5 @@
-import { Grit, Prompt } from '@/index'
+import { Grit } from '@/generator'
+import { Prompt } from '@/generator/prompts'
 import { addPluginData } from '.'
 const prompts: Prompt[] = [
 	{
@@ -41,7 +42,9 @@ describe('Plugin data provider', () => {
 			notplugin: 'plugin2',
 		})
 
-		const data = dataProvider(new Grit({ generator: 'generator', mock: true }))
+		const data = dataProvider(
+			new Grit({ config: {}, generator: 'generator', mock: true })
+		)
 
 		expect(data).toMatchInlineSnapshot(`
       Object {

@@ -3,7 +3,7 @@ import {
 	LocalGenerator,
 	NpmGenerator,
 	ParsedGenerator,
-} from '../parseGenerator'
+} from '../../../utils/parseGenerator'
 import { pathExists } from '@/utils/files'
 import { GritError } from '@/error'
 import { colors } from '@/logger'

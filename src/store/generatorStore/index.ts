@@ -6,7 +6,7 @@ import {
 	NpmGenerator,
 	RepoGenerator,
 	ParsedGenerator,
-} from '@/cli/utils/parseGenerator'
+} from '@/utils/parseGenerator'
 import { UpdateInfo } from 'update-notifier'
 import { BaseStoreOptions, BaseStore } from '../baseStore'
 
