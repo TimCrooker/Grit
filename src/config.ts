@@ -30,3 +30,6 @@ const gitUser = getGitUser()
 export const UserFullName = gitUser.name
 export const UserFirstName = UserFullName.split(' ')[0] || 'User'
 export const Username = gitUser.username || 'User'
+
+// Plugin configs
+export const PLUGIN_MERGE_FILES = ['package.json', 'tsconfig.json', '.babelrc']

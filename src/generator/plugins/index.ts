@@ -1,3 +1,4 @@
+import { PLUGIN_MERGE_FILES } from '@/config'
 import { GeneratorConfig, Grit } from '@/index'
 import { pathExists, pathExistsSync } from '@/utils/files'
 import { mergePackages, mergePluginJsonFiles } from '@/utils/merge'
@@ -38,6 +39,10 @@ export interface PluginConfig {
 	 * List of files to ignore when moving plugins into the main generator output Directory
 	 */
 	ignores?: Ignore[]
+	/**
+	 * List of JSON fileNames to merge when moving plugins into the main generator output Directory
+	 */
+	mergeFiles?: string[]
 }
 
 export type PluginData = {
@@ -55,6 +60,7 @@ interface PluginsOptions {
 export class Plugins {
 	pluginsDir: string
 	ignores: Ignore[]
+	mergeFiles: string[]
 
 	selectedPlugins: string[]
 	pluginData: PluginData[] = []
@@ -63,6 +69,7 @@ export class Plugins {
 		this.pluginsDir = path.resolve(options.generatorPath, 'plugins')
 
 		this.ignores = options.config?.ignores || []
+		this.mergeFiles = options.config?.mergeFiles || []
 		this.selectedPlugins = options.selectedPlugins
 
 		// Check if the pluginsDir exists and if not then throw error
@@ -108,7 +115,7 @@ export class Plugins {
 
 	/** for each pluginData run the addAction function */
 	async addPluginActions(): Promise<ActionProvider> {
-		const mergeFiles: string[] = ['package.json', 'tsconfig.json', '.babelrc']
+		const mergeFiles = [...PLUGIN_MERGE_FILES, ...this.mergeFiles]
 
 		const pluginActions: Action[] = []
 		// for each pluginData run the addAction function
