@@ -15,7 +15,7 @@ import {
 	installPackages,
 	NPM_CLIENT,
 } from '@/utils/cmd'
-import { pathExists, readFile } from '@/utils/files'
+import { pathExists, readFile, requireUncached, requireUncached } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
 import { GeneratorConfig } from './generatorConfig'
 import { Prompt, Prompts } from './prompts'
@@ -450,17 +450,17 @@ export class Grit {
 	 *
 	 * Returns an empty object when it doesn't exist
 	 */
-	get pkg(): Record<string, any> {
+	get pkg(): Record<string, any> | undefined {
 		try {
-			return require(path.join(this.outDir, 'package.json'))
+			return requireUncached(path.resolve(this.outDir, 'package.json'))
 		} catch (err) {
-			return {}
+			return undefined
 		}
 	}
 
 	get generatorPkg(): Record<string, any> {
 		try {
-			return require(path.join(this.generator.path, 'package.json'))
+			return require(path.resolve(this.generator.path, 'package.json'))
 		} catch (err) {
 			return {}
 		}
