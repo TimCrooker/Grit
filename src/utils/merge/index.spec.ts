@@ -1,5 +1,11 @@
+import { readFileSync } from 'fs'
 import path from 'path'
-import { mergeObjects, mergePluginJsonFiles, mergeJsonFiles } from '.'
+import {
+	mergeObjects,
+	mergePluginJsonFiles,
+	mergeJsonAndWrite,
+	mergeJsonFiles,
+} from '.'
 
 describe('Merge functions', () => {
 	it('should merge objects', () => {
@@ -54,6 +60,33 @@ describe('Merge functions', () => {
 				d: 3,
 				e: [1, 2, 3, 4, 5, 6],
 			},
+		})
+	})
+
+	it('should merge json files and write the output to a new file', () => {
+		const base = {
+			a: 1,
+			c: {
+				e: [1, 2, 3],
+			},
+		}
+		const files = [
+			path.resolve(__dirname, 'fixtures', 'a.json'),
+			path.resolve(__dirname, 'fixtures', 'b.json'),
+			path.resolve(__dirname, 'fixtures', '.babelrc'),
+		]
+
+		const outputPath = path.resolve(__dirname, 'fixtures', 'output.json')
+
+		mergeJsonAndWrite(base, files, outputPath)
+		expect(JSON.parse(readFileSync(outputPath, 'utf8'))).toEqual({
+			a: 2,
+			c: {
+				e: [1, 2, 3, 4, 5, 6],
+				d: 3,
+			},
+			b: 2,
+			babel: true,
 		})
 	})
 

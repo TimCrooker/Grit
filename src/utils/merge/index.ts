@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { PluginData } from '@/generator/plugins'
+import { writeFileSync } from 'fs'
 import _ from 'lodash'
 import path from 'path'
 import { readFileSync, requireUncached } from '../files'
@@ -47,6 +48,35 @@ export const mergeJsonFiles = (
 			}
 		})
 	)
+}
+
+/**
+ * Merge a base object with a list of json files privided via string paths
+ *
+ * @param base the base object to be merged into
+ * @param filePaths a list of paths to json files to merge into the base
+ * @param outFile the path to the file the object should be written to (must end in .json)
+ */
+export const mergeJsonAndWrite = (
+	base = {},
+	filePaths: string[],
+	outFile: string
+): void => {
+	if (path.extname(outFile) !== '.json')
+		throw new Error('Expected `.json` extension for the outFile')
+
+	const merged = mergeObjects(
+		base,
+		filePaths.map((file) => {
+			try {
+				return JSON.parse(readFileSync(file, 'utf8'))
+			} catch (e) {
+				return {}
+			}
+		})
+	)
+
+	writeFileSync(outFile, JSON.stringify(merged))
 }
 
 /**

@@ -1,4 +1,5 @@
 import { createAction } from '.'
+import { ModifyAction } from '../action'
 
 describe('Create actions', () => {
 	it('add', () => {
@@ -48,13 +49,13 @@ describe('Create actions', () => {
 	it('modify', () => {
 		const action = {
 			files: ['path.js'],
-			handler: (data, filepath) => {
+			handler: (data: Record<string, any>, filepath) => {
 				return {
 					...data,
 					filepath,
 				}
 			},
-		}
+		} as ModifyAction
 		const actionOut = createAction.modify(action)
 
 		expect(actionOut).toEqual({
@@ -62,6 +63,24 @@ describe('Create actions', () => {
 			type: 'modify',
 		})
 	})
+
+	// it('merge', () => {
+	// 	const action = {
+	// 		files: ['path.js'],
+	// 		handler: (data: Record<string, any>, filepath) => {
+	// 			return {
+	// 				...data,
+	// 				filepath,
+	// 			}
+	// 		},
+	// 	} as ModifyAction
+	// 	const actionOut = createAction.modify(action)
+
+	// 	expect(actionOut).toEqual({
+	// 		...action,
+	// 		type: 'modify',
+	// 	})
+	// })
 
 	it('remove', () => {
 		const action = {
