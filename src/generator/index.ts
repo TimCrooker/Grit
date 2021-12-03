@@ -15,7 +15,7 @@ import {
 	installPackages,
 	NPM_CLIENT,
 } from '@/utils/cmd'
-import { pathExists, readFile, requireUncached, requireUncached } from '@/utils/files'
+import { pathExists, readFile, requireUncached } from '@/utils/files'
 import { getGitUser, GitUser } from '@/utils/git-user'
 import { GeneratorConfig } from './generatorConfig'
 import { Prompt, Prompts } from './prompts'
