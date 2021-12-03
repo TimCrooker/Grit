@@ -4,7 +4,7 @@ import { mkdirSync } from 'fs'
 import dotProp from 'dot-prop'
 import path from 'path'
 import { ROOT_CACHE_PATH } from '@/config'
-import { logger } from '@/logger'
+import { logger } from '@/cli/BaseCLI/logger'
 
 export type StoreFileData<T = any> = Record<string, T>
 

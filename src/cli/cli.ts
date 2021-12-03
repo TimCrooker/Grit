@@ -15,7 +15,7 @@ export type GritRoute = Route<RuntimeEnv>
 export const runCLI = async (): Promise<void> => {
 	const cli = new CLI({
 		pkg,
-		debug: process.env.NODE_ENV === 'development' || false,
+		debug: true,
 	})
 
 	// cli.logger.log(await checkPkgForUpdates(pkg))

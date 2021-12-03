@@ -42,45 +42,56 @@ export const home: GritRoute = async (app) => {
 
 	// If the user chose to run a generator and it has no updates, run it
 	if (answer.method === 'run') {
-		await (await getGenerator({ generator: answer.generator })).run()
-
-		// Go home after generation
-		return await app.navigate('home')
+		try {
+			await (await getGenerator({ generator: answer.generator })).run()
+			// Go home after generation
+			return await app.navigate('home')
+		} catch (error) {
+			throw new Error("Couldn't run generator: \n" + error)
+		}
 	}
 
 	// Run when generators have an update available
 	if (answer.method === 'update') {
-		const { update } = await app.prompt([
-			{
-				name: 'update',
-				type: 'confirm',
-				message: `Do you want to update ${app.chalk.underline(
-					answer.generator.name
-				)}?`,
-			},
-		])
+		try {
+			const { update } = await app.prompt([
+				{
+					name: 'update',
+					type: 'confirm',
+					message: `Do you want to update ${app.chalk.underline(
+						answer.generator.name
+					)}?`,
+				},
+			])
 
-		const generator = await getGenerator({
-			generator: answer.generator,
-			update,
-		})
+			const generator = await getGenerator({
+				generator: answer.generator,
+				update,
+			}).catch((err) => {
+				throw new Error("Couldn't update and get generator instance: \n" + err)
+			})
 
-		const { run } = await app.prompt([
-			{
-				name: 'run',
-				type: 'confirm',
-				message: `Do you want to run ${app.chalk.underline(
-					answer.generator.name
-				)}?`,
-			},
-		])
+			const { run } = await app.prompt([
+				{
+					name: 'run',
+					type: 'confirm',
+					message: `Do you want to run ${app.chalk.underline(
+						answer.generator.name
+					)}?`,
+				},
+			])
 
-		if (run) {
-			await generator.run()
+			if (run) {
+				await generator.run().catch((err) => {
+					throw new Error("Couldn't run generator after updates: \n" + err)
+				})
+			}
+
+			// Go home after generation
+			return await app.navigate('home')
+		} catch (error) {
+			throw new Error("Couldn't update generator: \n" + error)
 		}
-
-		// Go home after generation
-		return await app.navigate('home')
 	}
 
 	// Route when generators are not selected

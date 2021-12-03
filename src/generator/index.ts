@@ -285,6 +285,12 @@ export class Grit {
 	 * Method to run when instantiated with a generator
 	 */
 	async run(): Promise<this> {
+		// Increment the run count of the generator in the store
+		this.store.generators.set(
+			this.generator.hash + '.runCount',
+			this.store.generators.get(this.generator.hash + '.runCount') + 1 || 1
+		)
+
 		if (this.opts.hotRebuild === true) {
 			await this.runHotRebuild()
 		} else {

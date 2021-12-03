@@ -4,7 +4,7 @@ import { logger } from '@/logger'
 import { spinner } from '@/spinner'
 import { store } from '@/store'
 import { installPackages } from '@/utils/cmd'
-import { outputFile, pathExists } from '@/utils/files'
+import { outputFile, pathExists, requireUncached } from '@/utils/files'
 import path from 'path'
 import { downloadRepoFromGenerator } from './downloadRepo'
 import {
@@ -16,7 +16,8 @@ import { hasGeneratorConfig } from '../getGenerator'
 
 /** Install an NPM generator to the grit store */
 export const installNpmGenerator = async (
-	generator: NpmGenerator
+	generator: NpmGenerator,
+	update = false
 ): Promise<void> => {
 	const installPath = path.join(PACKAGES_CACHE_PATH, generator.hash)
 	const packagePath = path.join(installPath, 'package.json')
@@ -31,18 +32,26 @@ export const installNpmGenerator = async (
 	)
 
 	// download the generator with npm install
-	logger.debug('Installing generator at path', installPath)
+	logger.debug(
+		update ? 'Updating' : 'Installing',
+		'generator at path',
+		installPath
+	)
 	await installPackages({
 		cwd: installPath,
-		packages: [`${generator.name}@${generator.version}`],
+		packages: [
+			`${generator.name}@${
+				update || !generator.version ? 'latest' : generator.version
+			}`,
+		],
 		installArgs: ['--silent'],
 	})
 	logger.success('Generator installed')
 
 	// grab the new generator pakcage.json file
-	const packageJson = require(packagePath)
+	const packageJson = requireUncached(packagePath)
 
-	// in the store, add the generator and insert the true version and clear updates
+	// in the store, add the generator and insert the true version
 	store.generators
 		.add(generator)
 		.set(

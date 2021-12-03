@@ -94,12 +94,6 @@ export const getGenerator = async (
 
 	await ensureGeneratorExists(parsedGenerator, opts.update)
 
-	// Increment the run count of the generator in the store
-	store.generators.set(
-		parsedGenerator.hash + '.runCount',
-		store.generators.get(parsedGenerator.hash + '.runCount') + 1 || 1
-	)
-
 	// load actual generator from generator path
 	const loadedConfig = await loadGeneratorConfig(parsedGenerator.path)
 	const config: GeneratorConfig =
