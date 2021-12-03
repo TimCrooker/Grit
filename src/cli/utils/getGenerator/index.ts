@@ -81,7 +81,8 @@ interface GetGeneratorOptions
  * Download it if not yet cached
  */
 export const getGenerator = async (
-	opts: GetGeneratorOptions
+	opts: GetGeneratorOptions,
+	forceNewest = false
 ): Promise<Grit> => {
 	let parsedGenerator: ParsedGenerator
 	// use directly passed parsed generator or parse generator string
@@ -101,11 +102,13 @@ export const getGenerator = async (
 
 	// load actual generator from generator path
 	const loadedConfig = await loadGeneratorConfig(parsedGenerator.path)
-	const Gen = await loadGeneratorGrit(parsedGenerator)
 	const config: GeneratorConfig =
 		loadedConfig.path && loadedConfig.data
 			? loadedConfig.data
 			: defaultGeneratorFile
+
+	// load the version of grit from the generator or the newest if it doesn't exist or forceNewest is true
+	const Gen = forceNewest ? Grit : await loadGeneratorGrit(parsedGenerator)
 
 	return new Gen({ ...opts, config: config, generator: parsedGenerator })
 }

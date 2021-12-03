@@ -100,6 +100,7 @@ export class Router<RuntimeEnvInstance = any> {
 	 */
 	registerRoute(name: string, handler: Route): this {
 		this.routes[name] = handler
+		this.logger.debug(`Registered route: ${name}`)
 		return this
 	}
 }

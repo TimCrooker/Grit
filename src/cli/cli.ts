@@ -6,6 +6,7 @@ import { Route } from './BaseCLI/router'
 import { Grit } from '@/generator/index'
 import { CliError, handleError } from './BaseCLI/error'
 import { GritError } from '@/error'
+require('dotenv')
 
 export type RuntimeEnv = Grit
 
@@ -14,7 +15,7 @@ export type GritRoute = Route<RuntimeEnv>
 export const runCLI = async (): Promise<void> => {
 	const cli = new CLI({
 		pkg,
-		debug: false,
+		debug: true,
 	})
 
 	// cli.logger.log(await checkPkgForUpdates(pkg))
@@ -34,7 +35,7 @@ export const runCLI = async (): Promise<void> => {
 	// Help command to get some tips and resources
 	cli.commander.command('help').action(() => cli.navigate('help'))
 
-	// Running a generator or using the helper
+	// Running a generator with the cli directly
 	cli.commander
 		.arguments('[generator] [outDir]')
 		.option('-d, --debug', 'run the generator with more logging')
@@ -42,6 +43,11 @@ export const runCLI = async (): Promise<void> => {
 		.option('-s, --silent', 'run the generator without any logging')
 		.option('-c, --clone', 'git clone repo instead of downloading it')
 		.option('-m, --mock', 'mock the generator for testing purposes')
+		.option('--hot-rebuild', 'rebuild a local generator when changes are made')
+		.option(
+			'--force-newest',
+			'force the generator to be built with the newest version of Grit (version incompatibilities may cause errors)'
+		)
 		// .option('--answers <answers>', 'inject answers into the generator')
 		.option('--registry', 'use preferred npm registry (yarn, npm)')
 		.option(
