@@ -113,10 +113,11 @@ export const mergePluginJsonFiles = (
 	pluginNames: string[],
 	fileName: string
 ): Record<string, any> => {
-	const filePaths = pluginNames.map((pluginName) => {
-		return path.resolve(pluginsDir, pluginName, fileName)
-	})
-
+	const filePaths: string[] = []
+	for (const pluginName of pluginNames) {
+		const filePath = path.resolve(pluginsDir, pluginName, fileName)
+		if (filePath) filePaths.push(filePath)
+	}
 	return mergeJsonFiles(base, filePaths)
 }
 
