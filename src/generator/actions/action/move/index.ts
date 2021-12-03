@@ -1,6 +1,5 @@
 import { logger } from '@/logger'
-import { move, pathExists } from '@/utils/files'
-import { mergeJsonAndWrite } from '@/utils/merge'
+import { move } from '@/utils/files'
 import { glob } from 'majo'
 import path from 'path'
 import { ActionFn } from '../../runAction'
@@ -45,11 +44,6 @@ export const moveAction: ActionFn<MoveAction> = async (context, action) => {
 			} else if (files.length === 1) {
 				const from = files[0]
 				const to = path.join(context.opts.outDir, action.patterns[pattern])
-
-				// if the output file already exists and its a json files, merge the contents and write to the from file
-				if ((await pathExists(to)) && path.extname(to) === '.json') {
-					mergeJsonAndWrite({}, [from, to], from)
-				}
 
 				await move(from, to, {
 					overwrite: action.overwrite ?? true,

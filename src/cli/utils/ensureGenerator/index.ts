@@ -9,6 +9,7 @@ import { GritError } from '@/error'
 import { colors } from '@/logger'
 import { installNpmGenerator, installRepoGenerator } from '../installGenerator'
 import { store } from '@/store'
+import chalk from 'chalk'
 
 /** ensure repo generator is downloaded and ready to run */
 async function ensureRepo(
@@ -20,7 +21,15 @@ async function ensureRepo(
 
 /** ensure NPM generator is downnloaded and ready to run */
 async function ensurePackage(generator: NpmGenerator): Promise<void> {
-	await installNpmGenerator(generator)
+	try {
+		await installNpmGenerator(generator)
+	} catch (err) {
+		throw new Error(
+			`Could not find install generator ${chalk.cyan(
+				generator.name
+			)} because of the following error: \n${err}`
+		)
+	}
 }
 
 /** ensure local generator is ready to run */

@@ -33,6 +33,7 @@ import {
 	RepoGenerator,
 } from '@/utils/parseGenerator'
 import pkg from '@/../package.json'
+import chokidar from 'chokidar'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -67,6 +68,14 @@ export interface GritOptions<T = Record<string, any>> {
 	clone?: boolean
 	/** Use a custom npm registry */
 	registry?: string
+	/**
+	 * Setting this to true will enable hot reloading
+	 * whenever you make changes to the source files of a local generator
+	 * the project will rebuild automatically and reinstall dependencies if necessary
+	 *
+	 * This is useful for development and testing of generators
+	 */
+	hotRebuild?: boolean
 	/**
 	 * Mock git info, prompts etc
 	 * Additionally, Set ENV variable NODE_ENV to test to enable this
@@ -135,6 +144,7 @@ export class Grit {
 	private completed: Completed
 
 	private plugins?: Plugins
+	private rebuilding = false
 	private _state: GenState = IDLE
 	private statefulMethods: StatefulMethods = {
 		[IDLE]: [],
@@ -155,8 +165,16 @@ export class Grit {
 			...opts,
 			outDir: path.resolve(opts.outDir || '.'),
 			logLevel: opts.logLevel || 3,
+			hotRebuild:
+				typeof opts.hotRebuild === 'boolean' ? opts.hotRebuild : false,
 			mock: typeof opts.mock === 'boolean' ? opts.mock : false,
 			debug: typeof opts.debug === 'boolean' ? opts.debug : false,
+		}
+
+		if (!opts.outDir) {
+			logger.warn(
+				'You have not supplied a project directory. The project will be built in your current directory'
+			)
 		}
 
 		if (typeof this.opts.answers === 'string') {
@@ -266,8 +284,74 @@ export class Grit {
 	 * Method to run when instantiated with a generator
 	 */
 	async run(): Promise<this> {
-		await this.runGenerator()
+		if (this.opts.hotRebuild === true) {
+			await this.runHotRebuild()
+		} else {
+			await this.runGenerator()
+		}
 		return this
+	}
+
+	/**
+	 * Run the generator in hot rebuild mode
+	 */
+	async runHotRebuild(): Promise<void> {
+		// run the project as normal one time
+		await this.runGenerator()
+
+		// exit if the generator is not local
+		if (this.generator.type !== 'local') {
+			logger.warn('Cannot run hot rebuild on a non-local generator')
+			return
+		}
+
+		// set the watcher to the files in the generator
+		const watchItems: string[] = []
+		if (this.plugins && this.plugins.selectedPlugins.length > 0) {
+			watchItems.push(this.plugins.pluginsDir)
+		}
+		watchItems.push(
+			path.resolve(
+				this.generator.path,
+				this.opts.config.templateDir || 'template'
+			)
+		)
+
+		// silence logging on rebuild unless specifically in debug mode
+		if (this.opts.debug) this.logger.options.logLevel = 1
+
+		// watch the plugins directory for changes and run the generator again
+		logger.info('Watching for changes...')
+		const watcher = chokidar.watch(watchItems, {
+			persistent: true,
+			ignoreInitial: true,
+		})
+
+		watcher.on('all', async (event, filePath) => {
+			this.rebuilding = true
+
+			spinner.start('changes detected... rebuilding generator')
+
+			// set injected answers to the automatically use the answers from the last run
+			this.opts.answers = this.answers
+
+			try {
+				// run the generator again
+				await this.runGenerator()
+
+				// install new packages if the package.json file was updated
+				if (path.basename(filePath) === 'package.json') {
+					await this.npmInstall()
+				}
+
+				spinner.succeed('generator rebuilt')
+			} catch (err) {
+				spinner.fail('generator rebuild failed')
+				logger.error('Rebuild encountered the following error:', err)
+			}
+
+			logger.info('watching for changes...')
+		})
 	}
 
 	/**
@@ -391,6 +475,13 @@ export class Grit {
 		return path.basename(this.opts.outDir)
 	}
 
+	get templateDirPath(): string {
+		return path.join(
+			this.generator.path,
+			this.opts.config.templateDir || 'template'
+		)
+	}
+
 	/**
 	 * The absolute path to output directory
 	 */
@@ -415,7 +506,7 @@ export class Grit {
 	 */
 	gitInit(): void {
 		this.setPermissions('gitInit', [], [COMPLETE])
-		if (this.opts.mock || this.opts.debug) {
+		if (this.opts.mock || this.opts.debug || this.opts.hotRebuild) {
 			logger.debug('Skipping git init')
 			return
 		}
@@ -436,7 +527,7 @@ export class Grit {
 	 */
 	async gitCommit(commitMessage?: string): Promise<void> {
 		this.setPermissions('gitInit', [], [COMPLETE])
-		if (this.opts.mock || this.opts.debug) {
+		if (this.opts.mock || this.opts.debug || this.opts.hotRebuild) {
 			logger.debug('Skipping git commit')
 			return
 		}

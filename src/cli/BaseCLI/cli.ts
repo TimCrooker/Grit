@@ -50,30 +50,29 @@ export class CLI<RuntimeEnvInstance = any> {
 	}
 
 	async run(): Promise<void> {
-		(!this.opts.debug) && console.clear()
+		!this.opts.debug && console.clear()
 
-		console.log('runnings')
 		this.logger.debug('CLI running...')
 
 		await this.updateCheck()
 
-		this.commander.parse()
+		this.commander.parse(process.argv)
 	}
 
 	/** Check for updates and inform the user if there are any */
 	async updateCheck(pkg = this.opts.pkg): Promise<void> {
 		const notifier = await updateNotifier({ pkg }).fetchInfo()
 
-		// if (notifier.type !== 'latest') {
-		this.logger.log(
-			'Update available: ',
-			this.chalk.green.bold(notifier.latest),
-			chalk.gray(' (current: ' + notifier.current + ')'),
-			'Run',
-			this.chalk.magenta('npm install -g ' + pkg.name),
-			'to update.'
-		)
-		// }
+		if (notifier.current !== notifier.latest) {
+			this.logger.log(
+				'Update available: ',
+				this.chalk.green.bold(notifier.latest),
+				chalk.gray(' (current: ' + notifier.current + ')'),
+				'Run',
+				this.chalk.magenta('npm install -g ' + pkg.name),
+				'to update.'
+			)
+		}
 	}
 
 	/** Add a CLI Route */
@@ -89,9 +88,17 @@ export class CLI<RuntimeEnvInstance = any> {
 		// get options from commander
 		const options = this.commander.opts()
 
+		// get arguments from commander and strip off the command
 		const args = this.commander.args
 
-		await this.router.navigate(routeName, { args: args, options }, this)
+		this.logger.debug(
+			chalk.yellow('Grit CLI options:'),
+			options,
+			chalk.cyan('Grit CLI args:'),
+			args
+		)
+
+		await this.router.navigate(routeName, { args, options }, this)
 	}
 
 	async goBack(): Promise<void> {
