@@ -34,6 +34,7 @@ import {
 } from '@/utils/parseGenerator'
 import pkg from '@/../package.json'
 import chokidar from 'chokidar'
+import { mergeObjects } from '@/utils/merge'
 
 export interface GritOptions<T = Record<string, any>> {
 	/**
@@ -353,6 +354,8 @@ export class Grit {
 			logger.info('watching for changes...')
 		})
 	}
+
+	mergeObjects = mergeObjects
 
 	/**
 	 * Block execution for inside generator runtimes for particular states
