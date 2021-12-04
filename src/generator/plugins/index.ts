@@ -126,7 +126,11 @@ export class Plugins {
 		const plugins = Object.entries(pluginAnswers).reduce(
 			(acc: string[], [key, value]) => {
 				if (typeof value === 'boolean' && value) return [...acc, key]
-				if (typeof value === 'string') return [...(acc as string[]), value]
+				if (typeof value === 'string')
+					return [
+						...(acc as string[]),
+						value != '' && value !== 'none' && value,
+					]
 				if (Array.isArray(value)) return [...(acc as string[]), ...value]
 				return acc
 			},
