@@ -1,6 +1,6 @@
 {
 	"name": "grit-cli",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"description": "Simple and flexible scaffolding",
 	"main": "dist/index.js",
 	"bin": {
