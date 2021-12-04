@@ -9,8 +9,10 @@
 	},
 	"files": [
 		"package.json",
-		"package-a/package.json",
 		"package-b/package.json",
 		"package-c/package.json"
-	]
+	],
+	"app": "<%= _app.import %>",
+	"docs": "<%= _docs.import.map((item) => (item + ' ')) %>",
+	"footer": "<%= _footer %>"
 }

@@ -1,6 +1,5 @@
 import { Grit, GritOptions } from '@/generator'
 import { GeneratorConfig } from '@/index'
-import { store } from '@/store'
 import { pathExists } from '@/utils/files'
 import path from 'path'
 import { ensureGeneratorExists } from '../ensureGenerator'

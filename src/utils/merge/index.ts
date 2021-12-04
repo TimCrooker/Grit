@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
-import { PluginData } from '@/generator/plugins'
+import { Ignore, PluginData } from '@/generator/plugins'
+import { Answers } from '@/index'
 import { writeFileSync } from 'fs'
 import _ from 'lodash'
 import path from 'path'
@@ -151,4 +152,32 @@ export const mergePackages = (
 	const result = mergeObjects(basePkg, pluginPkgs) as Record<string, unknown>
 
 	return result
+}
+
+/**
+ *
+ * @param ignores the array of ignore objects from the plugin packs prompt.js
+ * @param answers answers provided by the user to all prompt questions
+ * @param plugin name of the current plugin to target
+ * @returns
+ */
+export const handleIgnore = (
+	ignores: Ignore[],
+	answers: Answers,
+	plugin: string
+): Record<string, false> => {
+	const filters: Record<string, false> = {}
+
+	ignores.forEach((ignore) => {
+		if (ignore.plugin && ignore.plugin.includes(plugin)) {
+			const condition = ignore.when?.(answers)
+			if (condition) {
+				ignore.pattern.forEach((pattern) => {
+					filters[pattern] = false
+				})
+			}
+		}
+	})
+
+	return filters
 }
