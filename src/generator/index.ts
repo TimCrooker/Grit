@@ -24,7 +24,6 @@ import { Data } from './data'
 import { Completed } from './completed'
 import { Prepare } from './prepare'
 import { Plugins } from './plugins'
-import { addPluginData } from './plugins/pluginDataProvider'
 import { Answers } from './prompts/prompt'
 import {
 	NpmGenerator,
@@ -243,28 +242,20 @@ export class Grit {
 			this.state = POST_PROMPT
 		}
 
+		// load create a new plugins runner and load them if they are being used
+		this.plugins = await new Plugins({
+			selectedPlugins: this.data.selectedPlugins,
+			context: this,
+		}).loadPlugins()
 		// Register the plugin data provider
-		this._data.registerDataProvider(
-			await addPluginData(this._prompts.prompts, this.answers)
-		)
+		this._data.registerDataProvider(await this.plugins.addPluginData())
+		// if there are selected plugins, then register the plugins action provider
+		this._actions.registerActionProvider(await this.plugins.addPluginActions())
 
 		// Run generator data section
 		this.state = DATA
 		await this._data.run()
 		this.state = POST_DATA
-
-		// Load plugin data then register actions provider
-		if (this.data.selectedPlugins && this.data.selectedPlugins.length > 0) {
-			this.plugins = new Plugins({
-				config: config.plugins,
-				selectedPlugins: this.data.selectedPlugins,
-				generatorPath: this.generator.path,
-			})
-			await this.plugins.loadPlugins()
-			this._actions.registerActionProvider(
-				await this.plugins.addPluginActions()
-			)
-		}
 
 		// Run generator actions section
 		if (config.actions) {
@@ -361,8 +352,6 @@ export class Grit {
 		})
 	}
 
-	mergeObjects = mergeObjects
-
 	/**
 	 * Block execution for inside generator runtimes for particular states
 	 * Will throw an error if access is blocked
@@ -392,6 +381,8 @@ export class Grit {
 
 		return
 	}
+
+	utils = { mergeObjects }
 
 	/** Generator Instance Properties */
 

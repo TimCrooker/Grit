@@ -1,14 +1,20 @@
 import { getGenerator } from '@/cli/utils/getGenerator'
 import path from 'path'
 import { Plugins } from '.'
+import { Grit } from '..'
 
 let pluginsWorker: Plugins
+let grit: Grit
 
 describe('Plugins', () => {
-	beforeEach(() => {
+	beforeEach(async () => {
+		grit = await getGenerator({
+			generator: path.resolve(__dirname, 'fixtures'),
+		})
+
 		pluginsWorker = new Plugins({
+			context: grit,
 			selectedPlugins: ['plugin1', 'plugin2', 'plugin3'],
-			generatorPath: path.resolve(__dirname, 'fixtures'),
 		})
 	})
 
@@ -77,6 +83,11 @@ describe('Plugins', () => {
 		).run()
 
 		expect(grit.data).toEqual({
+			_app: {
+				import: 'plugin3',
+			},
+			_docs: { import: [] },
+			_footer: 0,
 			plugin: ['plugin1', 'plugin2', 'plugin3'],
 			selectedPlugins: ['plugin1', 'plugin2', 'plugin3'],
 		})
@@ -84,20 +95,23 @@ describe('Plugins', () => {
 		const packageOutput = await grit.readOutputFile('package.json')
 
 		expect(packageOutput).toEqual({
+			app: 'plugin3',
+			docs: '',
+			footer: '0',
 			name: 'package',
 			dependencies: {
-				'package-a': '2.0.0',
 				'package-b': '1.0.0',
 				'package-d': '1.0.0',
+				'package-a': '2.0.0',
 			},
 			devDependencies: {
 				'package-c': '1.0.0',
 			},
 			files: [
 				'package.json',
-				'package-a/package.json',
 				'package-b/package.json',
 				'package-c/package.json',
+				'package-a/package.json',
 				'newfile',
 			],
 		})
@@ -128,5 +142,59 @@ describe('Plugins', () => {
 				'package-c/package.json',
 			],
 		})
+	})
+
+	it('should provide selectedPlugins array with only plugin1', async () => {
+		// const prompts: Prompt[] = [
+		// 	{
+		// 		type: 'list',
+		// 		name: 'plugin',
+		// 		plugin: true,
+		// 		message: 'Select plugin',
+		// 		choices: [
+		// 			{
+		// 				name: 'Plugin 1',
+		// 				value: 'plugin1',
+		// 			},
+		// 			{
+		// 				name: 'Plugin 2',
+		// 				value: 'plugin2',
+		// 			},
+		// 		],
+		// 	},
+		// 	{
+		// 		type: 'list',
+		// 		name: 'notplugin',
+		// 		message: 'Select plugin',
+		// 		choices: [
+		// 			{
+		// 				name: 'Plugin 1',
+		// 				value: 'plugin1',
+		// 			},
+		// 			{
+		// 				name: 'Plugin 2',
+		// 				value: 'plugin2',
+		// 			},
+		// 		],
+		// 	},
+		// ]
+
+		// const dataProvider = await addPluginData(prompts, {
+		// 	plugin: 'plugin1',
+		// 	notplugin: 'plugin2',
+		// })
+
+		// const data = dataProvider(
+		// 	new Grit({ config: {}, generator: 'generator', mock: true })
+		// )
+
+		// expect(data).toMatchInlineSnapshot(`
+		//   Object {
+		//     "selectedPlugins": Array [
+		//       "plugin1",
+		//     ],
+		//   }
+		// `)
+		expect(true)
 	})
 })

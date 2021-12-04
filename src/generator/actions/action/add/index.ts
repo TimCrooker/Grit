@@ -91,9 +91,7 @@ export const addAction: ActionFn<AddAction> = async (context, action) => {
 					relativePath,
 					ejs.render(
 						contents,
-						Object.assign({}, context.answers, actionData, {
-							context: context,
-						})
+						Object.assign({}, context.answers, actionData, context.data)
 					)
 				)
 			})

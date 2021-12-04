@@ -1,16 +1,22 @@
 import { PLUGIN_MERGE_FILES } from '@/config'
-import { GeneratorConfig, Grit } from '@/index'
+import { Grit } from '@/index'
 import { pathExists, pathExistsSync } from '@/utils/files'
-import { mergePackages, mergePluginJsonFiles } from '@/utils/merge'
+import {
+	handleIgnore,
+	mergeObjects,
+	mergePackages,
+	mergePluginJsonFiles,
+} from '@/utils/merge'
+import chalk from 'chalk'
 import path from 'path'
 import { Action, ActionProvider } from '../actions'
 import { AddAction } from '../actions/action'
-import { Answers } from '../prompts/prompt'
+import { DataProvider } from '../data'
+import { Answers, Prompt } from '../prompts/prompt'
 import { defautPluginFile } from './pluginFile/defaultPluginFile'
 import { hasPluginConfig, loadPluginConfig } from './pluginFile/getPluginFile'
 import { PluginFileConfig, pluginFileName } from './pluginFile/pluginFileConfig'
 export * from './pluginFile'
-export * from './pluginDataProvider'
 
 export interface Ignore {
 	/**
@@ -34,7 +40,12 @@ export interface Ignore {
 	pattern: string[]
 }
 
-export interface PluginConfig {
+export interface PluginConfig<T extends Record<string, any>> {
+	/**
+	 * The defined structure of data to inject in to the generator outputFile
+	 * This is used for putting data directly into any file via EJS transformations
+	 */
+	extend?: T
 	/**
 	 * List of files to ignore when moving plugins into the main generator output Directory
 	 */
@@ -52,33 +63,81 @@ export type PluginData = {
 }
 
 interface PluginsOptions {
-	selectedPlugins: string[]
-	generatorPath: string
-	config?: GeneratorConfig['plugins']
+	context: Grit
+	selectedPlugins?: string[]
 }
 
 export class Plugins {
+	grit: Grit
+	/** absolute path to the directory containing all of the plugins */
 	pluginsDir: string
-	ignores: Ignore[]
-	mergeFiles: string[]
-
+	/** list of the plugins the user selected in the prompting section of the generator */
 	selectedPlugins: string[]
 	pluginData: PluginData[] = []
+	/** user provided list of ignore objects to conditionally ignore files and directories */
+	ignores: Ignore[]
+	/** user provided list of json files to merge */
+	mergeFiles: string[]
+	/** user provided base structure for the extend object */
+	baseExtend: Record<string, any>
 
 	constructor(options: PluginsOptions) {
-		this.pluginsDir = path.resolve(options.generatorPath, 'plugins')
+		const config = options.context.opts.config.plugins
 
-		this.ignores = options.config?.ignores || []
-		this.mergeFiles = options.config?.mergeFiles || []
-		this.selectedPlugins = options.selectedPlugins
+		this.grit = options.context
+		this.pluginsDir = path.resolve(this.grit.generator.path, 'plugins')
+		this.selectedPlugins =
+			options.selectedPlugins ||
+			this.getSelectedPlugins(this.grit.prompts, this.grit.answers)
+
+		this.baseExtend = config?.extend || {}
+		this.ignores = config?.ignores || []
+		this.mergeFiles = config?.mergeFiles || []
 
 		// Check if the pluginsDir exists and if not then throw error
-		if (!pathExistsSync(this.pluginsDir)) {
+		if (this.selectedPlugins.length > 0 && !pathExistsSync(this.pluginsDir)) {
 			throw new Error(`Plugins directory does not exist at ${this.pluginsDir}`)
 		}
 	}
 
-	async loadPlugins(plugins = this.selectedPlugins): Promise<void> {
+	/**
+	 * parse the prompts and answers to find which prompts are
+	 * indicating plugins and return a list of plugins the user selected
+	 */
+	getSelectedPlugins(prompts: Prompt[], answers: Answers): string[] {
+		// get the list of prompts where it is of type list or chekcbox and plugin property is set to true
+		const pluginPrompts = prompts.filter((prompt) => {
+			if (
+				prompt.type === 'list' ||
+				prompt.type === 'checkbox' ||
+				prompt.type === 'confirm'
+			) {
+				return prompt.plugin === true
+			}
+		})
+
+		// get answers where the key is equal to the name of a propmt in pluginPrompts
+		const pluginAnswers = pluginPrompts.reduce((acc, prompt) => {
+			acc[prompt.name] = answers[prompt.name]
+			return acc
+		}, {})
+
+		// get an array of plugins from the pluginAnswers values
+		const plugins = Object.entries(pluginAnswers).reduce(
+			(acc: string[], [key, value]) => {
+				if (typeof value === 'boolean' && value) return [...acc, key]
+				if (typeof value === 'string') return [...(acc as string[]), value]
+				if (Array.isArray(value)) return [...(acc as string[]), ...value]
+				return acc
+			},
+			[]
+		)
+
+		return plugins
+	}
+
+	/** parse the selected plugins and load data about them */
+	async loadPlugins(plugins = this.selectedPlugins): Promise<this> {
 		const pluginData: PluginData[] = []
 		// load plugin data for selected plugins
 		for (const plugin of plugins) {
@@ -111,71 +170,116 @@ export class Plugins {
 		}
 
 		this.pluginData = pluginData
+
+		return this
 	}
 
 	/** for each pluginData run the addAction function */
 	async addPluginActions(): Promise<ActionProvider> {
+		//ensure all strings in mergedFiles have the .json extension
+		for (const file of this.mergeFiles) {
+			if (!file.endsWith('.json')) {
+				throw new Error(
+					`Invalid merge file: ${chalk.cyan(
+						file
+					)}. Merge files must have a .json extension`
+				)
+			}
+		}
+
 		const mergeFiles = [...PLUGIN_MERGE_FILES, ...this.mergeFiles]
 
 		const pluginActions: Action[] = []
-		// for each pluginData run the addAction function
 
 		return (grit: Grit): Action[] => {
-			// Merge plugins files
-			pluginActions.push(
-				...this.pluginData.map((plugin) => {
-					const action = {
-						type: 'add',
-						files: '**',
-						templateDir: plugin.dirPath,
-					} as AddAction
+			try {
+				// Merge plugins files
+				pluginActions.push(
+					// for each pluginData run the addAction function
+					...this.pluginData.map((plugin) => {
+						const action = {
+							type: 'add',
+							files: '**',
+							templateDir: plugin.dirPath,
+						} as AddAction
 
-					action.filters = {}
+						action.filters = {}
 
-					// dont add `pluginfile` to output
-					for (const filename of pluginFileName) {
-						action.filters[filename] = false
-					}
+						// dont add `pluginfile` to output
+						for (const filename of pluginFileName) {
+							action.filters[filename] = false
+						}
 
-					// ignore generator supplied ignores
+						// ignore generator supplied ignores
+						const filters = handleIgnore(
+							this.ignores,
+							grit.answers,
+							plugin.name
+						)
+						action.filters = { ...action.filters, ...filters }
 
-					// ignore common json config files to they can be merged later
-					for (const filename of mergeFiles) {
-						action.filters[filename] = false
-					}
+						// ignore common json config files to they can be merged later
+						for (const filename of mergeFiles) {
+							action.filters[filename] = false
+						}
 
-					return action
-				})
-			)
+						return action
+					})
+				)
 
-			// Sepecially handle the `package.json` file
-			pluginActions.push({
-				type: 'modify',
-				files: 'package.json',
-				handler: (fileData) => {
-					return mergePackages(fileData, this.pluginData, grit.answers)
-				},
-			})
-
-			for (const mergeFile of mergeFiles) {
-				if (mergeFile === 'package.json') continue
-
+				// Sepecially handle the `package.json` file
 				pluginActions.push({
 					type: 'modify',
-					files: mergeFile,
-					handler: (fileData) => {
-						return mergePluginJsonFiles(
-							fileData,
-							this.pluginsDir,
-							this.selectedPlugins,
-							mergeFile
-						)
+					files: 'package.json',
+					handler: (fileData, filepath) => {
+						return mergePackages(fileData, this.pluginData, grit.answers)
 					},
 				})
+
+				// Merge plugin json files
+				for (const mergeFile of mergeFiles) {
+					if (mergeFile === 'package.json') continue
+
+					pluginActions.push({
+						type: 'modify',
+						files: mergeFile,
+						handler: (fileData) => {
+							return mergePluginJsonFiles(
+								fileData,
+								this.pluginsDir,
+								this.selectedPlugins,
+								mergeFile
+							)
+						},
+					})
+				}
+				return pluginActions
+			} catch (e) {
+				throw new Error(`Error in plugins Actions provider: ${e}`)
 			}
-			return pluginActions
 		}
 	}
 
-	
+	async addPluginData(): Promise<DataProvider> {
+		return (grit): Record<string, any> => {
+			// combine the data extends of the plugins
+			try {
+				const pluginExtends = this.pluginData.map((plugin) => {
+					const extend = plugin.pluginFileData.extend
+					if (extend) {
+						return typeof extend === 'function' ? extend(grit.answers) : extend
+					}
+					return {}
+				})
+
+				const mergedExtends = mergeObjects(this.baseExtend, pluginExtends)
+				return {
+					...mergedExtends,
+					selectedPlugins: this.selectedPlugins,
+				}
+			} catch (e) {
+				throw new Error(`Error in plugins Data provider: ${e}`)
+			}
+		}
+	}
 }

@@ -9,7 +9,9 @@ import { PluginConfig } from '../plugins'
 
 export type DataType = Record<string, any>
 
-export interface GeneratorConfig {
+export interface GeneratorConfig<
+	T extends Record<string, any> = Record<string, any>
+> {
 	/**
 	 * Generator description
 	 * Used in CLI output
@@ -44,9 +46,9 @@ export interface GeneratorConfig {
 				ctx: Grit
 		  ) => Prompt[] | Promise<Prompt[]> | void | Promise<void>)
 	/**
-	 *
+	 * configure the use of plugins in the generator
 	 */
-	plugins?: PluginConfig
+	plugins?: PluginConfig<T>
 	/**
 	 * Extra data to use in template transformation
 	 */

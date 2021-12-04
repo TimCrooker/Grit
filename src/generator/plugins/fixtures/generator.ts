@@ -1,6 +1,7 @@
 import { GeneratorConfig } from '@/index'
+import { extendBase, ExtendBase } from './types'
 
-const config: GeneratorConfig = {
+const config: GeneratorConfig<ExtendBase> = {
 	prompts() {
 		this.checkbox({
 			plugin: true,
@@ -12,6 +13,16 @@ const config: GeneratorConfig = {
 				{ name: 'Plugin 3', value: 'plugin3' },
 			],
 		})
+	},
+	plugins: {
+		extend: extendBase,
+		ignores: [
+			{
+				plugin: ['plugin2'],
+				pattern: ['package.json'],
+				when: (): boolean => true,
+			},
+		],
 	},
 	actions: [
 		{
