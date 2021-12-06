@@ -1,3 +1,4 @@
+import { Grit } from '@/generator'
 import path from 'path'
 import { globalRequire, pathExists } from '.'
 
@@ -29,9 +30,34 @@ describe('Global Require', () => {
 		expect(test.test()).toBe('second')
 	})
 
-	it('should ', () => {
+	it('should populate second file plus inject prop', () => {
 		expect(test.test3()).toEqual({
 			hello: 'world',
 		})
+	})
+
+	it('should run generator with ts imports everywhere', async () => {
+		const generator = await globalRequire(
+			path.resolve(
+				__dirname,
+				'fixtures',
+				'globalRequire',
+				'generator',
+				'generator.ts'
+			)
+		)
+
+		const grit = new Grit({
+			mock: true,
+			config: generator,
+			generator: path.resolve(
+				__dirname,
+				'fixtures',
+				'globalRequire',
+				'generator'
+			),
+		})
+
+		await grit.run()
 	})
 })

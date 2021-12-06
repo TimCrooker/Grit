@@ -1,4 +1,6 @@
 import { GeneratorConfig, Grit } from '@/index'
+import { mergeJsonFiles, mergeObjects } from '@/utils/merge'
+import { merge } from 'lodash'
 import {
 	AddAction,
 	CopyAction,
@@ -113,8 +115,30 @@ export class Actions {
 		return this
 	}
 
+	/** take a JSON file in the destination directory and merge it with a passed object */
+	extendJSON(
+		filePath: string,
+		toMerge: Record<string, any>,
+		mergeArrays?: boolean
+	): this {
+		// throw error when filepath is not a JSON file
+		if (!filePath.endsWith('.json')) {
+			throw new Error(
+				`${filePath} is not a JSON file. Please provide a JSON file path.`
+			)
+		}
+
+		// Add modify action to merge the passed object with the existing JSON file
+		this.modify({
+			files: [filePath],
+			handler: (data) =>
+				mergeObjects(data as Record<string, any>, [toMerge], mergeArrays),
+		})
+
+		return this
+	}
+
 	get actions(): Action[] {
 		return this._actions
 	}
 }
-

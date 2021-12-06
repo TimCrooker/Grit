@@ -15,7 +15,8 @@ import { readFileSync, requireUncached } from '../files'
  */
 export const mergeObjects = (
 	base = {},
-	objects: Array<Record<string, any>>
+	objects: Array<Record<string, any>>,
+	mergeArrays?: boolean
 ): Record<string, any> => {
 	function customizer(objValue, srcValue): unknown {
 		if (_.isArray(objValue)) {
@@ -24,7 +25,7 @@ export const mergeObjects = (
 	}
 
 	return objects.reduce((acc, obj) => {
-		return _.mergeWith(acc, obj, customizer)
+		return _.mergeWith(acc, obj, mergeArrays && customizer)
 	}, base)
 }
 
@@ -36,7 +37,8 @@ export const mergeObjects = (
  */
 export const mergeJsonFiles = (
 	base = {},
-	filePaths: string[]
+	filePaths: string[],
+	mergeArrays?: boolean
 ): Record<string, any> => {
 	// const files
 	return mergeObjects(
@@ -47,7 +49,8 @@ export const mergeJsonFiles = (
 			} catch (e) {
 				return {}
 			}
-		})
+		}),
+		mergeArrays
 	)
 }
 
@@ -61,21 +64,13 @@ export const mergeJsonFiles = (
 export const mergeJsonAndWrite = (
 	base = {},
 	filePaths: string[],
-	outFile: string
+	outFile: string,
+	mergeArrays?: boolean
 ): void => {
 	if (path.extname(outFile) !== '.json')
 		throw new Error('Expected `.json` extension for the outFile')
 
-	const merged = mergeObjects(
-		base,
-		filePaths.map((file) => {
-			try {
-				return JSON.parse(readFileSync(file, 'utf8'))
-			} catch (e) {
-				return {}
-			}
-		})
-	)
+	const merged = mergeJsonFiles(base, filePaths, mergeArrays)
 
 	writeFileSync(outFile, JSON.stringify(merged))
 }
