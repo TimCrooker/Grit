@@ -16,7 +16,7 @@ import { readFileSync, requireUncached } from '../files'
 export const mergeObjects = (
 	base = {},
 	objects: Array<Record<string, any>>,
-	mergeArrays?: boolean
+	mergeArrays = true
 ): Record<string, any> => {
 	function customizer(objValue, srcValue): unknown {
 		if (_.isArray(objValue)) {
