@@ -1,4 +1,5 @@
 import { GeneratorConfig, Grit } from '@/index'
+import { logger } from '@/logger'
 import { mergeJsonFiles, mergeObjects } from '@/utils/merge'
 import { merge } from 'lodash'
 import {
@@ -35,7 +36,11 @@ export class Actions {
 		await this.getActions()
 
 		for (const action of this.actions) {
-			await runAction(grit, action)
+			try {
+				await runAction(grit, action)
+			} catch (e) {
+				logger.error(`Error running action: ${e}`)
+			}
 		}
 	}
 
