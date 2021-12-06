@@ -29,7 +29,8 @@ export const runPrompts = async ({
 			else if (typeof prompt.default !== 'function') {
 				injectMock = prompt.default
 			}
-			if (injectMock) injectedAnswers[prompt.name] = injectMock
+			if (injectMock && !injectedAnswers[prompt.name])
+				injectedAnswers[prompt.name] = injectMock
 		}
 
 		return {
