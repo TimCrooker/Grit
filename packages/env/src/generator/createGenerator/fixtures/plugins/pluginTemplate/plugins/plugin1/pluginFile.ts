@@ -1,0 +1,3 @@
+export = {
+	name: 'plugin1',
+}
