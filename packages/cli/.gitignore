@@ -6,3 +6,4 @@ out/
 docs/typedoc/
 .env
 /wild
+coverage/
