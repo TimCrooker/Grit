@@ -2,12 +2,11 @@ import { CONFIG_FILE_NAME } from '@/config'
 import JoyCon from 'joycon'
 import path from 'path'
 import { logger } from 'swaglog'
-import { globalRequire, pathExists } from 'youtill'
+import { globalRequire } from 'youtill'
 import { Grit, GritOptions } from '..'
 import { Generator } from '../createGenerator'
 import { defaultGeneratorFile } from '../defaultGenerator'
 import { ensureGenerator } from '../ensureGenerator'
-import { GeneratorConfig } from '../generatorConfig'
 import {
 	NpmGenerator,
 	ParsedGenerator,

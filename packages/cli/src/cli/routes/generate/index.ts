@@ -1,6 +1,7 @@
 import { GritRoute } from '@/cli/config'
 import { Terror } from '@/utils/error'
 import { getGenerator } from 'gritenv'
+import { logger } from 'swaglog'
 
 /**
  * Run the generator that was directly called from the command line
@@ -13,15 +14,16 @@ export const generate: GritRoute = async (app, { args, options }) => {
 		throw new Terror('You must specify a generator to run')
 	}
 
-	await (
-		await getGenerator(
-			{
-				generator: generator,
-				outDir: outDir || '.',
-				answers: options.answers,
-				...options,
-			},
-			options.forceNewest
-		)
-	).run()
+	try {
+		const grit = await getGenerator({
+			generator: generator,
+			outDir: outDir || '.',
+			answers: options.answers,
+			...options,
+		})
+
+		await grit.run()
+	} catch (error) {
+		logger.error(error)
+	}
 }

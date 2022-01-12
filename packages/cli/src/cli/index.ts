@@ -1,4 +1,3 @@
-import { Terror, handleError } from '@/utils/error'
 import { cli } from './config'
 import { home, help, generate, find, exit } from './routes'
 
@@ -25,10 +24,6 @@ export const runCLI = async (): Promise<void> => {
 		.option('-c, --clone', 'git clone repo instead of downloading it')
 		.option('-m, --mock', 'mock the generator for testing purposes')
 		.option('--hot-rebuild', 'rebuild a local generator when changes are made')
-		.option(
-			'--force-newest',
-			'force the generator to be run with the newest version of Grit (version incompatibilities may cause errors)'
-		)
 		// .option('--answers <answers>', 'inject answers into the generator')
 		.option('--registry', 'use preferred npm registry (yarn, npm)')
 		.option(
@@ -44,11 +39,5 @@ export const runCLI = async (): Promise<void> => {
 			}
 		})
 
-	try {
-		await cli.run()
-	} catch (e) {
-		if (e instanceof Terror || e instanceof Error) {
-			handleError(e)
-		}
-	}
+	await cli.run()
 }

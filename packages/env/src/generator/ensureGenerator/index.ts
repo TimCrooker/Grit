@@ -13,7 +13,7 @@ const ensureGenerator = async (
 	const exists = await pathExists(generator.path)
 
 	// if the generator already exists and no update is requested, we are done here
-	if ((await pathExists(generator.path)) && !update) return
+	if (exists && !update) return
 
 	// if the generator is local but it doesnt exist throw an error
 	if (generator.type === 'local') {
@@ -27,13 +27,13 @@ const ensureGenerator = async (
 
 	// if the generator exists and we are updating, then update it in the Store
 	if (exists && update) {
-		store.generators.update(generator)
+		await store.generators.update(generator)
 		return
 	}
 
 	// if the generator still does not exist then add it to the store
 	if (!exists) {
-		store.generators.add(generator)
+		await store.generators.add(generator)
 	}
 }
 

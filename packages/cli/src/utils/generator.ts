@@ -1,5 +1,4 @@
-import { store } from 'gritenv'
-import { StoreGenerator } from 'gritstore'
+import { store, StoreGenerator } from 'gritenv'
 import { colors, logger } from 'swaglog'
 import { spinner } from './spinner'
 import { checkGeneratorForUpdates } from './update'

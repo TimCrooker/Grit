@@ -80,7 +80,9 @@ export const installGenerator = async (
 	update = false
 ): Promise<NpmGenerator | RepoGenerator> => {
 	if (!['npm', 'repo'].includes(generator.type)) {
-		throw new Error('Can only install NPM or repo generators')
+		throw new Error(
+			'Can only install NPM or repo generators. ' + 'You provided ' + generator
+		)
 	}
 	if (generator.type === 'npm') {
 		return await installNpmGenerator(generator as NpmGenerator, update)

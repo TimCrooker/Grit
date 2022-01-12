@@ -1,8 +1,10 @@
+import { logger } from '@/../../swaglog/dist'
 import { GritRoute } from '@/cli/config'
 import { promptGeneratorRun, promptOutDir } from '@/cli/prompts'
+import { handleError } from '@/utils/error'
 import { NpmSearch } from '@/utils/npm'
 import { BackChoice } from 'clifi'
-import { getGenerator, store } from 'gritenv'
+import { getGenerator, parseGenerator, store } from 'gritenv'
 import { HomeChoice, HelpChoice, ExitChoice } from '..'
 
 /**
@@ -54,43 +56,57 @@ export const find: GritRoute = async (app, { options }) => {
 		},
 	])
 
-	// User selected a generator
-	if (typeof answer.generator === 'string') {
-		const generator = answer.generator as string
-		const alreadyInstalled = answer.installed as boolean
+	// Navigate to the appropriate route
+	if (!answer.generator) {
+		// if the answer is a route navigate to it
+		return await app.navigate(answer)
+	}
 
-		// if the generator is already installed then run it
-		if (alreadyInstalled) {
+	// if the answer is a generator
+	const generator = answer.generator as string
+	const alreadyInstalled = answer.installed as boolean
+
+	// if the generator is already installed then run it
+	if (alreadyInstalled) {
+		try {
 			const outDir = await promptOutDir()
 			await (await getGenerator({ generator, outDir })).run()
 			return await app.navigate('home')
+		} catch (error) {
+			handleError(error)
 		}
+	}
 
-		// ask user if they want to run the generator after installation
-		const run = await promptGeneratorRun()
+	// ask user if they want to run the generator after installation
+	const run = await promptGeneratorRun()
 
-		// install and run the generator
-		if (run === true) {
-			const outDir = await promptOutDir()
+	// install and run the generator
+	if (run === true) {
+		const outDir = await promptOutDir()
 
-			// Get the chosen generator
+		// Get the chosen generator
+		try {
 			await (
 				await getGenerator({
-					generator: answer,
+					generator: answer.generator,
 					...options,
 					outDir,
 				})
 			).run()
-		} else {
-			// only install the generator
-			store.generators.add(answer)
+		} catch (error) {
+			handleError(error)
 		}
-		// Go home after installing the generator
-		return await app.navigate('home')
+	} else {
+		// only install the generator
+		try {
+			await store.generators.add(parseGenerator(answer.generator))
+		} catch (error) {
+			handleError(error)
+		}
 	}
 
-	// if the answer is a route navigate to it
-	return await app.navigate(answer)
+	// Go home after installing the generator
+	return await app.navigate('home')
 }
 
 export const FindChoice = {

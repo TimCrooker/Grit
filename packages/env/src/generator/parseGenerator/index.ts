@@ -1,12 +1,13 @@
 import path from 'path'
 import sum from 'hash-sum'
-import parse from 'parse-package-name'
+import { parse } from 'parse-package-name'
 import {
 	removeLocalPathPrefix,
 	isLocalPath,
 	PACKAGES_CACHE_PATH,
 	REPOS_CACHE_PATH,
 } from '@/config'
+import { logger } from 'swaglog'
 
 /*********************TYPES**********************/
 

@@ -58,9 +58,7 @@
 		"parse-package-name": "^1.0.0",
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"swaglog": "file:../swaglog",
-		"update-notifier": "^5.1.0",
-		"youtill": "file:../youtill"
+		"update-notifier": "^5.1.0"
 	},
 	"config": {
 		"commitizen": {

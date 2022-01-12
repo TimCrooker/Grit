@@ -64,7 +64,7 @@ export const home: GritRoute = async (app) => {
 			const update = await promptGeneratorUpdate()
 			const generator = await getGenerator({
 				generator: answer.generator,
-				updat,
+				update,
 			})
 
 			const run = await promptGeneratorRun()
