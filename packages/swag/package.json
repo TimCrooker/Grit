@@ -1,0 +1,43 @@
+{
+	"name": "swaglog",
+	"version": "1.0.0",
+	"description": "powerful console logger",
+	"main": "dist/index.js",
+	"keywords": [],
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"!**/*.(test|spec).ts"
+	],
+	"author": "Tim Crooker <timothycrooker@gmail.com>",
+	"homepage": "https://github.com/TimCrooker/grit#readme",
+	"directories": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TimCrooker/grit.git"
+	},
+	"bugs": {
+		"url": "https://github.com/TimCrooker/grit/issues"
+	},
+	"scripts": {
+		"build": "npm run clean && tsup src/index.ts --dts",
+		"clean": "rimraf ./dist",
+		"test": "jest",
+		"lint": "eslint . --fix",
+		"prepublishOnly": "npm run build",
+		"release": "dotenv release-it",
+		"release:ci": "dotenv release-it --ci"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=12"
+	},
+	"dependencies": {
+		"chalk": "^4.1.2"
+	},
+	"config": {
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	}
+}
