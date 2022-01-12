@@ -8,7 +8,7 @@
 		"test": "lerna run test --parallel",
 		"lint": "lerna run lint --parallel",
 		"build": "lerna run build --parallel",
-		"release": "yarn test && yarn build && lerna publish"
+		"release": "lerna publish"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.14.8",
