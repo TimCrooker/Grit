@@ -1,6 +1,6 @@
 {
 	"name": "gritenv",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Generator runtime logic and parsing",
 	"license": "MIT",
 	"main": "dist/index.js",

@@ -1,6 +1,6 @@
 {
 	"name": "grit-cli",
-	"version": "0.5.10",
+	"version": "0.5.11",
 	"description": "Simple and flexible scaffolding",
 	"license": "MIT",
 	"bin": {
