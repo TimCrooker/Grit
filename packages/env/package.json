@@ -33,8 +33,6 @@
 		"node": ">=14"
 	},
 	"dependencies": {
-		"@types/update-notifier": "^5.1.0",
-		"alias-hq": "^5.3.0",
 		"axios": "^0.24.0",
 		"chalk": "^4.1.2",
 		"chokidar": "^3.5.2",
