@@ -1,4 +1,4 @@
-import { GeneratorConfig } from '@/index'
+import { Generator, GeneratorConfig } from '@/index'
 import { extendBase, ExtendBase } from './types'
 
 const config: GeneratorConfig<ExtendBase> = {
@@ -39,4 +39,4 @@ const config: GeneratorConfig<ExtendBase> = {
 	],
 }
 
-module.exports = config
+module.exports = new Generator(config)

@@ -1,4 +1,3 @@
-
 import { getGenerator } from '@/generator/getGenerator'
 import path from 'path'
 

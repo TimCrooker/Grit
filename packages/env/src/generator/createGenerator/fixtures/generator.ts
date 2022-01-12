@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { GeneratorConfig } from '@/generator/generatorConfig'
+import { GeneratorConfig } from '@/index'
 import path from 'path'
+import { Generator } from '..'
 
-const generator = {
+const config: GeneratorConfig = {
 	prompts(grit) {
 		this.input({
 			name: 'name',
@@ -55,7 +56,11 @@ const generator = {
 				},
 			})
 	},
-	async completed(grit) {},
-} as GeneratorConfig
+	async completed(grit) {
+		grit.gitInit()
+		await grit.npmInstall()
+		grit.showProjectTips()
+	},
+}
 
-export default generator
+export = new Generator(config)

@@ -43,6 +43,7 @@ export const find: GritRoute = async (app, { options }) => {
 		ExitChoice,
 	]
 
+	// prompt the user with the above choices
 	const { answer } = await app.prompt([
 		{
 			type: 'list',
@@ -54,7 +55,7 @@ export const find: GritRoute = async (app, { options }) => {
 	])
 
 	// User selected a generator
-	if (answer.generator) {
+	if (typeof answer.generator === 'string') {
 		const generator = answer.generator as string
 		const alreadyInstalled = answer.installed as boolean
 
@@ -80,15 +81,12 @@ export const find: GritRoute = async (app, { options }) => {
 					outDir,
 				})
 			).run()
-
-			// Go home after running the generator
-			return await app.navigate('home')
 		} else {
 			// only install the generator
 			store.generators.add(answer)
-
-			// Go home after installing the generator
 		}
+		// Go home after installing the generator
+		return await app.navigate('home')
 	}
 
 	// if the answer is a route navigate to it

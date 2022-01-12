@@ -5,7 +5,7 @@ export { defaultGeneratorFile } from '@/generator/defaultGenerator'
 export { ensureGenerator } from '@/generator/ensureGenerator'
 export {
 	getGenerator,
-	loadGeneratorConfig,
+	loadGenerator as loadGeneratorConfig,
 	hasGeneratorConfig,
 } from '@/generator/getGenerator'
 export {

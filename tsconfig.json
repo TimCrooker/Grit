@@ -1,37 +1,4 @@
 {
 	"extends": "./tsconfig.base.json",
-	"compilerOptions": {
-		"paths": {
-			"@env": [
-				"./packages/env/src"
-			],
-			"@env/*": [
-				"./packages/env/src/*"
-			],
-			"@cli": [
-				"./packages/cli/src"
-			],
-			"@cli/*": [
-				"./packages/cli/src/*"
-			],
-			"@clifi": [
-				"./packages/clifi/src"
-			],
-			"@clifi/*": [
-				"./packages/clifi/src/*"
-			],
-			"@swaglog": [
-				"./packages/swaglog/src"
-			],
-			"@swaglog/*": [
-				"./packages/swaglog/src/*"
-			],
-			"@youtill": [
-				"./packages/youtill/src"
-			],
-			"@youtill/*": [
-				"./packages/youtill/src/*"
-			]
-		}
-	}
+	"compilerOptions": {}
 }

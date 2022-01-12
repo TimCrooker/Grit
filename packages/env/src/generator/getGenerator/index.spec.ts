@@ -1,18 +1,14 @@
 import path from 'path'
-import { getGenerator, loadGeneratorGrit } from '.'
-import { defaultGeneratorFile } from '../defaultGenerator'
+import { getGenerator } from '.'
 import { parseGenerator } from '../parseGenerator'
 
 describe('Name of the group', () => {
 	it('should load npm generator versioned instance', async () => {
 		const parsedGenerator = parseGenerator(path.resolve(__dirname, 'fixtures'))
 
-		const generator = await loadGeneratorGrit(parsedGenerator)
-
-		const grit = new generator({
-			config: defaultGeneratorFile,
-			generator: parsedGenerator,
+		const grit = await getGenerator({
 			mock: true,
+			generator: parsedGenerator,
 		})
 
 		expect(grit).toBeDefined()

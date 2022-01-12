@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Generator } from '@/generator/createGenerator'
 
-module.exports = {
+module.exports = new Generator({
 	actions() {
 		this.add({
 			files: '**',
@@ -32,4 +32,4 @@ module.exports = {
 			files: 'copy.txt',
 		})
 	},
-}
+})

@@ -45,9 +45,12 @@ class GeneratorStore extends BaseStore<StoreGenerator> {
 	/** Add a new generator to the store if it doesn't already exist */
 	async add(generator: NpmGenerator | RepoGenerator): Promise<this> {
 		if (this.get(generator.hash) !== undefined) {
-			throw new Error(`Generator already exists, use the update method instead`)
+			logger.debug(
+				`Generator already exists. The add method is for installing new generators. Updating now...`
+			)
+			await this.update(generator)
+			return this
 		}
-
 		logger.debug(`Adding generator`)
 		const installedGenerator = await installGenerator(generator)
 		this.set(generator.hash, installedGenerator)
@@ -61,6 +64,7 @@ class GeneratorStore extends BaseStore<StoreGenerator> {
 				`Generator not found. The update method is for generators that already exist. Adding now...`
 			)
 			await this.add(generator)
+			return this
 		}
 
 		logger.debug(`Updating generator`)

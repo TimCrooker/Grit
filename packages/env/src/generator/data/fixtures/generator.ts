@@ -1,11 +1,10 @@
-import { GeneratorConfig } from '@/index'
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Generator } from '@/generator/createGenerator'
 
-const config: GeneratorConfig = {
+module.exports = new Generator({
 	data() {
 		this.add({ name: 'Tim' })
 
 		return { foo: 'bar' }
 	},
-}
-
-module.exports = config
+})

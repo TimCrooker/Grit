@@ -13,7 +13,7 @@ import Choice from 'inquirer/lib/objects/choice'
 import { FindChoice, HelpChoice, ExitChoice } from '..'
 
 /**
- * This is the home route when users input just the `grit` keyword with no commands\
+ * This is the home route when users input just the `grit` keyword with no commands
  */
 export const home: GritRoute = async (app) => {
 	// get the generators from store and present them as choices sorted my most used
@@ -49,7 +49,7 @@ export const home: GritRoute = async (app) => {
 		try {
 			const outDir = await promptOutDir()
 
-			await (await getGenerator({ generator: answer.generator, outDi })).run()
+			await (await getGenerator({ generator: answer.generator, outDir })).run()
 
 			// Go home after generation
 			return await app.navigate('home')

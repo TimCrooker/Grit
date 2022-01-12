@@ -5,9 +5,9 @@
 		"packages/**"
 	],
 	"scripts": {
-		"test": "lerna run test",
-		"lint": "lerna run lint",
-		"build": "lerna run build"
+		"test": "lerna run test --parallel",
+		"lint": "lerna run lint --parallel",
+		"build": "lerna run build --parallel"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.14.8",
@@ -55,13 +55,13 @@
 		"tsconfig-paths": "^3.12.0",
 		"tsup": "^5.10.3",
 		"type-fest": "^2.5.2",
-		"typescript": "^4.1.2"
+		"typescript": "^4.1.2",
+		"lerna": "^4.0.0"
 	},
 	"dependencies": {
 		"clifi": "file:packages\\clifi",
 		"grit-cli": "file:packages\\cli",
 		"gritenv": "file:packages\\env",
-		"lerna": "^4.0.0",
 		"swaglog": "file:packages\\swaglog",
 		"youtill": "file:packages\\youtill"
 	}

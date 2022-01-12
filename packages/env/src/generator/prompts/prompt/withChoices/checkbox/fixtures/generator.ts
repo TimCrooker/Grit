@@ -1,4 +1,4 @@
-import { GeneratorConfig } from '@/index'
+import { Generator, GeneratorConfig } from '@/index'
 
 const config: GeneratorConfig = {
 	prompts() {
@@ -14,4 +14,4 @@ const config: GeneratorConfig = {
 	},
 }
 
-module.exports = config
+module.exports = new Generator(config)

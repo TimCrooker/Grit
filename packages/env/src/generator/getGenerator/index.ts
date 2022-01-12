@@ -4,6 +4,7 @@ import path from 'path'
 import { logger } from 'swaglog'
 import { globalRequire, pathExists } from 'youtill'
 import { Grit, GritOptions } from '..'
+import { Generator } from '../createGenerator'
 import { defaultGeneratorFile } from '../defaultGenerator'
 import { ensureGenerator } from '../ensureGenerator'
 import { GeneratorConfig } from '../generatorConfig'
@@ -16,9 +17,7 @@ import {
 
 /*********************TYPES**********************/
 
-interface GetGeneratorOptions
-	extends Omit<GritOptions, 'parsedGenerator' | 'config'> {
-	generator: ParsedGenerator | string
+interface GetGeneratorOptions extends Omit<GritOptions, 'config'> {
 	forceNewest?: boolean
 	update?: boolean
 }
@@ -29,10 +28,14 @@ const joycon = new JoyCon({
 	files: CONFIG_FILE_NAME,
 })
 
-/** load the generator config file */
-const loadGeneratorConfig = async (
+/**
+ * load the generator config file
+ *
+ * takes in a path to the directory of the generator and will find the config file and return it
+ */
+const loadGenerator = async (
 	cwd: string
-): Promise<{ filePath?: string; data?: GeneratorConfig }> => {
+): Promise<{ filePath?: string; data?: Generator }> => {
 	logger.debug('loading generator from path:', cwd)
 	const { path: filePath } = await joycon.load({
 		cwd,
@@ -54,32 +57,6 @@ const hasGeneratorConfig = (cwd: string): boolean => {
 }
 
 /**
- * Load local version of grit for npm packages and local generators
- * if none is found, load the newest version one
- */
-const loadGeneratorGrit = async (
-	generator: ParsedGenerator
-): Promise<typeof Grit> => {
-	//load the generator's installed version of grit generator
-	let gritPath = path.resolve(generator.path, '../gritenv/dist/index.js')
-
-	if (generator.type === 'local') {
-		gritPath = path.resolve(
-			generator.path,
-			'node_modules/gritenv/dist/index.js'
-		)
-	}
-
-	// if gritPath is valid then import it and return the grit object
-	if (await pathExists(gritPath)) {
-		const { Grit } = await import(gritPath)
-		return Grit
-	}
-
-	return Grit
-}
-
-/**
  * Get actual generator to run and its config
  *
  * Download it if not yet cached
@@ -93,26 +70,27 @@ const getGenerator = async (opts: GetGeneratorOptions): Promise<Grit> => {
 		parsedGenerator = opts.generator as NpmGenerator | RepoGenerator
 	}
 
+	// ensure generator is availiable to use
 	await ensureGenerator(parsedGenerator, opts.update)
 
 	// load actual generator from generator path
-	const loadedConfig = await loadGeneratorConfig(parsedGenerator.path)
-	const config: GeneratorConfig =
-		loadedConfig.filePath && loadedConfig.data
-			? loadedConfig.data
-			: defaultGeneratorFile
+	const generator = await loadGenerator(parsedGenerator.path)
+	if (!generator.filePath || !generator.data) {
+		return new Grit({
+			...opts,
+			config: defaultGeneratorFile,
+			generator: parsedGenerator,
+		})
+	}
 
-	// load the version of grit from the generator or the newest if it doesn't exist
-	const generatorGrit = opts.forceNewest
-		? Grit
-		: await loadGeneratorGrit(parsedGenerator)
-	const Gen = generatorGrit || Grit
-
-	return new Gen({ ...opts, config: config, generator: parsedGenerator })
+	return generator.data.getGeneratorInstance({
+		...opts,
+		generator: parsedGenerator,
+	})
 }
 
 /*********************EXPORTS**********************/
 
-export { loadGeneratorConfig, hasGeneratorConfig, loadGeneratorGrit }
+export { loadGenerator, hasGeneratorConfig }
 
 export { getGenerator }
