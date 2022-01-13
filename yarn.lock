@@ -5210,6 +5210,23 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz#041b05df45755e587a24942279b9d113146e1c96"
   integrity sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==
 
+"grit-cli@file:packages/cli":
+  version "0.6.0"
+  dependencies:
+    axios "^0.24.0"
+    commander "^8.3.0"
+    dot-prop "^5.3.0"
+    figlet "^1.5.2"
+    fs-extra "^9.1.0"
+    gritenv "^0.3.6"
+    ini "^2.0.0"
+    inquirer "^8.2.0"
+    ora "4.1.1"
+    parse-package-name "^1.0.0"
+    resolve-from "^5.0.0"
+    rimraf "^3.0.2"
+    update-notifier "^5.1.0"
+
 "gritenv@file:packages/env":
   version "0.3.6"
   dependencies:
