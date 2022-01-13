@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js install
 
 PATH: 
   C:\Program Files\PowerShell\7;C:\Program Files\Oculus\Support\oculus-runtime;C:\Windows\System32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\MongoDB\Server\4.4\bin;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Git\cmd;C:\Program Files\PuTTY\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\PowerShell\7\;C:\Users\crook\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\crook\AppData\Local\Programs\Python\Python39\;C:\Users\crook\AppData\Local\Microsoft\WindowsApps;C:\Users\crook\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\crook\AppData\Roaming\npm;C:\ProgramData\crook\GitHubDesktop\bin;C:\Users\crook\AppData\Local\GitHubDesktop\bin;C:\Users\crook\AppData\Local\Yarn\bin
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile 'C:\Users\crook\AppData\Local\Yarn\Cache\v6\npm-open-8.4.0-345321ae18f8138f82565a910fdc6b39e8c244f8-integrity\node_modules\open\index.d.ts' -> 'C:\Users\crook\Documents\Grit\grit-cli\node_modules\youtill\node_modules\open\index.d.ts'
+  Error: EEXIST: file already exists, symlink 'C:\Users\crook\Documents\Grit\grit-cli\packages\env' -> 'C:\Users\crook\Documents\Grit\grit-cli\node_modules\grit-cli\node_modules\gritenv'
 
 npm manifest: 
   {
@@ -3632,12 +3632,11 @@ Lockfile:
   "clifi@file:packages/clifi":
     version "1.2.8"
     dependencies:
-      alias-hq "^5.3.0"
       chalk "4.1.2"
       commander "^8.3.0"
       inquirer "^8.2.0"
       ora "4.1.1"
-      swaglog "file:../../../AppData/Local/Yarn/Cache/v6/npm-clifi-1.2.8-1878afea-407f-47e2-99f9-abad1a627d67-1642016623509/node_modules/swaglog"
+      swaglog "file:../../../AppData/Local/Yarn/Cache/v6/npm-clifi-1.2.8-44258e65-5d79-43f0-a417-e964bfcd7285-1642024381073/node_modules/swaglog"
       update-notifier "^5.1.0"
   
   cliui@^6.0.0:
@@ -4091,13 +4090,6 @@ Lockfile:
     integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
     dependencies:
       ms "2.0.0"
-  
-  debug@^3.2.7:
-    version "3.2.7"
-    resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
-    integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
-    dependencies:
-      ms "^2.1.1"
   
   debuglog@^1.0.1:
     version "1.0.1"
@@ -5455,8 +5447,26 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
     integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
   
+  "grit-cli@file:packages/cli":
+    version "0.5.12"
+    dependencies:
+      alias-hq "^5.3.0"
+      axios "^0.24.0"
+      commander "^8.3.0"
+      dot-prop "^5.3.0"
+      figlet "^1.5.2"
+      fs-extra "^9.1.0"
+      gritenv "^0.3.5"
+      ini "^2.0.0"
+      inquirer "^8.2.0"
+      ora "4.1.1"
+      parse-package-name "^1.0.0"
+      resolve-from "^5.0.0"
+      rimraf "^3.0.2"
+      update-notifier "^5.1.0"
+  
   "gritenv@file:packages/env":
-    version "0.3.3"
+    version "0.3.5"
     dependencies:
       axios "^0.24.0"
       chalk "^4.1.2"
@@ -5483,9 +5493,8 @@ Lockfile:
       parse-package-name "^1.0.0"
       resolve-from "^5.0.0"
       rimraf "^3.0.2"
-      swaglog "file:../../../AppData/Local/Yarn/Cache/v6/npm-gritenv-0.3.3-b7316ecf-f58e-406c-88b0-1ce893ed76f3-1642016623514/node_modules/swaglog"
       update-notifier "^5.1.0"
-      youtill "file:../../../AppData/Local/Yarn/Cache/v6/npm-gritenv-0.3.3-b7316ecf-f58e-406c-88b0-1ce893ed76f3-1642016623514/node_modules/youtill"
+      youtill "^0.2.3"
   
   growly@^1.3.0:
     version "1.3.0"
@@ -5712,11 +5721,6 @@ Lockfile:
     version "1.2.1"
     resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
     integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
-  
-  ignore-by-default@^1.0.1:
-    version "1.0.1"
-    resolved "https://registry.yarnpkg.com/ignore-by-default/-/ignore-by-default-1.0.1.tgz#48ca6d72f6c6a3af00a9ad4ae6876be3889e2b09"
-    integrity sha1-SMptcvbGo68Aqa1K5odr44ieKwk=
   
   ignore-walk@^3.0.3:
     version "3.0.4"
@@ -7606,7 +7610,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
     integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
   
-  ms@^2.0.0, ms@^2.1.1:
+  ms@^2.0.0:
     version "2.1.3"
     resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
     integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
@@ -7759,22 +7763,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.1.tgz#3d1d395f204f1f2f29a54358b9fb678765ad2fc5"
     integrity sha512-CqyzN6z7Q6aMeF/ktcMVTzhAHCEpf8SOarwpzpf8pNBY2k5/oM34UHldUwp8VKI7uxct2HxSRdJjBaZeESzcxA==
   
-  nodemon@^2.0.15:
-    version "2.0.15"
-    resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.15.tgz#504516ce3b43d9dc9a955ccd9ec57550a31a8d4e"
-    integrity sha512-gdHMNx47Gw7b3kWxJV64NI+Q5nfl0y5DgDbiVtShiwa7Z0IZ07Ll4RLFo6AjrhzMtoEZn5PDE3/c2AbVsiCkpA==
-    dependencies:
-      chokidar "^3.5.2"
-      debug "^3.2.7"
-      ignore-by-default "^1.0.1"
-      minimatch "^3.0.4"
-      pstree.remy "^1.1.8"
-      semver "^5.7.1"
-      supports-color "^5.5.0"
-      touch "^3.1.0"
-      undefsafe "^2.0.5"
-      update-notifier "^5.1.0"
-  
   nopt@^4.0.1:
     version "4.0.3"
     resolved "https://registry.yarnpkg.com/nopt/-/nopt-4.0.3.tgz#a375cad9d02fd921278d954c2254d5aa57e15e48"
@@ -7787,13 +7775,6 @@ Lockfile:
     version "5.0.0"
     resolved "https://registry.yarnpkg.com/nopt/-/nopt-5.0.0.tgz#530942bb58a512fccafe53fe210f13a25355dc88"
     integrity sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==
-    dependencies:
-      abbrev "1"
-  
-  nopt@~1.0.10:
-    version "1.0.10"
-    resolved "https://registry.yarnpkg.com/nopt/-/nopt-1.0.10.tgz#6ddd21bd2a31417b92727dd585f8a6f37608ebee"
-    integrity sha1-bd0hvSoxQXuScn3Vhfim83YI6+4=
     dependencies:
       abbrev "1"
   
@@ -8592,11 +8573,6 @@ Lockfile:
     version "1.8.0"
     resolved "https://registry.yarnpkg.com/psl/-/psl-1.8.0.tgz#9326f8bcfb013adcc005fdff056acce020e51c24"
     integrity sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==
-  
-  pstree.remy@^1.1.8:
-    version "1.1.8"
-    resolved "https://registry.yarnpkg.com/pstree.remy/-/pstree.remy-1.1.8.tgz#c242224f4a67c21f686839bbdb4ac282b8373d3a"
-    integrity sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==
   
   pump@^3.0.0:
     version "3.0.0"
@@ -9713,7 +9689,7 @@ Lockfile:
       pirates "^4.0.1"
       ts-interface-checker "^0.1.9"
   
-  supports-color@^5.3.0, supports-color@^5.5.0:
+  supports-color@^5.3.0:
     version "5.5.0"
     resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
     integrity sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==
@@ -9937,13 +9913,6 @@ Lockfile:
       regex-not "^1.0.2"
       safe-regex "^1.1.0"
   
-  touch@^3.1.0:
-    version "3.1.0"
-    resolved "https://registry.yarnpkg.com/touch/-/touch-3.1.0.tgz#fe365f5f75ec9ed4e56825e0bb76d24ab74af83b"
-    integrity sha512-WBx8Uy5TLtOSRtIq+M03/sKDrXCLHxwDcquSP2c43Le03/9serjQBIztjRz6FkJez9D/hleyAXTBGLwwZUw9lA==
-    dependencies:
-      nopt "~1.0.10"
-  
   tough-cookie@^4.0.0:
     version "4.0.0"
     resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-4.0.0.tgz#d822234eeca882f991f0f908824ad2622ddbece4"
@@ -10040,26 +10009,6 @@ Lockfile:
     version "5.11.6"
     resolved "https://registry.yarnpkg.com/tsup/-/tsup-5.11.6.tgz#26b4c223a126901b70ae4569a8bdb6eff68765aa"
     integrity sha512-mKhLdQ1N2KMV31dsX4MLO5l4FOORf2+FvyAOott3ZgiSnKisZiOoCXwxPc97iPqIk5aouyQBTaZcjXKJV+C4pg==
-    dependencies:
-      bundle-require "^2.1.8"
-      cac "^6.7.12"
-      chokidar "^3.5.1"
-      debug "^4.3.1"
-      esbuild "^0.14.2"
-      execa "^5.0.0"
-      globby "^11.0.3"
-      joycon "^3.0.1"
-      postcss-load-config "^3.0.1"
-      resolve-from "^5.0.0"
-      rollup "^2.60.0"
-      source-map "^0.7.3"
-      sucrase "^3.20.3"
-      tree-kill "^1.2.2"
-  
-  tsup@^5.11.4:
-    version "5.11.11"
-    resolved "https://registry.yarnpkg.com/tsup/-/tsup-5.11.11.tgz#b1309ac152a005035924a05a2ca77681ee1b271f"
-    integrity sha512-rgbTu+KhAI9PdGUS07rKohDXbRLTstBGJaxl75q7RZYRGF+n+kN8L4RlXY5pqYb9Hsq0gEB6nS39v7nSvVBS+g==
     dependencies:
       bundle-require "^2.1.8"
       cac "^6.7.12"
@@ -10190,11 +10139,6 @@ Lockfile:
       has-bigints "^1.0.1"
       has-symbols "^1.0.2"
       which-boxed-primitive "^1.0.2"
-  
-  undefsafe@^2.0.5:
-    version "2.0.5"
-    resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.5.tgz#38733b9327bdcd226db889fb723a6efd162e6e2c"
-    integrity sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==
   
   unicode-canonical-property-names-ecmascript@^2.0.0:
     version "2.0.0"
@@ -10752,4 +10696,4 @@ Lockfile:
       parse-package-name "^0.1.0"
       resolve-from "^5.0.0"
       rimraf "^3.0.2"
-      swaglog "file:../../../AppData/Local/Yarn/Cache/v6/npm-youtill-0.2.3-9aa29004-f398-49d4-b754-a672864616c4-1642016623512/node_modules/swaglog"
+      swaglog "file:../../../AppData/Local/Yarn/Cache/v6/npm-youtill-0.2.3-b2e8d01e-8f78-42a8-84a2-2e8a0f23a3bd-1642024381227/node_modules/swaglog"

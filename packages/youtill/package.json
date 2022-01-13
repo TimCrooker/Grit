@@ -34,7 +34,6 @@
 		"node": ">=12"
 	},
 	"dependencies": {
-		"alias-hq": "^5.3.0",
 		"axios": "^0.24.0",
 		"chalk": "^4.1.2",
 		"chokidar": "^3.5.2",

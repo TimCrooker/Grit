@@ -58,7 +58,8 @@
 		"parse-package-name": "^1.0.0",
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"update-notifier": "^5.1.0"
+		"update-notifier": "^5.1.0",
+		"youtill": "^0.2.3"
 	},
 	"config": {
 		"commitizen": {
