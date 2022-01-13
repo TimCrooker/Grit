@@ -39,7 +39,6 @@
 		"chokidar": "^3.5.2",
 		"cp-file": "^9.1.0",
 		"cross-spawn": "^7.0.3",
-		"figlet": "^1.5.2",
 		"fs-extra": "^9.1.0",
 		"is-binary-path": "^2.1.0",
 		"joycon": "^2.2.5",
@@ -53,7 +52,7 @@
 		"parse-package-name": "^0.1.0",
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"swaglog": "file:../swaglog"
+		"swaglog": "^1.0.4"
 	},
 	"config": {
 		"commitizen": {

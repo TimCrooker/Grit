@@ -33,7 +33,6 @@
 		"node": ">=12"
 	},
 	"dependencies": {
-		"alias-hq": "^5.3.2",
 		"chalk": "^4.1.2"
 	},
 	"config": {
