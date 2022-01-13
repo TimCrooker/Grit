@@ -44,7 +44,7 @@ const promptGeneratorRun = async (): Promise<boolean> => {
 		{
 			type: 'confirm',
 			name: 'run',
-			message: `Would you like to run the generator?`,
+			message: `Would you like to run the generator after installation?`,
 			default: 'true',
 		},
 	])

@@ -79,11 +79,16 @@ export const find: GritRoute = async (app, { options }) => {
 
 	// ask user if they want to run the generator after installation
 	const run = await promptGeneratorRun()
+	try {
+		await store.generators.add(parseGenerator(answer.generator))
+	} catch (error) {
+		handleError(error)
+	}
 
 	// install and run the generator
 	if (run === true) {
 		const outDir = await promptOutDir()
-
+		
 		// Get the chosen generator
 		try {
 			await (
@@ -97,12 +102,6 @@ export const find: GritRoute = async (app, { options }) => {
 			handleError(error)
 		}
 	} else {
-		// only install the generator
-		try {
-			await store.generators.add(parseGenerator(answer.generator))
-		} catch (error) {
-			handleError(error)
-		}
 	}
 
 	// Go home after installing the generator

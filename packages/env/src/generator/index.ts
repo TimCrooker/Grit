@@ -275,10 +275,12 @@ class Grit {
 	 */
 	async run(): Promise<this> {
 		// Increment the run count of the generator in the store
-		store.generators.set(
-			this.generator.hash + '.runCount',
-			store.generators.get(this.generator.hash + '.runCount') + 1 || 1
-		)
+		if (this.generator.type !== 'local') {
+			store.generators.set(
+				this.generator.hash + '.runCount',
+				store.generators.get(this.generator.hash + '.runCount') + 1 || 1
+			)
+		}
 
 		if (this.opts.hotRebuild === true) {
 			await this.runHotRebuild()
