@@ -1,6 +1,6 @@
 {
 	"name": "youtill",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "powerful collection of utilities",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -52,7 +52,7 @@
 		"parse-package-name": "^0.1.0",
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"swaglog": "^1.0.4"
+		"swaglog": "^1.0.5"
 	},
 	"config": {
 		"commitizen": {
