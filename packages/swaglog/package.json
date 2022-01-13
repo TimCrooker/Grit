@@ -1,6 +1,6 @@
 {
 	"name": "swaglog",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "powerful console logger",
 	"main": "dist/index.js",
 	"keywords": [],
