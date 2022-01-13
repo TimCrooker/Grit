@@ -18,11 +18,14 @@ import { FindChoice, HelpChoice, ExitChoice } from '..'
 export const home: GritRoute = async (app) => {
 	// get the generators from store and present them as choices sorted my most used
 	const generatorList = (await generatorChoiceList()).slice(0, 100)
-	const RunGeneratorChoices = [
-		new app.inquirer.Separator('Run Generator'),
-		...generatorList,
-		new app.inquirer.Separator(),
-	] as Choice[]
+	const RunGeneratorChoices =
+		generatorList.length > 0
+			? ([
+					new app.inquirer.Separator('Run Generator'),
+					...generatorList,
+					new app.inquirer.Separator(),
+			  ] as Choice[])
+			: []
 
 	const choices = [
 		...RunGeneratorChoices,
