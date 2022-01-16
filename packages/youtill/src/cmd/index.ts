@@ -45,6 +45,7 @@ export interface InstallOptions {
 	/** Run install as devDependencies */
 	saveDev?: boolean
 	registry?: string
+	silent?: boolean
 }
 
 export type InstallPackagesFn = (
@@ -58,6 +59,7 @@ export const installPackages: InstallPackagesFn = async ({
 	packages,
 	saveDev,
 	registry,
+	silent = false,
 }) => {
 	const npmClient = _npmClient || getNpmClient()
 
@@ -80,7 +82,7 @@ export const installPackages: InstallPackagesFn = async ({
 
 		logger.debug(npmClient, args.join(' '))
 		logger.debug('install directory', cwd)
-		spinner.start(`Installing ${packageName} with ${npmClient}`)
+		if (!silent) spinner.start(`Installing ${packageName} with ${npmClient}`)
 		const ps = spawn(npmClient, args, {
 			stdio: [0, 'pipe', 'pipe'],
 			cwd,
@@ -104,9 +106,11 @@ export const installPackages: InstallPackagesFn = async ({
 				} else {
 					stdoutLogs += data
 				}
-				spinner.stop()
-				logUpdate(stdoutLogs)
-				spinner.start()
+				if (!silent) {
+					spinner.stop()
+					logUpdate(stdoutLogs)
+					spinner.start()
+				}
 			})
 
 		ps.stderr &&
@@ -116,20 +120,24 @@ export const installPackages: InstallPackagesFn = async ({
 				} else {
 					stderrLogs += data
 				}
-				spinner.stop()
-				logUpdate.clear()
-				logUpdate.stderr(stderrLogs)
-				logUpdate(stdoutLogs)
-				spinner.start()
+				if (!silent) {
+					spinner.stop()
+					logUpdate.clear()
+					logUpdate.stderr(stderrLogs)
+					logUpdate(stdoutLogs)
+					spinner.start()
+				}
 			})
 
 		ps.on('close', (code) => {
 			spinner.stop()
 			// Clear output when succeeded
 			if (code === 0) {
-				logUpdate.clear()
-				logUpdate.stderr.clear()
-				logger.debug(`Sucessfully installed`, packageName)
+				if (!silent) {
+					logUpdate.clear()
+					logUpdate.stderr.clear()
+					logger.debug(`Sucessfully installed`, packageName)
+				}
 				resolve({ code })
 			} else {
 				reject(new Error(`Failed to install ${packageName} in ${cwd}`))

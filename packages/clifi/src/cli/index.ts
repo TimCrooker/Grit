@@ -6,11 +6,11 @@ import { spinner } from '../utils/spinner'
 import { SetRequired } from 'type-fest'
 import { colors, logger } from 'swaglog'
 
-export interface CLIOptions<RuntimeEnvInstance = any> {
+export interface CLIOptions {
 	pkg: Package
 	debug?: boolean
 	mock?: boolean
-	env?: RuntimeEnvInstance
+	notifyUpdate?: boolean
 }
 
 export class CLI {
@@ -50,7 +50,7 @@ export class CLI {
 
 		logger.debug('CLI running...')
 
-		await this.updateCheck()
+		if (this.opts.notifyUpdate) await this.updateCheck()
 
 		this.commander.parse(process.argv)
 	}
@@ -60,7 +60,7 @@ export class CLI {
 		const notifier = await updateNotifier({ pkg }).fetchInfo()
 
 		if (notifier.current !== notifier.latest) {
-			this.logger.log(
+			logger.log(
 				'Update available: ',
 				colors.green.bold(notifier.latest),
 				colors.gray(' (current: ' + notifier.current + ')'),
@@ -79,7 +79,7 @@ export class CLI {
 
 	// Navigate to a route
 	async navigate(routeName: string): Promise<void> {
-		!this.opts.debug && console.clear()
+		// !this.opts.debug && console.clear()
 
 		// get options from commander
 		const options = this.commander.opts()

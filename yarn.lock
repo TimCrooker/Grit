@@ -3419,13 +3419,13 @@ cli-width@^3.0.0:
   integrity sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==
 
 "clifi@file:packages/clifi":
-  version "1.2.9"
+  version "1.2.10"
   dependencies:
     chalk "4.1.2"
     commander "^8.3.0"
     inquirer "^8.2.0"
     ora "4.1.1"
-    swaglog "^1.0.4"
+    swaglog "^1.0.5"
     update-notifier "^5.1.0"
 
 cliui@^7.0.2:
@@ -5211,14 +5211,14 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   integrity sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==
 
 "grit-cli@file:packages/cli":
-  version "0.6.0"
+  version "0.6.4"
   dependencies:
     axios "^0.24.0"
     commander "^8.3.0"
     dot-prop "^5.3.0"
     figlet "^1.5.2"
     fs-extra "^9.1.0"
-    gritenv "^0.3.6"
+    gritenv "^0.3.8"
     ini "^2.0.0"
     inquirer "^8.2.0"
     ora "4.1.1"
@@ -5228,7 +5228,7 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
     update-notifier "^5.1.0"
 
 "gritenv@file:packages/env":
-  version "0.3.6"
+  version "0.3.8"
   dependencies:
     axios "^0.24.0"
     chalk "^4.1.2"
@@ -5256,7 +5256,7 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
     resolve-from "^5.0.0"
     rimraf "^3.0.2"
     update-notifier "^5.1.0"
-    youtill "^0.2.4"
+    youtill "^0.2.5"
 
 handlebars@^4.7.7:
   version "4.7.7"
@@ -9307,7 +9307,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 "swaglog@file:packages/swaglog":
-  version "1.0.4"
+  version "1.0.5"
   dependencies:
     chalk "^4.1.2"
 
@@ -10227,7 +10227,7 @@ yn@3.1.1:
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
 "youtill@file:packages/youtill":
-  version "0.2.4"
+  version "0.2.5"
   dependencies:
     axios "^0.24.0"
     chalk "^4.1.2"
@@ -10247,4 +10247,4 @@ yn@3.1.1:
     parse-package-name "^0.1.0"
     resolve-from "^5.0.0"
     rimraf "^3.0.2"
-    swaglog "^1.0.4"
+    swaglog "^1.0.5"

@@ -5,7 +5,7 @@ import {
 	promptOutDir,
 } from '@/cli/prompts'
 import { UserFirstName } from '@/config'
-import { Terror } from '@/utils/error'
+import { handleError, Terror } from '@/utils/error'
 import { generatorChoiceList } from '@/utils/generator'
 import { getWelcomeMessage } from '@/utils/welcome'
 import { getGenerator } from 'gritenv'
@@ -57,7 +57,7 @@ export const home: GritRoute = async (app) => {
 			// Go home after generation
 			return await app.navigate('home')
 		} catch (error) {
-			throw new Terror('Issue when running generator from the list: \n' + error)
+			handleError(error)
 		}
 	}
 
@@ -78,7 +78,7 @@ export const home: GritRoute = async (app) => {
 			// Go home after generation
 			return await app.navigate('home')
 		} catch (error) {
-			throw new Terror("Couldn't update generator: \n" + error)
+			handleError(error)
 		}
 	}
 
