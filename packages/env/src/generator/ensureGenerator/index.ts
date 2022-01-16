@@ -6,14 +6,11 @@ import { ParsedGenerator } from '../parseGenerator'
 /*********************TYPES**********************/
 
 /** Check that the generator exists where it should be and download it if it doesn't */
-const ensureGenerator = async (
-	generator: ParsedGenerator,
-	update?: boolean
-): Promise<void> => {
+const ensureGenerator = async (generator: ParsedGenerator): Promise<void> => {
 	const exists = await pathExists(generator.path)
 
 	// if the generator already exists and no update is requested, we are done here
-	if (exists && !update) return
+	if (exists) return
 
 	// if the generator is local but it doesnt exist throw an error
 	if (generator.type === 'local') {
@@ -22,12 +19,6 @@ const ensureGenerator = async (
 				`Directory ${colors.underline(generator.path)} does not exist`
 			)
 		}
-		return
-	}
-
-	// if the generator exists and we are updating, then update it in the Store
-	if (exists && update) {
-		await store.generators.update(generator)
 		return
 	}
 

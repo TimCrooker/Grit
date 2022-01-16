@@ -5,10 +5,10 @@ import {
 	promptOutDir,
 } from '@/cli/prompts'
 import { UserFirstName } from '@/config'
-import { handleError, Terror } from '@/utils/error'
+import { handleError } from '@/utils/error'
 import { generatorChoiceList } from '@/utils/generator'
 import { getWelcomeMessage } from '@/utils/welcome'
-import { getGenerator } from 'gritenv'
+import { getGenerator, store } from 'gritenv'
 import Choice from 'inquirer/lib/objects/choice'
 import { FindChoice, HelpChoice, ExitChoice } from '..'
 
@@ -65,13 +65,15 @@ export const home: GritRoute = async (app) => {
 	if (answer.method === 'update') {
 		try {
 			const update = await promptGeneratorUpdate()
-			const generator = await getGenerator({
-				generator: answer.generator,
-				update,
-			})
+			if (update) {
+				await store.generators.update(answer.generator)
+			}
 
 			const run = await promptGeneratorRun()
 			if (run) {
+				const generator = await getGenerator({
+					generator: answer.generator,
+				})
 				await generator.run()
 			}
 

@@ -69,6 +69,7 @@ class GeneratorStore extends BaseStore<StoreGenerator> {
 
 		logger.debug(`Updating generator`)
 		const installedGenerator = await installGenerator(generator, true)
+		logger.log('returned gen', installedGenerator)
 		this.set(generator.hash, installedGenerator)
 		return this
 	}

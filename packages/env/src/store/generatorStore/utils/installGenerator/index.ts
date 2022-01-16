@@ -1,6 +1,7 @@
 import { PACKAGES_CACHE_PATH } from '@/config'
 import { hasGeneratorConfig } from '@/generator/getGenerator'
 import { NpmGenerator, RepoGenerator } from '@/generator/parseGenerator'
+import { StoreNpmGenerator } from '@/index'
 import { spinner } from '@/utils/spinner'
 import { outputFile } from 'majo'
 import path from 'path'
@@ -10,7 +11,7 @@ import { downloadRepoFromGenerator } from './downloadRepo'
 
 /** Install an NPM generator to the grit store */
 export const installNpmGenerator = async (
-	generator: NpmGenerator,
+	generator: NpmGenerator | StoreNpmGenerator,
 	update = false
 ): Promise<NpmGenerator> => {
 	const installPath = path.resolve(PACKAGES_CACHE_PATH, generator.hash)
@@ -33,6 +34,7 @@ export const installNpmGenerator = async (
 			`${generator.name}@${update ? 'latest' : generator.version || 'latest'}`,
 		],
 		installArgs: ['--silent'],
+		silent: true,
 	})
 	spinner.stop()
 	logger.success('Generator installed')
@@ -43,6 +45,9 @@ export const installNpmGenerator = async (
 		/^\^/,
 		''
 	)
+
+	delete generator.update
+
 	return generator
 }
 
@@ -52,13 +57,13 @@ export const installRepoGenerator = async (
 	clone?: boolean
 ): Promise<RepoGenerator> => {
 	// Download repo
-	spinner.start('Downloading Repo')
+	// spinner.start('Downloading Repo')
 
 	await downloadRepoFromGenerator(generator, {
 		clone,
 		outDir: generator.path,
 	})
-	spinner.stop()
+	// spinner.stop()
 	logger.success('Downloaded repo')
 
 	// Only try to install dependencies for real generator

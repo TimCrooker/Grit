@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { requireUncached } from 'youtill'
 import { ParsedGenerator, store } from 'gritenv'
 import path from 'path'
 import updateNotifier, { Package, UpdateInfo } from 'update-notifier'
@@ -16,9 +16,8 @@ export const checkGeneratorForUpdates = async (
 ): Promise<void> => {
 	if (generator.type !== 'npm') return
 
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const pkg: Package = JSON.parse(
-		readFileSync(path.join(generator.path, 'package.json'), 'utf8')
+	const pkg: Package = requireUncached(
+		path.join(generator.path, 'package.json')
 	)
 
 	const update = await checkPkgForUpdates(pkg)
