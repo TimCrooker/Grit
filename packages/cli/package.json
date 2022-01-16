@@ -1,60 +1,60 @@
 {
-	"name": "grit-cli",
-	"version": "0.6.3",
-	"description": "Simple and flexible scaffolding",
-	"license": "MIT",
-	"bin": {
-		"grit": "dist/index.js"
-	},
-	"files": [
-		"dist",
-		"!**/*.(test|spec).ts"
-	],
-	"author": "Tim Crooker <timothycrooker@gmail.com>",
-	"homepage": "https://github.com/TimCrooker/grit#readme",
-	"main": "lib/grit-cli.js",
-	"directories": {},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/TimCrooker/grit.git"
-	},
-	"bugs": {
-		"url": "https://github.com/TimCrooker/grit/issues"
-	},
-	"scripts": {
-		"start": "npm run build && npm run cli",
-		"build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
-		"cli": "node ./dist/index.js",
-		"build": "npm run clean && tsup src/index.ts --dts",
-		"clean": "rimraf ./dist",
-		"test": "jest",
-		"lint": "eslint . --fix",
-		"prepublishOnly": "yarn test && yarn build",
-		"release": "dotenv release-it",
-		"release:ci": "dotenv release-it --ci"
-	},
-	"engines": {
-		"node": ">=14"
-	},
-	"dependencies": {
-		"axios": "^0.24.0",
-		"commander": "^8.3.0",
-		"dot-prop": "^5.3.0",
-		"figlet": "^1.5.2",
-		"fs-extra": "^9.1.0",
-		"gritenv": "^0.3.8",
-		"ini": "^2.0.0",
-		"inquirer": "^8.2.0",
-		"ora": "4.1.1",
-		"parse-package-name": "^1.0.0",
-		"resolve-from": "^5.0.0",
-		"rimraf": "^3.0.2",
-		"update-notifier": "^5.1.0"
-	},
-	"config": {
-		"commitizen": {
-			"path": "./node_modules/cz-conventional-changelog"
-		}
-	},
-	"gitHead": "be99e7dbd192e65beeaf8ecd6cd5116ddaaf673f"
+  "name": "grit-cli",
+  "version": "0.6.3",
+  "description": "Simple and flexible scaffolding",
+  "license": "MIT",
+  "bin": {
+    "grit": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "!**/*.(test|spec).ts"
+  ],
+  "author": "Tim Crooker <timothycrooker@gmail.com>",
+  "homepage": "https://github.com/TimCrooker/grit#readme",
+  "main": "lib/grit-cli.js",
+  "directories": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimCrooker/grit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TimCrooker/grit/issues"
+  },
+  "scripts": {
+    "start": "npm run build && npm run cli",
+    "build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
+    "cli": "node ./dist/index.js",
+    "build": "npm run clean && tsup src/index.ts --dts",
+    "clean": "rimraf ./dist",
+    "test": "jest",
+    "lint": "eslint . --fix",
+    "prepublishOnly": "yarn test && yarn build",
+    "release": "dotenv release-it",
+    "release:ci": "dotenv release-it --ci"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "commander": "^8.3.0",
+    "dot-prop": "^5.3.0",
+    "figlet": "^1.5.2",
+    "fs-extra": "^9.1.0",
+    "gritenv": "^0.3.8",
+    "ini": "^2.0.0",
+    "inquirer": "^8.2.0",
+    "ora": "4.1.1",
+    "parse-package-name": "^1.0.0",
+    "resolve-from": "^5.0.0",
+    "rimraf": "^3.0.2",
+    "update-notifier": "^5.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "gitHead": "be99e7dbd192e65beeaf8ecd6cd5116ddaaf673f"
 }

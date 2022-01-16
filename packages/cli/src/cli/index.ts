@@ -23,14 +23,16 @@ export const runCLI = async (): Promise<void> => {
 		.option('-s, --silent', 'run the generator without any logging')
 		.option('-c, --clone', 'git clone repo instead of downloading it')
 		.option('-m, --mock', 'mock the generator for testing purposes')
-		.option('--hot-rebuild', 'rebuild a local generator when changes are made')
+		.option(
+			'-h, --hot-rebuild',
+			'rebuild a local generator when changes are made'
+		)
 		// .option('--answers <answers>', 'inject answers into the generator')
-		.option('--registry', 'use preferred npm registry (yarn, npm)')
 		.option(
 			'--npm-client <client>',
 			`use a specific npm client ('yarn', 'npm')`
 		)
-		.option('--skip-install', 'skip installing dependencies')
+		.option('-n, --skip-install', 'skip installing dependencies')
 		.action(() => {
 			if (cli.commander.args.length === 0) {
 				cli.navigate('home')
