@@ -79,7 +79,7 @@ export class CLI {
 
 	// Navigate to a route
 	async navigate(routeName: string): Promise<void> {
-		// !this.opts.debug && console.clear()
+		!this.opts.debug && console.clear()
 
 		// get options from commander
 		const options = this.commander.opts()

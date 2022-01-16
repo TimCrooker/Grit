@@ -57,13 +57,10 @@ export const installRepoGenerator = async (
 	clone?: boolean
 ): Promise<RepoGenerator> => {
 	// Download repo
-	// spinner.start('Downloading Repo')
-
 	await downloadRepoFromGenerator(generator, {
 		clone,
 		outDir: generator.path,
 	})
-	// spinner.stop()
 	logger.success('Downloaded repo')
 
 	// Only try to install dependencies for real generator

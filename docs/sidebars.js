@@ -43,6 +43,7 @@ const sidebars = {
 					'plugins/plugins'
 				]
 			},
+			'create-generator/chaining',
 		],
     },
   ],

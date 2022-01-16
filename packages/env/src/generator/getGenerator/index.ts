@@ -18,6 +18,7 @@ import {
 
 interface GetGeneratorOptions extends Omit<GritOptions, 'config'> {
 	forceNewest?: boolean
+	update?: boolean
 }
 
 /*********************METHODS**********************/
@@ -69,7 +70,7 @@ const getGenerator = async (opts: GetGeneratorOptions): Promise<Grit> => {
 	}
 
 	// ensure generator is availiable to use
-	await ensureGenerator(parsedGenerator)
+	await ensureGenerator(parsedGenerator, opts.update)
 
 	// load actual generator from generator path
 	const generator = await loadGenerator(parsedGenerator.path)
