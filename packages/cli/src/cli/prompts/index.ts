@@ -52,6 +52,26 @@ const promptGeneratorRun = async (): Promise<boolean> => {
 	return run as boolean
 }
 
+const promptConfirmAction = async (
+	confirmMessage: string
+): Promise<boolean> => {
+	const { run } = await cli.prompt([
+		{
+			type: 'confirm',
+			name: 'run',
+			message: `Are you sure you want to ${confirmMessage}?`,
+			default: 'true',
+		},
+	])
+
+	return run as boolean
+}
+
 /**********************EXPORTS**********************/
 
-export { promptOutDir, promptGeneratorUpdate, promptGeneratorRun }
+export {
+	promptOutDir,
+	promptGeneratorUpdate,
+	promptGeneratorRun,
+	promptConfirmAction,
+}

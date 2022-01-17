@@ -2,7 +2,7 @@ import { PACKAGES_CACHE_PATH } from '@/config'
 import { hasGeneratorConfig } from '@/generator/getGenerator'
 import { NpmGenerator, RepoGenerator } from '@/generator/parseGenerator'
 import { StoreNpmGenerator } from '@/index'
-import { spinner } from '@/utils/spinner'
+import { handleError } from '@/utils/error'
 import { outputFile } from 'majo'
 import path from 'path'
 import { logger } from 'swaglog'
@@ -25,28 +25,33 @@ export const installNpmGenerator = async (
 		'utf8'
 	)
 	// download the generator with npm install
-	spinner.start(
-		update ? 'Updating ' : 'Installing ' + 'generator at path ' + installPath
+	logger.debug(
+		(update ? 'Updating ' : 'Installing ') + 'generator at path ' + installPath
 	)
-	await installPackages({
-		cwd: installPath,
-		packages: [
-			`${generator.name}@${update ? 'latest' : generator.version || 'latest'}`,
-		],
-		installArgs: ['--silent'],
-		silent: true,
-	})
-	spinner.stop()
-	logger.success('Generator installed')
-	// grab the new generator package.json file
-	const packageJson = requireUncached(packagePath)
-	// in the store, add the generator and insert the true version
-	generator.version = packageJson.dependencies[generator.name].replace(
-		/^\^/,
-		''
-	)
+	try {
+		await installPackages({
+			cwd: installPath,
+			packages: [
+				`${generator.name}@${
+					update ? 'latest' : generator.version || 'latest'
+				}`,
+			],
+			installArgs: ['--silent'],
+			silent: true,
+		})
+		logger.debug('Generator installed')
+		// grab the new generator package.json file
+		const packageJson = requireUncached(packagePath)
+		// in the store, add the generator and insert the true version
+		generator.version = packageJson.dependencies[generator.name].replace(
+			/^\^/,
+			''
+		)
 
-	delete generator.update
+		delete generator.update
+	} catch (e) {
+		handleError(e)
+	}
 
 	return generator
 }

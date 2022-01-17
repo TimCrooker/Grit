@@ -8,6 +8,7 @@
 		"test": "lerna run test --parallel",
 		"lint": "lerna run lint --parallel",
 		"build": "lerna run build --parallel",
+		"build:watch": "lerna run build:watch --parallel --stream",
 		"release": "lerna publish"
 	},
 	"devDependencies": {
@@ -54,6 +55,5 @@
 		"tsup": "^5.10.3",
 		"type-fest": "^2.5.2",
 		"typescript": "^4.1.2"
-	},
-	"dependencies": {}
+	}
 }

@@ -7,7 +7,6 @@ import {
 	PACKAGES_CACHE_PATH,
 	REPOS_CACHE_PATH,
 } from '@/config'
-import { logger } from 'swaglog'
 
 /*********************TYPES**********************/
 
@@ -82,7 +81,7 @@ function HandleNpmGenerator(generator: string): NpmGenerator {
 		hasSubGenerator ? generator.indexOf(':') : generator.length
 	)
 	const parsed = parse(slug)
-	const hash = sum(`npm:${slug}`)
+	const hash = sum(`npm:${parsed.name}`)
 	return {
 		type: 'npm',
 		name: parsed.name,

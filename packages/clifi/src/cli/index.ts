@@ -5,17 +5,20 @@ import { Route, Router, RouterOptions } from './router'
 import { spinner } from '../utils/spinner'
 import { SetRequired } from 'type-fest'
 import { colors, logger } from 'swaglog'
+import { handleError, Terror } from '@/utils/error'
 
 export interface CLIOptions {
 	pkg: Package
 	debug?: boolean
 	mock?: boolean
 	notifyUpdate?: boolean
+	errorHandling?: boolean
 }
 
 export class CLI {
 	pkg: Package
 	opts: SetRequired<CLIOptions, 'debug' | 'mock'>
+	error = Terror
 	logger = logger
 	colors = colors
 	commander = commander
@@ -94,7 +97,18 @@ export class CLI {
 			args
 		)
 
-		await this.router.navigate(routeName, { args, options }, this)
+		// navigate to the route with or without error handling
+		if (this.opts.errorHandling) {
+			try {
+				await this.router.navigate(routeName, { args, options }, this)
+			} catch (e) {
+				if (e instanceof Terror || e instanceof Error) {
+					handleError(e)
+				}
+			}
+		} else {
+			await this.router.navigate(routeName, { args, options }, this)
+		}
 	}
 
 	async goBack(): Promise<void> {

@@ -6,5 +6,6 @@ export type GritRoute = Route
 export const cli = new CLI({
 	pkg,
 	debug: false,
-	notifyUpdate: true,
+	notifyUpdate: false,
+	errorHandling: true,
 })

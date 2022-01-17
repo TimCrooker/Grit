@@ -1,3 +1,4 @@
+import { colors, logger } from 'swaglog'
 import { GritRoute } from '@/cli/config'
 import {
 	promptGeneratorRun,
@@ -5,19 +6,55 @@ import {
 	promptOutDir,
 } from '@/cli/prompts'
 import { UserFirstName } from '@/config'
-import { handleError } from '@/utils/error'
-import { generatorChoiceList } from '@/utils/generator'
+import { GeneratorChoiceValue, InquirerChoice } from '@/utils/generator'
+import { spinner } from '@/utils/spinner'
+import { checkGeneratorForUpdates } from '@/utils/update'
 import { getWelcomeMessage } from '@/utils/welcome'
 import { getGenerator, store } from 'gritenv'
 import Choice from 'inquirer/lib/objects/choice'
 import { FindChoice, HelpChoice, ExitChoice } from '..'
+
+type GeneratorUpdateRunList = InquirerChoice<
+	GeneratorChoiceValue<'update' | 'run'>
+>[]
+
+export const generatorChoiceListUpdateRun = (): GeneratorUpdateRunList => {
+	spinner.start('Loading your generators')
+	const generatorChoices: GeneratorUpdateRunList = []
+
+	for (const [name, generator] of store.generators.generatorNameList) {
+		checkGeneratorForUpdates(generator)
+		logger.debug('Check for updates: ', colors.green(name))
+		const updateInfo = generator.type === 'npm' ? generator.update : undefined
+		if (updateInfo) {
+			generatorChoices.push({
+				name: `${name} ${colors.yellow('*Update Available*')} ${
+					updateInfo.current
+				} => ${updateInfo.latest}`,
+				value: {
+					method: 'update',
+					generator,
+				},
+			})
+		} else {
+			generatorChoices.push({
+				name: `${name} ${colors.yellow(generator.version)}`,
+				value: { method: 'run', generator },
+			})
+		}
+	}
+	spinner.stop()
+	return generatorChoices.sort(
+		(a, b) => b.value.generator.runCount - a.value.generator.runCount
+	)
+}
 
 /**
  * This is the home route when users input just the `grit` keyword with no commands
  */
 export const home: GritRoute = async (app) => {
 	// get the generators from store and present them as choices sorted my most used
-	const generatorList = (await generatorChoiceList()).slice(0, 100)
+	const generatorList = (await generatorChoiceListUpdateRun()).slice(0, 100)
 	const RunGeneratorChoices =
 		generatorList.length > 0
 			? ([
@@ -49,39 +86,31 @@ export const home: GritRoute = async (app) => {
 
 	// If the user chose to run a generator and it has no updates, run it
 	if (answer.method === 'run') {
-		try {
-			const outDir = await promptOutDir()
+		const outDir = await promptOutDir()
 
-			await (await getGenerator({ generator: answer.generator, outDir })).run()
+		await (await getGenerator({ generator: answer.generator, outDir })).run()
 
-			// Go home after generation
-			return await app.navigate('home')
-		} catch (error) {
-			handleError(error)
-		}
+		// Go home after generation
+		return await app.navigate('home')
 	}
 
 	// Run when generators have an update available
 	if (answer.method === 'update') {
-		try {
-			const update = await promptGeneratorUpdate()
-			if (update) {
-				await store.generators.update(answer.generator)
-			}
-
-			const run = await promptGeneratorRun()
-			if (run) {
-				const generator = await getGenerator({
-					generator: answer.generator,
-				})
-				await generator.run()
-			}
-
-			// Go home after generation
-			return await app.navigate('home')
-		} catch (error) {
-			handleError(error)
+		const update = await promptGeneratorUpdate()
+		if (update) {
+			await store.generators.update(answer.generator)
 		}
+
+		const run = await promptGeneratorRun()
+		if (run) {
+			const generator = await getGenerator({
+				generator: answer.generator,
+			})
+			await generator.run()
+		}
+
+		// Go home after generation
+		return await app.navigate('home')
 	}
 
 	// Route when generators are not selected

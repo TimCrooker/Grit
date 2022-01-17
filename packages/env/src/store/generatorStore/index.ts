@@ -75,6 +75,7 @@ class GeneratorStore extends BaseStore<StoreGenerator> {
 
 	/** Remove a generator from the store */
 	remove(generator: ParsedGenerator): this {
+		logger.debug(`removing generator`)
 		this.delete(generator.hash)
 		return this
 	}

@@ -1,7 +1,5 @@
-import { logger } from '@/../../swaglog/dist'
 import { GritRoute } from '@/cli/config'
 import { promptGeneratorRun, promptOutDir } from '@/cli/prompts'
-import { handleError } from '@/utils/error'
 import { NpmSearch } from '@/utils/npm'
 import { BackChoice } from 'clifi'
 import { getGenerator, parseGenerator, store } from 'gritenv'
@@ -68,40 +66,28 @@ export const find: GritRoute = async (app, { options }) => {
 
 	// if the generator is already installed then run it
 	if (alreadyInstalled) {
-		try {
-			const outDir = await promptOutDir()
-			await (await getGenerator({ generator, outDir })).run()
-			return await app.navigate('home')
-		} catch (error) {
-			handleError(error)
-		}
+		const outDir = await promptOutDir()
+		await (await getGenerator({ generator, outDir })).run()
+		return await app.navigate('home')
 	}
 
 	// ask user if they want to run the generator after installation
 	const run = await promptGeneratorRun()
-	try {
-		await store.generators.add(parseGenerator(answer.generator))
-	} catch (error) {
-		handleError(error)
-	}
+
+	await store.generators.add(parseGenerator(answer.generator))
 
 	// install and run the generator
 	if (run === true) {
 		const outDir = await promptOutDir()
-		
-		// Get the chosen generator
-		try {
-			await (
-				await getGenerator({
-					generator: answer.generator,
-					...options,
-					outDir,
-				})
-			).run()
-		} catch (error) {
-			handleError(error)
-		}
-	} else {
+
+		// Run the chosen generator
+		await (
+			await getGenerator({
+				generator: answer.generator,
+				...options,
+				outDir,
+			})
+		).run()
 	}
 
 	// Go home after installing the generator
