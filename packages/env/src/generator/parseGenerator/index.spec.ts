@@ -1,21 +1,21 @@
-import { ParsedGenerator, parseGenerator } from './'
-import os from 'os'
+import { ParsedGenerator, parseGenerator } from "./";
+import os from "os";
 
 const parse = (name: string): ParsedGenerator => {
-	const result = parseGenerator(name)
-	return {
-		...result,
-		path: result.path
-			.replace(os.homedir(), '~')
-			// Replace back slashes with slashes (for Windows)
-			.replace(/\\/g, '/'),
-	}
-}
+  const result = parseGenerator(name);
+  return {
+    ...result,
+    path: result.path
+      .replace(os.homedir(), "~")
+      // Replace back slashes with slashes (for Windows)
+      .replace(/\\/g, "/"),
+  };
+};
 
-describe('Parse generators', () => {
-	it('GitHub repo', () => {
-		const result = parse(`TimCrooker/grit-generator`)
-		expect(result).toMatchInlineSnapshot(`
+describe("Parse generators", () => {
+  it("GitHub repo", () => {
+    const result = parse(`TimCrooker/grit-generator`);
+    expect(result).toMatchInlineSnapshot(`
       Object {
         "hash": "0b2c5ee2",
         "path": "~/.grit/V1/generators/repos/0b2c5ee2",
@@ -26,11 +26,11 @@ describe('Parse generators', () => {
         "user": "TimCrooker",
         "version": "master",
       }
-    `)
-	})
+    `);
+  });
 
-	it('GitHub repo with version', () => {
-		expect(parse(`TimCrooker/grit-generator#v1.0.0`)).toMatchInlineSnapshot(`
+  it("GitHub repo with version", () => {
+    expect(parse(`TimCrooker/grit-generator#v1.0.0`)).toMatchInlineSnapshot(`
       Object {
         "hash": "272300b6",
         "path": "~/.grit/V1/generators/repos/272300b6",
@@ -41,11 +41,11 @@ describe('Parse generators', () => {
         "user": "TimCrooker",
         "version": "v1.0.0",
       }
-    `)
-	})
+    `);
+  });
 
-	it('Npm package', () => {
-		expect(parse(`generator`)).toMatchInlineSnapshot(`
+  it("Npm package", () => {
+    expect(parse(`generator`)).toMatchInlineSnapshot(`
       Object {
         "hash": "62dbe401",
         "name": "grit-generator",
@@ -55,24 +55,24 @@ describe('Parse generators', () => {
         "type": "npm",
         "version": "latest",
       }
-    `)
-	})
+    `);
+  });
 
-	it('Npm package with version', () => {
-		expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
+  it("Npm package with version", () => {
+    expect(parse(`nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "136284f0",
+        "hash": "0fce9c51",
         "name": "grit-nm",
-        "path": "~/.grit/V1/generators/packages/136284f0/node_modules/grit-nm",
+        "path": "~/.grit/V1/generators/packages/0fce9c51/node_modules/grit-nm",
         "slug": "grit-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
       }
-    `)
-	})
-	it('Scoped Npm package', () => {
-		expect(parse(`@TimCroker/nm`)).toMatchInlineSnapshot(`
+    `);
+  });
+  it("Scoped Npm package", () => {
+    expect(parse(`@TimCroker/nm`)).toMatchInlineSnapshot(`
       Object {
         "hash": "7152f7bc",
         "name": "@TimCroker/grit-nm",
@@ -82,23 +82,23 @@ describe('Parse generators', () => {
         "type": "npm",
         "version": "latest",
       }
-    `)
-	})
-	it('Scoped Npm package with version', () => {
-		expect(parse(`@TimCroker/nm@2.0.1`)).toMatchInlineSnapshot(`
+    `);
+  });
+  it("Scoped Npm package with version", () => {
+    expect(parse(`@TimCroker/nm@2.0.1`)).toMatchInlineSnapshot(`
       Object {
-        "hash": "181d9cb3",
+        "hash": "7152f7bc",
         "name": "@TimCroker/grit-nm",
-        "path": "~/.grit/V1/generators/packages/181d9cb3/node_modules/@TimCroker/grit-nm",
+        "path": "~/.grit/V1/generators/packages/7152f7bc/node_modules/@TimCroker/grit-nm",
         "slug": "@TimCroker/grit-nm@2.0.1",
         "subGenerator": undefined,
         "type": "npm",
         "version": "2.0.1",
       }
-    `)
-	})
-	it('prefix', () => {
-		expect(parse(`gitlab:TimCroker/poi`)).toMatchInlineSnapshot(`
+    `);
+  });
+  it("prefix", () => {
+    expect(parse(`gitlab:TimCroker/poi`)).toMatchInlineSnapshot(`
       Object {
         "hash": "286ea960",
         "path": "~/.grit/V1/generators/repos/286ea960",
@@ -109,10 +109,10 @@ describe('Parse generators', () => {
         "user": "TimCroker",
         "version": "master",
       }
-    `)
-	})
-	it('Remove grit- pefix', () => {
-		expect(parse(`grit-generator`)).toMatchInlineSnapshot(`
+    `);
+  });
+  it("Remove grit- pefix", () => {
+    expect(parse(`grit-generator`)).toMatchInlineSnapshot(`
       Object {
         "hash": "62dbe401",
         "name": "grit-generator",
@@ -122,9 +122,9 @@ describe('Parse generators', () => {
         "type": "npm",
         "version": "latest",
       }
-    `)
-	})
-})
+    `);
+  });
+});
 
 // describe('Extract generator prefix', () => {
 // 	it('gitlab', () => {
