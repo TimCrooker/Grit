@@ -17,7 +17,6 @@ export const help: GritRoute = async (app, { args, options }) => {
 		},
 		new app.inquirer.Separator(),
 		HomeChoice,
-		BackChoice,
 		ExitChoice,
 	] as Choice[]
 

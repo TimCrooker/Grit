@@ -1,18 +1,25 @@
 import { GritRoute } from '@/cli/config'
 import { promptGeneratorRun, promptOutDir } from '@/cli/prompts'
 import { NpmSearch } from '@/utils/npm'
-import { BackChoice } from 'clifi'
-import { getGenerator, parseGenerator, store } from 'gritenv'
-import { HomeChoice, HelpChoice, ExitChoice } from '..'
+import {
+	getGenerator,
+	NpmGenerator,
+	parseGenerator,
+	RepoGenerator,
+	store,
+} from 'gritenv'
+import { HomeChoice, ExitChoice } from '..'
 
 /**
  *  This route lets the user search for generators using npm search.
  *
  *  eventuall make this searchable
  */
-export const find: GritRoute = async (app, { options }) => {
+export const find: GritRoute = async (app, { options, args }) => {
 	// Get a list of installed npm generators from the store
 	const installedNpmGenerators = store.generators.npmGeneratorsNames
+
+	const searchTerm = args[1] as string
 
 	// get the generators from npm (packages that start with `grit-` and have the `grit-generator` keyword)
 	app.spinner.start('searching for grit-generators')
@@ -24,23 +31,30 @@ export const find: GritRoute = async (app, { options }) => {
 
 	// Create inquirer choices with search results
 	const choices = [
-		...data.map(({ package: { name, description } }) => {
-			name = name.replace('grit-', '')
-			const alreadyInstalled = installedNpmGenerators.includes(name)
+		...data
+			.filter(({ package: { name, description } }) => {
+				return (
+					!searchTerm ||
+					name.includes(searchTerm) ||
+					description.includes(searchTerm)
+				)
+			})
+			.map(({ package: { name, description } }) => {
+				name = name.replace('grit-', '')
+				const alreadyInstalled = installedNpmGenerators.includes(name)
 
-			return {
-				name: `${name} ${app.colors.gray(description)}${
-					alreadyInstalled ? app.colors.yellow(' installed') : ''
-				} `,
-				value: { generator: name, installed: alreadyInstalled },
-			}
-		}),
+				return {
+					name: `${name} ${app.colors.gray(description)}${
+						alreadyInstalled ? app.colors.yellow(' installed') : ''
+					} `,
+					value: { generator: name, installed: alreadyInstalled },
+				}
+			}),
 		new app.inquirer.Separator(),
 		{ name: 'Refresh list', value: 'find' },
-		BackChoice,
 		HomeChoice,
-		HelpChoice,
 		ExitChoice,
+		new app.inquirer.Separator(),
 	]
 
 	// prompt the user with the above choices
@@ -74,7 +88,9 @@ export const find: GritRoute = async (app, { options }) => {
 	// ask user if they want to run the generator after installation
 	const run = await promptGeneratorRun()
 
-	await store.generators.add(parseGenerator(answer.generator))
+	await store.generators.add(
+		parseGenerator(answer.generator) as NpmGenerator | RepoGenerator
+	)
 
 	// install and run the generator
 	if (run === true) {
