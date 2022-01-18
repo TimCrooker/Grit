@@ -140,3 +140,8 @@ export const update: GritRoute = async (app, { args, options }) => {
 		}
 	}
 }
+
+export const UpdateChoice = {
+	name: 'Update Generators',
+	value: 'update',
+}

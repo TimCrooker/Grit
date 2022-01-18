@@ -1,6 +1,5 @@
 import { GritRoute } from '@/cli/config'
 import { DOCS_URL, GITHUB_URL } from '@/config'
-import { BackChoice } from 'clifi'
 import Choice from 'inquirer/lib/objects/choice'
 import open from 'open'
 import { ExitChoice, HomeChoice } from '..'
@@ -41,7 +40,7 @@ export const help: GritRoute = async (app, { args, options }) => {
 			return await app.navigate(answer)
 	}
 
-	return await app.navigate('home')
+	return await app.navigate('exit')
 }
 
 export const HelpChoice = {

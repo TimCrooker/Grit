@@ -12,7 +12,13 @@ import { checkGeneratorForUpdates } from '@/utils/update'
 import { getWelcomeMessage } from '@/utils/welcome'
 import { getGenerator, store } from 'gritenv'
 import Choice from 'inquirer/lib/objects/choice'
-import { FindChoice, HelpChoice, ExitChoice } from '..'
+import {
+	FindChoice,
+	HelpChoice,
+	ExitChoice,
+	UpdateChoice,
+	RemoveChoice,
+} from '..'
 
 type GeneratorUpdateRunList = InquirerChoice<
 	GeneratorChoiceValue<'update' | 'run'>
@@ -67,6 +73,7 @@ export const home: GritRoute = async (app) => {
 	const choices = [
 		...RunGeneratorChoices,
 		FindChoice,
+		RemoveChoice,
 		HelpChoice,
 		ExitChoice,
 	] as Choice[]

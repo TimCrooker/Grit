@@ -1,6 +1,7 @@
 import { GritRoute } from '@/cli/config'
 import { promptGeneratorRun, promptOutDir } from '@/cli/prompts'
 import { NpmSearch } from '@/utils/npm'
+import { spinner } from '@/utils/spinner'
 import {
 	getGenerator,
 	NpmGenerator,
@@ -88,9 +89,17 @@ export const find: GritRoute = async (app, { options, args }) => {
 	// ask user if they want to run the generator after installation
 	const run = await promptGeneratorRun()
 
-	await store.generators.add(
-		parseGenerator(answer.generator) as NpmGenerator | RepoGenerator
-	)
+	// install the generator
+	try {
+		spinner.start(`Installing ${app.colors.cyan('grit-' + answer.generator)}`)
+		await store.generators.add(
+			parseGenerator(answer.generator) as NpmGenerator | RepoGenerator
+		)
+		spinner.succeed(`Installed ${app.colors.cyan('grit-' + generator)}`)
+	} catch (e) {
+		spinner.stop()
+		throw e
+	}
 
 	// install and run the generator
 	if (run === true) {

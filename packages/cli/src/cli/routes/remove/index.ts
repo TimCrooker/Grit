@@ -35,9 +35,13 @@ export const remove: GritRoute = async (app, { args, options }) => {
 
 	// if no generator name specified, list all installed generators
 	if (!generatorName) {
+		const generatorChoices = generatorChoiceListRemove()
+
 		const choices = [
-			...generatorChoiceListRemove(),
-			new app.inquirer.Separator(),
+			...generatorChoices,
+			new app.inquirer.Separator(
+				generatorChoices.length > 0 ? '' : 'No generators installed'
+			),
 			HomeChoice,
 			ExitChoice,
 		]
@@ -107,4 +111,9 @@ export const remove: GritRoute = async (app, { args, options }) => {
 			}
 		}
 	}
+}
+
+export const RemoveChoice = {
+	name: 'Delete Generators',
+	value: 'remove',
 }
