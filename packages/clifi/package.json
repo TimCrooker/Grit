@@ -1,0 +1,50 @@
+{
+	"name": "clifi",
+	"version": "1.3.0",
+	"description": "Route based cli framework",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"!**/*.(test|spec).ts"
+	],
+	"keywords": [],
+	"author": "Tim Crooker <timothycrooker@gmail.com>",
+	"homepage": "https://github.com/TimCrooker/grit#readme",
+	"directories": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TimCrooker/grit.git"
+	},
+	"bugs": {
+		"url": "https://github.com/TimCrooker/grit/issues"
+	},
+	"scripts": {
+		"build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
+		"build": "npm run clean && tsup src/index.ts --dts",
+		"clean": "rimraf ./dist",
+		"test": "jest",
+		"lint": "eslint . --fix",
+		"prepublishOnly": "yarn test && yarn build",
+		"release": "dotenv release-it",
+		"release:ci": "dotenv release-it --ci"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=12"
+	},
+	"dependencies": {
+		"chalk": "4.1.2",
+		"commander": "^8.3.0",
+		"inquirer": "^8.2.0",
+		"ora": "4.1.1",
+		"swaglog": "^1.0.5",
+		"update-notifier": "^5.1.0"
+	},
+	"config": {
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	},
+	"gitHead": "5dba1463aefe1039dbfbfb4ae8bc2b0062073a0f"
+}
