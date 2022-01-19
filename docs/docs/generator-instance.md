@@ -16,7 +16,7 @@ The answers to prompts. Cannot be accessing inside of `prompts` in the generator
 
 ### data
 
-A merged object combining the answers and any data returned from the [data method](data.md) of the generator
+A merged object combining the answers and any data returned from the [data method](generator-fil/data) of the generator
 
 - Type: `{[k: string]: any | undefined}`
 
@@ -86,17 +86,17 @@ Installs dependencies in the output directory with preferred npm client
 type InstallPackages = (opts: InstallOptions) => Promise<{ code: number }>
 
 interface InstallOptions {
-	/** Install directory */
-	cwd: string
-	/** Package manager being used */
-	npmClient?: NPM_CLIENT
-	/** Package manager install CLI options */
-	installArgs?: string[]
-	/** Names of additional packages to install */
-	packages?: string[]
-	/** Run install as devDependencies */
-	saveDev?: boolean
-	registry?: string
+ /** Install directory */
+ cwd: string
+ /** Package manager being used */
+ npmClient?: NPM_CLIENT
+ /** Package manager install CLI options */
+ installArgs?: string[]
+ /** Names of additional packages to install */
+ packages?: string[]
+ /** Run install as devDependencies */
+ saveDev?: boolean
+ registry?: string
 }
 ```
 
@@ -110,14 +110,14 @@ Runs an npm script in the output directories package.json file
 type RunScript = (opts: RunNpmScriptOptions) => Promise<void>
 
 interface RunNpmScriptOptions {
-	/** the path to the directory commands will run in*/
-	cwd?: string
-	/** name of script from package.json to run */
-	script: string
-	/** Package manager being used */
-	npmClient?: NPM_CLIENT
-	/** Argunemets to be appended to the command line */
-	args?: string[]
+ /** the path to the directory commands will run in*/
+ cwd?: string
+ /** name of script from package.json to run */
+ script: string
+ /** Package manager being used */
+ npmClient?: NPM_CLIENT
+ /** Argunemets to be appended to the command line */
+ args?: string[]
 }
 ```
 
@@ -150,4 +150,3 @@ Check if a specific file exists in the output directory
 Get the stringified content of a specific file in the output directory
 
 - Type: `(file: string) => Promise<string>`
-
