@@ -16,7 +16,7 @@ The answers to prompts. Cannot be accessing inside of `prompts` in the generator
 
 ### data
 
-A merged object combining the answers and any data returned from the [data method](generator-file/data) of the generator
+A merged object combining the answers and any data returned from the [data method](generator-file/data) of generator
 
 - Type: `{[k: string]: any | undefined}`
 
