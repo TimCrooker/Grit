@@ -1,9 +1,30 @@
 version: 2.1
-setup: true
+
 orbs:
-  circletron: circletron/circletron@3.0.4
+  node: circleci/node@4.7
+  
+jobs:
+  build:
+    docker:
+      - image: cimg/node:17.4.0
+    steps:
+      - checkout
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build
+    
+  test:
+    docker:
+      - image: cimg/node:17.4.0
+    steps:
+      - checkout
+      - run: yarn install --frozen-lockfile
+      - run: yarn run test
+    
+
 
 workflows:
-  trigger-jobs:
+  test: 
     jobs:
-      - circletron/trigger-jobs
+      - build
+      - test
+  
