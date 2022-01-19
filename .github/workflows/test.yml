@@ -1,0 +1,17 @@
+name: test
+
+on:
+  push:
+    
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: run tests
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          yarn test --parallel
