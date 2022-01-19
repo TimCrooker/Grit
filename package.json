@@ -5,10 +5,10 @@
 		"packages/**"
 	],
 	"scripts": {
-		"test": "lerna run test --stream --parallel",
-		"lint": "lerna run lint --parallel",
-		"build": "lerna run build",
-		"build:watch": "lerna run build:watch --parallel --stream",
+		"test": "lerna run test --stream",
+		"lint": "lerna run lint",
+		"build": "lerna run build --stream",
+		"build:watch": "lerna run build:watch --stream",
 		"release": "lerna publish"
 	},
 	"devDependencies": {

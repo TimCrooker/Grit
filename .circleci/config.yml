@@ -12,22 +12,11 @@ jobs:
       - checkout
       - run: yarn install --frozen-lockfile
       - run: yarn run build
-      - run: yarn run test
-
-  build-docs:
-    docker:
-      - image: cimg/node:17.4.0
-    steps:
-      - checkout
-      - run: cd docs
-      - run: yarn install --frozen-lockfile
-      - run: yarn run build
-    
-
+      - run: yarn run test 
 
 workflows:
   test: 
     jobs:
       - test-grit
-      - build-docs
+
   
