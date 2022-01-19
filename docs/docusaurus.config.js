@@ -10,8 +10,9 @@ const config = {
 	title: 'Grit',
 	tagline: 'Generate really interesting tech',
 	url: 'https://timcrooker.github.io',
+	trailingSlash: true,
 	baseUrl: '/Grit/',
-	onBrokenLinks: 'throw',
+	onBrokenLinks: 'warn',
 	onBrokenMarkdownLinks: 'warn',
 	favicon: 'img/favicon.ico',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
@@ -75,7 +76,7 @@ const config = {
 						items: [
 							{
 								label: 'Tutorial',
-								to: '/docs/intro',
+								to: 'introduction',
 							},
 						],
 					},
