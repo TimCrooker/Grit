@@ -7,7 +7,7 @@ jobs:
   test-grit:
     docker:
       - image: cimg/node:17.4.0
-    parallelism: 4
+    resource_class: highmem
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
