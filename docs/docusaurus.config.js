@@ -52,7 +52,7 @@ const config = {
 				title: 'Grit',
 				logo: {
 					alt: 'My Site Logo',
-					src: 'img/logo.svg',
+					src: 'img/logo.png',
 				},
 				items: [
 					{
@@ -75,8 +75,20 @@ const config = {
 						title: 'Docs',
 						items: [
 							{
-								label: 'Tutorial',
-								to: 'introduction',
+								label: 'Introduction',
+								to: 'docs/introduction',
+							},
+							{
+								label: 'Usage',
+								to: 'docs/usage/overview',
+							},
+							{
+								label: 'Creating Generators',
+								to: 'docs/create-generator/quick-start',
+							},
+							{
+								label: 'Advanved Usage',
+								to: 'docs/advanced-usage',
 							},
 						],
 					},
@@ -85,24 +97,28 @@ const config = {
 						items: [
 							{
 								label: 'Stack Overflow',
-								href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+								href: 'docs/introduction',
 							},
 							{
 								label: 'Discord',
-								href: 'https://discordapp.com/invite/docusaurus',
+								href: 'docs/introduction',
 							},
 							{
 								label: 'Twitter',
-								href: 'https://twitter.com/docusaurus',
+								href: 'docs/introduction',
 							},
 						],
 					},
 					{
-						title: 'More',
+						title: 'Help',
 						items: [
 							{
 								label: 'GitHub',
-								href: 'https://github.com/facebook/docusaurus',
+								href: 'https://github.com/timcrooker/grit',
+							},
+							{
+								label: 'Submit Issue',
+								href: 'https://github.com/TimCrooker/Grit/issues',
 							},
 						],
 					},

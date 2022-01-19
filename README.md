@@ -1,4 +1,4 @@
-<p align="center"><img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2017/09/feature-react.png?ssl=1" width="224px"/>
+<p align="center"><img src="./docs/build/img/logo.png" width="224px"/>
 
 <p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
