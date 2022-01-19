@@ -1,0 +1,10 @@
+jobs:
+  test-swaglog:
+    steps:
+      - checkout
+      - yarn run test
+
+workflows:
+  swaglog-workflow:
+    jobs:
+      - test-swaglog

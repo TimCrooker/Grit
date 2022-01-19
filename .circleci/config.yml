@@ -1,13 +1,9 @@
 version: 2.1
-
+setup: true
 orbs:
-  node: circleci/node@4.7
+  circletron: circletron/circletron@3.0.4
 
 workflows:
-  test:
-    # Inside the workflow, you define the jobs you want to run.
+  trigger-jobs:
     jobs:
-      - node/test:
-          version: '16.10'
-          pkg-manager: yarn
-  
+      - circletron/trigger-jobs

@@ -1,0 +1,14 @@
+dependencies:
+  - swaglog
+  - youtill
+
+jobs:
+  test-gritenv:
+    steps:
+      - checkout
+      - yarn run test
+
+workflows:
+  gritenv-workflow:
+    jobs:
+      - test-gritenv

@@ -1,0 +1,15 @@
+dependencies:
+  - swaglog
+  - env
+  - clifi
+
+jobs:
+  test-cli:
+    steps:
+      - checkout
+      - yarn run test
+
+workflows:
+  cli-workflow:
+    jobs:
+      - test-cli
