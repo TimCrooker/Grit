@@ -43,43 +43,43 @@
 
 }
 
-a {
-	*{
-		text-decoration: none;
-	}
-}
+// a {
+// 	*{
+// 		text-decoration: none;
+// 	}
+// }
 
-html[data-theme="light"] {
-	--ifm-code-background: rgba(0, 0, 0, 0.06);
-	--docsearch-container-background: rgba(32, 35, 42, 0.6);
-}
+// html[data-theme="light"] {
+// 	--ifm-code-background: rgba(0, 0, 0, 0.06);
+// 	--docsearch-container-background: rgba(32, 35, 42, 0.6);
+// }
 
-html[data-theme="dark"] {
-	@extend %scrollbar-style-dark;
+// html[data-theme="dark"] {
+// 	@extend %scrollbar-style-dark;
 
-	--ifm-code-background: rgba(255, 255, 255, 0.06);
-	--ifm-toc-border-color: var(--dark);
-	--ifm-color-emphasis-300: var(--dark);
-	--ifm-hr-border-color: var(--dark);
+// 	--ifm-code-background: rgba(255, 255, 255, 0.06);
+// 	--ifm-toc-border-color: var(--dark);
+// 	--ifm-color-emphasis-300: var(--dark);
+// 	--ifm-hr-border-color: var(--dark);
 
-	*[class^="DocSearch"] {
-		--docsearch-searchbox-background: var(--ifm-background-color);
-		--docsearch-modal-background: var(--deepdark);
-		--docsearch-footer-background: var(--dark);
-		--docsearch-key-gradient: var(--deepdark);
-		--docsearch-key-shadow:
-			inset 0 -2px 0 0 var(--light),
-			inset 0 0 1px 1px var(--light),
-			0 1px 2px 1px var(--ifm-table-border-color);
-		--docsearch-container-background: rgba(0, 0, 0, 0.6);
-	}
-}
+// 	*[class^="DocSearch"] {
+// 		--docsearch-searchbox-background: var(--ifm-background-color);
+// 		--docsearch-modal-background: var(--deepdark);
+// 		--docsearch-footer-background: var(--dark);
+// 		--docsearch-key-gradient: var(--deepdark);
+// 		--docsearch-key-shadow:
+// 			inset 0 -2px 0 0 var(--light),
+// 			inset 0 0 1px 1px var(--light),
+// 			0 1px 2px 1px var(--ifm-table-border-color);
+// 		--docsearch-container-background: rgba(0, 0, 0, 0.6);
+// 	}
+// }
 
-body {
-	word-wrap: normal !important;
-}
+// body {
+// 	word-wrap: normal !important;
+// }
 
-/* Content */
+// /* Content */
 
 .markdown {
 	code {
@@ -113,10 +113,6 @@ body {
 			top: -1px;
 			position: relative;
 		}
-	}
-
-	strong {
-		font-weight: 600;
 	}
 
 	table {
@@ -305,210 +301,210 @@ html[data-theme="dark"] article .badge {
 }
 
 
-/* Version warning */
+// /* Version warning */
 
-.theme-doc-version-banner.alert--warning {
-	background-color: rgba(100, 215, 255, 0.3);
-	border-style: none;
-	color: var(--ifm-font-color-base);
-	box-shadow: none;
+// .theme-doc-version-banner.alert--warning {
+// 	background-color: rgba(100, 215, 255, 0.3);
+// 	border-style: none;
+// 	color: var(--ifm-font-color-base);
+// 	box-shadow: none;
 
-	a {
-		color: var(--ifm-font-color-base) !important;
-		text-decoration: underline !important;
-		text-decoration-thickness: 1px !important;
-	}
-}
-
-
-/* Navbar */
-
-.navbar {
-	&.navbar--dark {
-		background-color: var(--deepdark);
-	}
-
-	.navbar__inner {
-		margin: 0 auto;
-	}
-
-	.navbar__title {
-		font-weight: 600;
-		font-size: 18px;
-	}
-
-	.navbar__brand:hover {
-		color: var(--brand);
-	}
-
-	.navbar__toggle {
-		color: #fff;
-	}
-
-	.dropdown__menu {
-		min-width: 120px;
-
-		a.dropdown__link--active {
-			font-weight: 600;
-		}
-	}
-
-	.navbar__items div[class^="searchBox"] {
-		padding-left: 14px;
-	}
-
-	.navbar-github-link {
-		&::after {
-			transition: opacity 0.2s;
-			content: "";
-			width: 24px;
-			height: 24px;
-			display: flex;
-			background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E");
-			background-repeat: no-repeat;
-			background-position: center;
-		}
-
-		&:hover::after {
-			opacity: 0.5;
-		}
-	}
+// 	a {
+// 		color: var(--ifm-font-color-base) !important;
+// 		text-decoration: underline !important;
+// 		text-decoration-thickness: 1px !important;
+// 	}
+// }
 
 
-}
+// /* Navbar */
 
-/*
-Config has themeConfig.navbar.style === "dark"
-But the navbar sidebar should still support light theme
-So we need to "revert" some CSS vars to not enforce dark mode
- */
-.navbar--dark {
-	--ifm-menu-link-sublist-icon-filter: inherit; /* reset to non-dark value */
-	--ifm-menu-color: inherit;
-	--ifm-navbar-background-color: var(--divider);
-}
+// .navbar {
+// 	&.navbar--dark {
+// 		background-color: var(--deepdark);
+// 	}
 
-.navbar-sidebar {
-	.navbar-sidebar__brand {
-		background-color: var(--deepdark);
-	}
+// 	.navbar__inner {
+// 		margin: 0 auto;
+// 	}
 
-	.navbar-sidebar__items {
-		> .navbar-sidebar__item.menu {
-			> ul.menu__list {
-				margin: 4px;
-			}
-		}
+// 	.navbar__title {
+// 		font-weight: 600;
+// 		font-size: 18px;
+// 	}
 
-		.menu__list-item a {
-			color: var(--ifm-color-emphasis-700);
-			padding: 6px 12px 8px;
-		}
-	}
+// 	.navbar__brand:hover {
+// 		color: var(--brand);
+// 	}
 
-	.navbar-github-link {
-		&::after {
-			content: "GitHub";
-			background-image: none;
-			height: 20px;
-		}
+// 	.navbar__toggle {
+// 		color: #fff;
+// 	}
 
-		&:hover::after {
-			opacity: 1;
-		}
-	}
+// 	.dropdown__menu {
+// 		min-width: 120px;
 
-	.navbar__link--active::after {
-		display: none;
-	}
-}
+// 		a.dropdown__link--active {
+// 			font-weight: 600;
+// 		}
+// 	}
 
-html[data-theme="dark"] .navbar-sidebar {
-	background: var(--ifm-background-color);
-}
+// 	.navbar__items div[class^="searchBox"] {
+// 		padding-left: 14px;
+// 	}
 
-@media (max-width: 1080px) {
-	.navbar {
-		.DocSearch-Button {
-			padding: 0 12px;
-		}
+// 	.navbar-github-link {
+// 		&::after {
+// 			transition: opacity 0.2s;
+// 			content: "";
+// 			width: 24px;
+// 			height: 24px;
+// 			display: flex;
+// 			background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E");
+// 			background-repeat: no-repeat;
+// 			background-position: center;
+// 		}
 
-		.DocSearch-Button-Key,
-		.DocSearch-Button-KeySeparator,
-		.DocSearch-Button-Placeholder {
-			display: none;
-		}
-	}
-}
+// 		&:hover::after {
+// 			opacity: 0.5;
+// 		}
+// 	}
 
-/* Sidebar */
 
-aside[class^="docSidebarContainer"] {
-	margin-right: 16px;
+// }
 
-	--doc-sidebar-width: 290px;
+// /*
+// Config has themeConfig.navbar.style === "dark"
+// But the navbar sidebar should still support light theme
+// So we need to "revert" some CSS vars to not enforce dark mode
+//  */
+// .navbar--dark {
+// 	--ifm-menu-link-sublist-icon-filter: inherit; /* reset to non-dark value */
+// 	--ifm-menu-color: inherit;
+// 	--ifm-navbar-background-color: var(--divider);
+// }
 
-	.thin-scrollbar {
-		@extend %scrollbar-style;
-	}
+// .navbar-sidebar {
+// 	.navbar-sidebar__brand {
+// 		background-color: var(--deepdark);
+// 	}
 
-	.menu__list .menu__link--sublist {
-		color: var(--subtle) !important;
+// 	.navbar-sidebar__items {
+// 		> .navbar-sidebar__item.menu {
+// 			> ul.menu__list {
+// 				margin: 4px;
+// 			}
+// 		}
 
-		&::after {
-			background-size: 1.66rem 1.66rem;
-			margin-right: -6px;
-			margin-top: -1px;
-		}
-	}
+// 		.menu__list-item a {
+// 			color: var(--ifm-color-emphasis-700);
+// 			padding: 6px 12px 8px;
+// 		}
+// 	}
 
-	@media only screen and (max-width: 1120px) {
-		--doc-sidebar-width: 240px;
-	}
-}
+// 	.navbar-github-link {
+// 		&::after {
+// 			content: "GitHub";
+// 			background-image: none;
+// 			height: 20px;
+// 		}
 
-@media only screen and (min-width: 997px) {
-	aside[class^="docSidebarContainer"] {
-		.menu {
-			padding: 12px;
-		}
-	}
-}
+// 		&:hover::after {
+// 			opacity: 1;
+// 		}
+// 	}
 
-@media only screen and (max-width: 996px) {
-	aside[class^="docSidebarContainer"] {
-		width: 0 !important;
-		min-width: 0 !important;
-		margin-right: 0;
-	}
-}
+// 	.navbar__link--active::after {
+// 		display: none;
+// 	}
+// }
 
-.menu__list {
-	margin-bottom: 10px;
+// html[data-theme="dark"] .navbar-sidebar {
+// 	background: var(--ifm-background-color);
+// }
+
+// @media (max-width: 1080px) {
+// 	.navbar {
+// 		.DocSearch-Button {
+// 			padding: 0 12px;
+// 		}
+
+// 		.DocSearch-Button-Key,
+// 		.DocSearch-Button-KeySeparator,
+// 		.DocSearch-Button-Placeholder {
+// 			display: none;
+// 		}
+// 	}
+// }
+
+// /* Sidebar */
+
+// aside[class^="docSidebarContainer"] {
+// 	margin-right: 16px;
+
+// 	--doc-sidebar-width: 290px;
+
+// 	.thin-scrollbar {
+// 		@extend %scrollbar-style;
+// 	}
+
+// 	.menu__list .menu__link--sublist {
+// 		color: var(--subtle) !important;
+
+// 		&::after {
+// 			background-size: 1.66rem 1.66rem;
+// 			margin-right: -6px;
+// 			margin-top: -1px;
+// 		}
+// 	}
+
+// 	@media only screen and (max-width: 1120px) {
+// 		--doc-sidebar-width: 240px;
+// 	}
+// }
+
+// @media only screen and (min-width: 997px) {
+// 	aside[class^="docSidebarContainer"] {
+// 		.menu {
+// 			padding: 12px;
+// 		}
+// 	}
+// }
+
+// @media only screen and (max-width: 996px) {
+// 	aside[class^="docSidebarContainer"] {
+// 		width: 0 !important;
+// 		min-width: 0 !important;
+// 		margin-right: 0;
+// 	}
+// }
+
+// .menu__list {
+// 	margin-bottom: 10px;
 	
 
 
-	.menu__list-item {
-		margin-bottom: 2px;
-		margin-top: 2px;
-		user-select: none;
-	}
+// 	.menu__list-item {
+// 		margin-bottom: 2px;
+// 		margin-top: 2px;
+// 		user-select: none;
+// 	}
 
-	.menu__list-item--collapsed .menu__list {
-		margin-bottom: 0;
-	}
-}
+// 	.menu__list-item--collapsed .menu__list {
+// 		margin-bottom: 0;
+// 	}
+// }
 
-.menu--responsive .menu__button {
-	right: 1.3rem;
-	bottom: 1.3rem;
-}
+// .menu--responsive .menu__button {
+// 	right: 1.3rem;
+// 	bottom: 1.3rem;
+// }
 
-html[data-theme="dark"] .menu {
-	@extend %scrollbar-style-dark;
-}
+// html[data-theme="dark"] .menu {
+// 	@extend %scrollbar-style-dark;
+// }
 
-/* TOC */
+// /* TOC */
 
 div[class^="tableOfContents"] {
 	min-width: 100%;
@@ -558,80 +554,78 @@ div[class^="tableOfContents"] {
 			border: 0;
 		}
 	}
-
-
 }
 
-html[data-theme="dark"] div[class^="tableOfContents"] {
-	@extend %scrollbar-style-dark;
-}
+// html[data-theme="dark"] div[class^="tableOfContents"] {
+// 	@extend %scrollbar-style-dark;
+// }
 
-/* Doc Item footer metadata */
+// /* Doc Item footer metadata */
 
-.theme-doc-footer {
-	margin-top: 40px !important;
-	margin-bottom: 16px !important;
-	font-size: 15px;
-	color: var(--subtle);
+// .theme-doc-footer {
+// 	margin-top: 40px !important;
+// 	margin-bottom: 16px !important;
+// 	font-size: 15px;
+// 	color: var(--subtle);
 
-	a {
-		@extend %button-link-style;
+// 	a {
+// 		@extend %button-link-style;
 
-		svg {
-			color: var(--ifm-color-primary);
-		}
-	}
+// 		svg {
+// 			color: var(--ifm-color-primary);
+// 		}
+// 	}
 
-	.lastUpdated {
-		font-size: 13px;
-		text-align: right;
-	}
+// 	.lastUpdated {
+// 		font-size: 13px;
+// 		text-align: right;
+// 	}
 
-	time,
-	strong {
-		font-weight: 600;
-	}
+// 	time,
+// 	strong {
+// 		font-weight: 600;
+// 	}
 
-	.theme-last-updated {
-		line-height: 18px;
-	}
-}
+// 	.theme-last-updated {
+// 		line-height: 18px;
+// 	}
+// }
 
-@media only screen and (min-width: 540px) and (max-width: 996px) {
-	.theme-doc-footer .col {
-		flex-basis: 50% !important;
-		max-width: 50% !important;
-	}
-}
+// @media only screen and (min-width: 540px) and (max-width: 996px) {
+// 	.theme-doc-footer .col {
+// 		flex-basis: 50% !important;
+// 		max-width: 50% !important;
+// 	}
+// }
 
-@media only screen and (max-width: 539px) {
-	.theme-doc-footer .col {
-		text-align: center;
+// @media only screen and (max-width: 539px) {
+// 	.theme-doc-footer .col {
+// 		text-align: center;
 
-		&:first-child {
-			margin-bottom: 16px;
-		}
-	}
-}
+// 		&:first-child {
+// 			margin-bottom: 16px;
+// 		}
+// 	}
+// }
 
-/* Pagination */
+// /* Pagination */
 
-.pagination-nav {
-	.pagination-nav__label {
-		font-weight: 500;
-	}
+// .pagination-nav {
+// 	.pagination-nav__label {
+// 		font-weight: 500;
+// 	}
 
-	.pagination-nav__sublabel {
-		font-size: 15px;
-	}
+// 	.pagination-nav__sublabel {
+// 		font-size: 15px;
+// 	}
 
-	.pagination-nav__link:hover {
-		background: var(--ifm-menu-color-background-hover);
-		border-color: var(--ifm-color-emphasis-300);
-	}
-}
+// 	.pagination-nav__link:hover {
+// 		background: var(--ifm-menu-color-background-hover);
+// 		border-color: var(--ifm-color-emphasis-300);
+// 	}
+// }
 
-/* Footer */
+// /* Footer */
 
 .footer {
 	&.footer--dark {
@@ -717,118 +711,118 @@ html[data-theme="dark"] div[class^="tableOfContents"] {
 	}
 }
 
-/* Content banner */
+// /* Content banner */
 
-.content-banner {
-	background: #99d5e7;
-	padding: 1em 1.2em;
-	margin-bottom: 2em;
-	position: relative;
-	overflow: hidden;
-	width: calc(100% + 1em);
-	left: -1em;
-	color: var(--dark);
-}
-
-.content-banner p {
-	width: calc(75% - 2em);
-	margin: 0;
-}
-
-.content-banner-img {
-	width: 25%;
-	position: absolute;
-	top: 2em;
-	right: 2em;
-}
-
-.content-banner a:link,
-.content-banner a:visited,
-.content-banner a:hover,
-.content-banner a:active,
-.content-banner a:focus {
-	border-bottom-width: 2px;
-	background: none !important;
-	color: #134484 !important;
-	border-bottom-color: #134484 !important;
-}
-
-/* "Native Code Required" banner */
-
-.banner-native-code-required {
-	position: relative;
-	overflow: hidden;
-	background: #eeebfe;
-	padding: 24px 48px 24px 24px;
-	margin-bottom: 24px;
-	border-left: 8px solid #6170af;
-
-	h2,
-	h3 {
-		color: #6170af;
-		margin-top: 0;
-
-		&::before {
-			content: " ";
-			float: left;
-			width: 32px;
-			height: 32px;
-			border-radius: 4px;
-			background-color: #6170af;
-			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 23 21' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 18.036c.042.507.221 1.016.692 1.699.558.81 1.518 1.254 2.218.54.473-.481 5.582-9.335 8.045-12.69a.737.737 0 011.202 0c2.463 3.355 7.572 12.209 8.045 12.69.7.714 1.66.27 2.218-.54.55-.798.702-1.358.702-1.955 0-.407-7.958-15.086-8.76-16.308C13.593.297 13.357.042 12.053 0h-.994c-1.304.041-1.54.297-2.31 1.472C7.964 2.67.317 16.77 0 17.737v.299z' fill='%23fff'/%3E%3C/svg%3E%0A");
-			background-repeat: no-repeat;
-			background-position: center;
-			background-size: 20px;
-			margin-right: 12px;
-			margin-top: -2px;
-		}
-	}
-
-	p {
-		margin-bottom: 0;
-	}
-
-	code {
-		background-color: rgba(89, 91, 145, 0.12);
-	}
-}
-
-html[data-theme="dark"] .banner-native-code-required {
-	background: rgba(123, 132, 172, 0.35);
-	border-left-color: #5d659a;
-
-	h2,
-	h3 {
-		color: var(--ifm-font-color-base);
-	}
-
-	h2::before,
-	h3::before {
-		background-color: #5d659a;
-	}
-
-	code {
-		background: rgba(165, 175, 219, 0.15);
-	}
-}
-
-/* Color preview box */
-
-// .color-box {
-// 	float: left;
-// 	width: 24px;
-// 	height: 24px;
-// 	margin: 2px 8px 0 0;
-// 	border: 0.05rem solid var(--deepdark);
-// 	border-radius: 3px;
+// .content-banner {
+// 	background: #99d5e7;
+// 	padding: 1em 1.2em;
+// 	margin-bottom: 2em;
+// 	position: relative;
+// 	overflow: hidden;
+// 	width: calc(100% + 1em);
+// 	left: -1em;
+// 	color: var(--dark);
 // }
 
-// td .color-box {
-// 	width: 20px;
-// 	height: 20px;
+// .content-banner p {
+// 	width: calc(75% - 2em);
+// 	margin: 0;
 // }
 
-/* Labels */
+// .content-banner-img {
+// 	width: 25%;
+// 	position: absolute;
+// 	top: 2em;
+// 	right: 2em;
+// }
+
+// .content-banner a:link,
+// .content-banner a:visited,
+// .content-banner a:hover,
+// .content-banner a:active,
+// .content-banner a:focus {
+// 	border-bottom-width: 2px;
+// 	background: none !important;
+// 	color: #134484 !important;
+// 	border-bottom-color: #134484 !important;
+// }
+
+// /* "Native Code Required" banner */
+
+// .banner-native-code-required {
+// 	position: relative;
+// 	overflow: hidden;
+// 	background: #eeebfe;
+// 	padding: 24px 48px 24px 24px;
+// 	margin-bottom: 24px;
+// 	border-left: 8px solid #6170af;
+
+// 	h2,
+// 	h3 {
+// 		color: #6170af;
+// 		margin-top: 0;
+
+// 		&::before {
+// 			content: " ";
+// 			float: left;
+// 			width: 32px;
+// 			height: 32px;
+// 			border-radius: 4px;
+// 			background-color: #6170af;
+// 			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 23 21' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 18.036c.042.507.221 1.016.692 1.699.558.81 1.518 1.254 2.218.54.473-.481 5.582-9.335 8.045-12.69a.737.737 0 011.202 0c2.463 3.355 7.572 12.209 8.045 12.69.7.714 1.66.27 2.218-.54.55-.798.702-1.358.702-1.955 0-.407-7.958-15.086-8.76-16.308C13.593.297 13.357.042 12.053 0h-.994c-1.304.041-1.54.297-2.31 1.472C7.964 2.67.317 16.77 0 17.737v.299z' fill='%23fff'/%3E%3C/svg%3E%0A");
+// 			background-repeat: no-repeat;
+// 			background-position: center;
+// 			background-size: 20px;
+// 			margin-right: 12px;
+// 			margin-top: -2px;
+// 		}
+// 	}
+
+// 	p {
+// 		margin-bottom: 0;
+// 	}
+
+// 	code {
+// 		background-color: rgba(89, 91, 145, 0.12);
+// 	}
+// }
+
+// html[data-theme="dark"] .banner-native-code-required {
+// 	background: rgba(123, 132, 172, 0.35);
+// 	border-left-color: #5d659a;
+
+// 	h2,
+// 	h3 {
+// 		color: var(--ifm-font-color-base);
+// 	}
+
+// 	h2::before,
+// 	h3::before {
+// 		background-color: #5d659a;
+// 	}
+
+// 	code {
+// 		background: rgba(165, 175, 219, 0.15);
+// 	}
+// }
+
+// /* Color preview box */
+
+.color-box {
+	float: left;
+	width: 24px;
+	height: 24px;
+	margin: 2px 8px 0 0;
+	border: 0.05rem solid var(--deepdark);
+	border-radius: 3px;
+}
+
+td .color-box {
+	width: 20px;
+	height: 20px;
+}
+
+// /* Labels */
 
 .label {
 	display: inline-block;
@@ -975,7 +969,7 @@ td .label {
 	}
 }
 
-/* Label as dot in the right sidebar */
+// /* Label as dot in the right sidebar */
 
 .table-of-contents .label {
 	position: absolute;
@@ -1030,7 +1024,7 @@ td .label {
 	font-weight: 600;
 }
 
-/* Pill tabs */
+// /* Pill tabs */
 
 .markdown .tabs.pill-tabs {
 	border-bottom: 0;

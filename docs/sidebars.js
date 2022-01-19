@@ -8,7 +8,7 @@ const sidebars = {
 		{
 			type: 'category',
 			label: 'Usage',
-			collapsed: false,
+			collapsed: true,
 			items: [
 				'usage/gui',
 				'usage/install',
@@ -22,7 +22,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'Create Generator',
-			collapsed: false,
+			collapsed: true,
       items: ['create-generator/quick-start', 'create-generator/template',{
 				type: 'category',
 				label: 'Generator File',
