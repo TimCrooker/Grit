@@ -11,21 +11,20 @@ export interface CLIOptions {
 	pkg: Package
 	debug?: boolean
 	mock?: boolean
-	notifyUpdate?: boolean
 	errorHandling?: boolean
 }
 
 export class CLI {
+	private opts: SetRequired<CLIOptions, 'debug' | 'mock'>
+	private router: Router
+
 	pkg: Package
-	opts: SetRequired<CLIOptions, 'debug' | 'mock'>
 	error = Terror
 	logger = logger
 	colors = colors
 	commander = commander
 	inquirer = inquirer
 	spinner = spinner
-
-	private router: Router
 
 	constructor(opts: CLIOptions) {
 		this.opts = {
@@ -53,9 +52,7 @@ export class CLI {
 
 		logger.debug('CLI running...')
 
-		if (this.opts.notifyUpdate) await this.updateCheck()
-
-		this.commander.parse(process.argv)
+		await this.commander.parseAsync(process.argv)
 	}
 
 	/** Check for updates and inform the user if there are any */

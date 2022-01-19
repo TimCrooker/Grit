@@ -24,7 +24,8 @@ export const runCLI = async (): Promise<void> => {
 	// Running a generator with the cli directly
 	cli.commander
 		.command('run')
-		.arguments('<generator> [outDir]')
+		.argument('<generator>', 'Name of the generator to run')
+		.argument('[outDir]', 'Output directory')
 		.option('-d, --debug', 'run the generator with more logging')
 		.option('-u, --update', 'force generator update')
 		.option('-s, --silent', 'run the generator without any logging')
