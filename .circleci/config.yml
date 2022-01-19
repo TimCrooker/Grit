@@ -4,20 +4,13 @@ orbs:
   node: circleci/node@4.7
   
 jobs:
-  build:
-    docker:
-      - image: cimg/node:17.4.0
-    steps:
-      - checkout
-      - run: yarn install --frozen-lockfile
-      - run: yarn run build
-    
   test:
     docker:
       - image: cimg/node:17.4.0
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
+      - run: yarn run build
       - run: yarn run test
     
 
@@ -25,6 +18,5 @@ jobs:
 workflows:
   test: 
     jobs:
-      - build
       - test
   
