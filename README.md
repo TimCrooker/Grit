@@ -1,4 +1,4 @@
-<p align="center"><img src="./docs/build/img/logo.png" width="224px"/>
+<p align="center"><img src="./docs/static/img/logo.png" width="224px"/>
 
 <p align="center">
 <a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
