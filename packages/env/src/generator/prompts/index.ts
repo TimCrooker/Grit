@@ -150,33 +150,33 @@ class Prompts {
 		}
 	}
 
-	input(action: RemovePromptType<InputPrompt>): this {
-		this.newPrompt(createPrompt.input(action))
+	input(prompt: RemovePromptType<InputPrompt>): this {
+		this.newPrompt(createPrompt.input(prompt))
 		return this
 	}
 
-	password(action: RemovePromptType<PasswordPrompt>): this {
-		this.newPrompt(createPrompt.password(action))
+	password(prompt: RemovePromptType<PasswordPrompt>): this {
+		this.newPrompt(createPrompt.password(prompt))
 		return this
 	}
 
-	number(action: RemovePromptType<NumberPrompt>): this {
-		this.newPrompt(createPrompt.number(action))
+	number(prompt: RemovePromptType<NumberPrompt>): this {
+		this.newPrompt(createPrompt.number(prompt))
 		return this
 	}
 
-	confirm(action: RemovePromptType<ConfirmPrompt>): this {
-		this.newPrompt(createPrompt.confirm(action))
+	confirm(prompt: RemovePromptType<ConfirmPrompt>): this {
+		this.newPrompt(createPrompt.confirm(prompt))
 		return this
 	}
 
-	checkbox(action: RemovePromptType<CheckboxPrompt>): this {
-		this.newPrompt(createPrompt.checkbox(action))
+	checkbox(prompt: RemovePromptType<CheckboxPrompt>): this {
+		this.newPrompt(createPrompt.checkbox(prompt))
 		return this
 	}
 
-	list(action: RemovePromptType<ListPrompt>): this {
-		this.newPrompt(createPrompt.list(action))
+	list(prompt: RemovePromptType<ListPrompt>): this {
+		this.newPrompt(createPrompt.list(prompt))
 		return this
 	}
 

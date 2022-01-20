@@ -27,6 +27,7 @@ interface BasePrompt {
 	type: string
 	name: string
 	message: WithAnswers<string>
+	default?: WithAnswers<any>
 	/** Skips the question when false is returned */
 	when?: WithAnswers<boolean>
 	prefix?: string

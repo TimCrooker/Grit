@@ -7,7 +7,7 @@ interface NumberPrompt extends BasePrompt {
 	mock?: number
 	default?: WithAnswers<number>
 	validate?: WithFullContext<number, boolean | string>
-	filter?: WithFullContext<number, string>
+	filter?: WithFullContext<number, number>
 }
 
 /*********************EXPORTS**********************/

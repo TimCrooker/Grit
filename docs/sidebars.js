@@ -34,6 +34,7 @@ const sidebars = {
 					'generator-file/plugins',
 					'generator-file/actions',
 					'generator-file/completed',
+					'generator-file/generator-instance',
 				]
 			},
 			{

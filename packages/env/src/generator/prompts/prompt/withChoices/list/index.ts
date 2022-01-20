@@ -11,7 +11,7 @@ interface ListPrompt extends BasePrompt {
 	choices: WithAnswers<ListChoice[]>
 	/** Must be the index or value of desired choice */
 	default?: WithAnswers<number | string>
-	filter?: WithFullContext<unknown, string>
+	filter?: WithFullContext<string, string>
 	loop?: boolean
 }
 

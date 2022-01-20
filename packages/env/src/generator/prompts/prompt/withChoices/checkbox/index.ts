@@ -10,7 +10,7 @@ interface CheckboxPrompt extends BasePrompt {
 	choices: WithAnswers<CheckboxChoice[]>
 	default?: WithAnswers<string[]>
 	validate?: WithFullContext<string, boolean | string>
-	filter?: WithFullContext<unknown, Array<string>>
+	filter?: WithFullContext<Array<string>, Array<string>>
 }
 
 /*********************METHODS**********************/
