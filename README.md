@@ -1,19 +1,18 @@
 <p align="center"><img src="./docs/static/img/logo.png" width="224px"/>
 
 <p align="center">
-<a href="https://github.com/TimCrooker/Grit/releases" target="_blank">
-<img src="https://img.shields.io/github/package-json/v/TimCrooker/Grit?style=for-the-badge" alt="cli version" />
-</a>
+&nbsp;
+<a href="https://badge.fury.io/js/grit-cli"><img src="https://img.shields.io/npm/v/grit-cli?label=Version&style=for-the-badge" alt="npm version"></a>
 &nbsp;
 <a href="https://www.npmjs.com/package/grit-cli" target="_blank">
 <img src="https://img.shields.io/npm/dw/grit-cli?style=for-the-badge" alt="npm downloads" />
 </a>
 &nbsp;
-<a href="https://www.npmjs.com/package/grit-cli" target="_blank">
 <img src="https://img.shields.io/github/stars/TimCrooker/grit?style=for-the-badge" alt="github stars" />
-</a>
 &nbsp;
-<img src="https://img.shields.io/circleci/build/github/TimCrooker/Grit/master?color=green&style=for-the-badge" alt="circle ci tests" />
+<a href="https://github.com/TimCrooker/Grit/actions/workflows/test.yml">
+<img src="https://img.shields.io/github/workflow/status/timcrooker/grit/test?style=for-the-badge"/>
+</a>
 &nbsp;
 <img src="https://img.shields.io/npm/l/grit-cli?style=for-the-badge" alt="license" />
 </h1>
