@@ -1,20 +1,19 @@
 # Run
 
-## Run a specific generator
+To actually run a generator you have the `run` command. This command will first install the generator to your machine if you don't already have it, and then run it.
 
-To actually run a generator you can use the `grit` command, followed by the name of the generator you want to run. This command will first install the generator to your machine if you don't already have it, and then run it.
+## From command line
 
 ```bash
 grit <generator-name> [output-directory] [options]
 
 #generator-name: the name of the generator you want to run (required)
 #output-directory: the directory name or path you want the generator to output to (optional)
-#options: any options you want to run the generator with (optional)
 ```
 
 The output directory argument will default to the current working directory.
 
-This command additionally supports many flags that can be used to control the generators behavior as shown below:
+This command additionally supports many flags that can be used to control the generators behavior:
 
 | options             | Description                                         | Default        |
 | ------------------- | --------------------------------------------------- | -------------- |
@@ -27,6 +26,12 @@ This command additionally supports many flags that can be used to control the ge
 | --npm-client client | use a specific npm client ('yarn', 'npm')           | yarn if avail. |
 | -n --skip-install   | skip installing dependencies                        | false          |
 
-## Run an installed generator
+## From home screen
 
-To run your installed generators from a list, navigate to the Grit CLI [home](#home) and press enter on any of the generators it shows to run them.
+Simply using the `grit` command you can navigate to the Grit home screen. Here you will be shown a list of your already installed generators. Selecting any of these will run it immediately.
+
+```bash
+grit
+```
+
+![image info](/img/tutorial/terminalSC/grit-command-sc-wgen.png)

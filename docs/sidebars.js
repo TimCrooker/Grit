@@ -10,7 +10,7 @@ const sidebars = {
 			label: 'Usage',
 			collapsed: true,
 			items: [
-				'usage/gui',
+				// 'usage/overview',
 				'usage/install',
 				'usage/find',
 				'usage/run',
@@ -23,27 +23,27 @@ const sidebars = {
       type: 'category',
       label: 'Create Generator',
 			collapsed: true,
-      items: ['create-generator/quick-start', 'create-generator/template',{
+      items: ['create-generator/overview',{
 				type: 'category',
 				label: 'Generator File',
 				items: [
 					'generator-file/overview',
 					'generator-file/prepare',
 					'generator-file/prompts',
-					'generator-file/data',
-					'generator-file/plugins',
-					'generator-file/actions',
+					// 'generator-file/data',
+					// 'generator-file/plugins',
+					// 'generator-file/actions',
 					'generator-file/completed',
 				]
 			},
-			{
-				type: 'category',
-				label: 'Plugins',
-				items: [
-					'plugins/plugins'
-				]
-			},
-			'create-generator/chaining',
+			// {
+			// 	type: 'category',
+			// 	label: 'Plugins',
+			// 	items: [
+			// 		'plugins/plugins'
+			// 	]
+			// },
+			// 'create-generator/chaining',
 		],
     },
   ],

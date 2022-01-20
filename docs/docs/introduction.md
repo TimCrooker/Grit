@@ -16,11 +16,11 @@ sidebar_position: 1
 
 ## Motivation
 
-Grit was built out of my own painful developer experiance creating multiple web applications. I found quite quickly that much of the work i was doing to begin a new project was tedious boilerplate building and configuring developer tooling. It is not uncommon for this work to take many days if not weeks to setup and test: All of this before a single line of business logic was typed.
+Grit was concieved out of the tedious experiance of setting up web application boilerplate code. I quickly found much of the work i was doing to begin a new project was boilerplate building and configuring developer tooling. It is not uncommon for this work to take many days if not weeks to setup and test all before a single line of business logic is written.
 
-> Searching for a solution to this issue left me very unsatisfied and hungry for a truly elegant solution
+> The current solutions to this issue left me very unsatisfied and hungry for an elegant solution
 
-### Most Templates/Boilerplates suck
+### Most Templates/Boilerplates are not usable
 
 - Dependencies become oudated quickly
 - Vulerabilities and incompatibilies
@@ -96,4 +96,3 @@ Testing generators is very important and is made very easy with the Grit mock mo
 #### Debug mode
 
 The `gritenv` package used to build generators provides a useful console logger that can be used for debugging your generators. You can include as many console logs as you want specifying the `debug` level of logging. This will then only show the logging to the console when you use the debug flag while running the generator.
-

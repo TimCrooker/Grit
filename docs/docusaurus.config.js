@@ -10,11 +10,10 @@ const config = {
 	title: 'Grit',
 	tagline: 'Generate really interesting tech',
 	url: 'https://timcrooker.github.io',
-	trailingSlash: true,
 	baseUrl: '/Grit/',
 	onBrokenLinks: 'warn',
 	onBrokenMarkdownLinks: 'warn',
-	favicon: 'img/favicon.ico',
+	favicon: 'img/logo.png',
 	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Grit', // Usually your repo name.
 	plugins: [
@@ -35,7 +34,6 @@ const config = {
 			({
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
-					// Please change this to your repo.
 					editUrl: 'https://github.com/TimCrooker/Grit/edit/master/docs/',
 				},
 				theme: {
