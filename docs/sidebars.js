@@ -23,27 +23,27 @@ const sidebars = {
       type: 'category',
       label: 'Create Generator',
 			collapsed: true,
-      items: ['create-generator/overview',{
+      items: ['create-generator/overview', 'create-generator/quick-start', {
 				type: 'category',
 				label: 'Generator File',
 				items: [
 					'generator-file/overview',
 					'generator-file/prepare',
 					'generator-file/prompts',
-					// 'generator-file/data',
-					// 'generator-file/plugins',
-					// 'generator-file/actions',
+					'generator-file/data',
+					'generator-file/plugins',
+					'generator-file/actions',
 					'generator-file/completed',
 				]
 			},
-			// {
-			// 	type: 'category',
-			// 	label: 'Plugins',
-			// 	items: [
-			// 		'plugins/plugins'
-			// 	]
-			// },
-			// 'create-generator/chaining',
+			{
+				type: 'category',
+				label: 'Plugins',
+				items: [
+					'plugins/plugins'
+				]
+			},
+			'create-generator/chaining',
 		],
     },
   ],
