@@ -31,20 +31,17 @@ const sidebars = {
 					'generator-file/prepare',
 					'generator-file/prompts',
 					'generator-file/data',
-					'generator-file/plugins',
+					// 'generator-file/plugins',
 					'generator-file/actions',
 					'generator-file/completed',
 					'generator-file/generator-instance',
 				]
 			},
-			{
-				type: 'category',
-				label: 'Plugins',
-				items: [
-					'plugins/plugins'
-				]
-			},
-			'create-generator/chaining',
+			// {
+			// 	type: 'category',
+			// 	label: 'Plugins',
+			// },
+			// 'create-generator/chaining',
 		],
     },
   ],

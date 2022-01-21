@@ -4,13 +4,13 @@ The prompts section is where you define the questions that the user will see and
 
 ## How to define
 
-This section can be defined in the generator config in 2 different ways depending on your use case and preference. Either as either an object containing an array of prompt objects, or a function (can be async) that returns an array of prompts.
+This section can be defined in the generator config in 2 different ways depending on your use case and preference. Either as either an object containing an array of prompt objects, or a function (can be async) that returns an array of prompt objects.
 
 ### As an object
 
 Defining your prompts as an object makes it quick and easy to define prompts for more simplistic generator use cases.
 
-> Note that the prompt object contains a single array which itself contains all of the prompts.
+> Note that the prompts object contains a single array which itself contains all of the prompts.
 
 ```typescript
 import { Generator, GeneratorConfig } from 'gritenv'
