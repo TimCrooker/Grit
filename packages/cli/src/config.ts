@@ -16,7 +16,7 @@ export const UserFullName = gitUser.name
 export const UserFirstName = UserFullName.split(' ')[0] || 'User'
 export const Username = gitUser.username || 'User'
 
-export const DEBUG = true
+export const DEBUG = false
 
 export interface GeneratorChoiceValue<T = string> {
 	method: T
