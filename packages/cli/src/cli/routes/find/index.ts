@@ -1,6 +1,6 @@
-import { GritRoute } from '@/cli/config'
+import { colors } from 'swaglog'
 import { promptGeneratorRun, promptOutDir } from '@/cli/prompts'
-import { NpmSearch } from '@/utils/npm'
+import { NpmSearch } from '@/cli/routes/find/npm'
 import { spinner } from '@/utils/spinner'
 import {
 	getGenerator,
@@ -9,26 +9,25 @@ import {
 	RepoGenerator,
 	store,
 } from 'gritenv'
-import { HomeChoice, ExitChoice } from '..'
+import inquirer from 'inquirer'
+import { HomeChoice, ExitChoice, home, exit } from '..'
 
 /**
  *  This route lets the user search for generators using npm search.
  *
  *  eventuall make this searchable
  */
-export const find: GritRoute = async (app, { options, args }) => {
+export const find = async (searchTerm?: string): Promise<void> => {
 	// Get a list of installed npm generators from the store
 	const installedNpmGenerators = store.generators.npmGeneratorsNames
 
-	const searchTerm = args[1] as string
-
 	// get the generators from npm (packages that start with `grit-` and have the `grit-generator` keyword)
-	app.spinner.start('searching for grit-generators')
+	spinner.start('searching for grit-generators')
 	const data = await NpmSearch({
 		keywords: ['grit-generator'],
 		resultCount: 50,
 	})
-	app.spinner.stop()
+	spinner.stop()
 
 	// Create inquirer choices with search results
 	const choices = [
@@ -45,21 +44,21 @@ export const find: GritRoute = async (app, { options, args }) => {
 				const alreadyInstalled = installedNpmGenerators.includes(name)
 
 				return {
-					name: `${name} ${app.colors.gray(description)}${
-						alreadyInstalled ? app.colors.yellow(' installed') : ''
+					name: `${name} ${colors.gray(description)}${
+						alreadyInstalled ? colors.yellow(' installed') : ''
 					} `,
 					value: { generator: name, installed: alreadyInstalled },
 				}
 			}),
-		new app.inquirer.Separator(),
+		new inquirer.Separator(),
 		{ name: 'Refresh list', value: 'find' },
 		HomeChoice,
 		ExitChoice,
-		new app.inquirer.Separator(),
+		new inquirer.Separator(),
 	]
 
 	// prompt the user with the above choices
-	const { answer } = await app.prompt([
+	const { answer } = await inquirer.prompt([
 		{
 			type: 'list',
 			name: 'answer',
@@ -72,9 +71,10 @@ export const find: GritRoute = async (app, { options, args }) => {
 	// Navigate to the appropriate route
 	if (!answer.generator) {
 		// if the answer is a route navigate to it
-		return await app.navigate(answer)
+		if (answer.value === 'home') await home()
+		if (answer.value === 'find') await find()
+		if (answer.value === 'exit') exit()
 	}
-
 	// if the answer is a generator
 	const generator = answer.generator as string
 	const alreadyInstalled = answer.installed as boolean
@@ -83,7 +83,6 @@ export const find: GritRoute = async (app, { options, args }) => {
 	if (alreadyInstalled) {
 		const outDir = await promptOutDir()
 		await (await getGenerator({ generator, outDir })).run()
-		return await app.navigate('home')
 	}
 
 	// ask user if they want to run the generator after installation
@@ -91,11 +90,11 @@ export const find: GritRoute = async (app, { options, args }) => {
 
 	// install the generator
 	try {
-		spinner.start(`Installing ${app.colors.cyan('grit-' + answer.generator)}`)
+		spinner.start(`Installing ${colors.cyan('grit-' + answer.generator)}`)
 		await store.generators.add(
 			parseGenerator(answer.generator) as NpmGenerator | RepoGenerator
 		)
-		spinner.succeed(`Installed ${app.colors.cyan('grit-' + generator)}`)
+		spinner.succeed(`Installed ${colors.cyan('grit-' + generator)}`)
 	} catch (e) {
 		spinner.stop()
 		throw e
@@ -109,14 +108,13 @@ export const find: GritRoute = async (app, { options, args }) => {
 		await (
 			await getGenerator({
 				generator: answer.generator,
-				...options,
 				outDir,
 			})
 		).run()
 	}
 
 	// Go home after installing the generator
-	return await app.navigate('home')
+	await home()
 }
 
 export const FindChoice = {

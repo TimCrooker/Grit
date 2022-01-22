@@ -44,13 +44,18 @@ export class CLI {
 		this.router = new Router(routerOpts)
 
 		this.pkg = opts.pkg
-		this.commander.name(this.pkg.name).version(this.pkg.version)
+		this.commander
+			.name(this.pkg.name)
+			.version(this.pkg.version)
+			.enablePositionalOptions()
 	}
 
 	async run(): Promise<void> {
 		!this.opts.debug && console.clear()
 
 		logger.debug('CLI running...')
+
+		logger.debug(process.argv)
 
 		await this.commander.parseAsync(process.argv)
 	}

@@ -1,12 +1,13 @@
 import { colors, logger } from 'swaglog'
-import { GritRoute } from '@/cli/config'
 import { spinner } from '@/utils/spinner'
-import { GeneratorChoiceValue, InquirerChoice } from '@/utils/generator'
 import { NpmGenerator, parseGenerator, RepoGenerator, store } from 'gritenv'
-import { checkGeneratorForUpdates } from '@/utils/update'
-import { HomeChoice } from '../home'
-import { ExitChoice } from '../exit'
+import { checkGeneratorForUpdates } from '@/cli/routes/update/update'
+import { home, HomeChoice } from '../home'
+import { exit, ExitChoice } from '../exit'
 import { promptConfirmAction } from '@/cli/prompts'
+import { Terror } from '@/utils/error'
+import { GeneratorChoiceValue, InquirerChoice } from '@/config'
+import inquirer from 'inquirer'
 
 type GeneratorUpdateList = Array<InquirerChoice<GeneratorChoiceValue<'update'>>>
 
@@ -37,18 +38,23 @@ export const generatorChoiceListUpdate =
 		)
 	}
 
+export type GeneratorUpdateOptions = {
+	all?: boolean
+}
+
 /**
  * Run the generator that was directly called from the command line
  */
-export const update: GritRoute = async (app, { args, options }) => {
-	const generatorName = args[1]
-
+export const update = async (
+	generatorName?: string,
+	options: GeneratorUpdateOptions = {}
+): Promise<void> => {
 	// if no generator name specified, list all installed generators
 	if (!generatorName) {
 		const updatableGnerators = await generatorChoiceListUpdate()
 
 		if (updatableGnerators.length === 0) {
-			throw new app.error('No generators with updates found.')
+			throw new Terror('No generators with updates found.')
 		}
 
 		if (options.all) {
@@ -63,16 +69,17 @@ export const update: GritRoute = async (app, { args, options }) => {
 				}
 			}
 			spinner.stop()
+			return
 		}
 
 		const choices = [
 			...(await generatorChoiceListUpdate()),
-			new app.inquirer.Separator(),
+			new inquirer.Separator(),
 			HomeChoice,
 			ExitChoice,
 		]
 
-		const { answer } = await app.prompt({
+		const { answer } = await inquirer.prompt({
 			name: 'answer',
 			type: 'list',
 			message: `Select a generator to update`,
@@ -98,10 +105,13 @@ export const update: GritRoute = async (app, { args, options }) => {
 				}
 			}
 
-			return await app.navigate('update')
+			// return to the update list
+			await update()
+			return
 		}
 
-		return await app.navigate(answer)
+		if (answer === 'home') await home()
+		if (answer === 'exit') exit()
 	}
 
 	// if there is a generator name specified, make sure it exists in the store then update it
@@ -110,13 +120,13 @@ export const update: GritRoute = async (app, { args, options }) => {
 			| NpmGenerator
 			| RepoGenerator
 
-		app.logger.debug('attempting to update parsed generator:', generator)
+		logger.debug('attempting to update parsed generator:', generator)
 
 		const generatorInstalled = store.generators.get(generator.hash)
 
 		if (!generatorInstalled) {
-			throw new app.error(
-				`There is no generator named ${app.colors.cyan(
+			throw new Terror(
+				`There is no generator named ${colors.cyan(
 					generatorName
 				)} installed on your machine`
 			)
@@ -124,13 +134,13 @@ export const update: GritRoute = async (app, { args, options }) => {
 
 		// ensure they mean to remove the generators
 		const UpdateConfirmation = await promptConfirmAction(
-			`update ${app.colors.cyan('grit-' + generatorName)}`
+			`update ${colors.cyan('grit-' + generatorName)}`
 		)
 
 		if (UpdateConfirmation) {
 			// update the selected generator in the store
 			try {
-				spinner.start('Updating ' + app.colors.cyan('grit-' + generatorName))
+				spinner.start('Updating ' + colors.cyan('grit-' + generatorName))
 				await store.generators.update(generator)
 				spinner.succeed('Update successful')
 			} catch (e) {

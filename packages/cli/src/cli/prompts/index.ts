@@ -1,16 +1,17 @@
-import { cli } from '../config'
-
 /**********************METHODS**********************/
+
+import { colors } from 'swaglog'
+import inquirer from 'inquirer'
 
 /**
  *
  */
 const promptOutDir = async (): Promise<string> => {
-	const { outputDir } = await cli.prompt([
+	const { outputDir } = await inquirer.prompt([
 		{
 			type: 'input',
 			name: 'outputDir',
-			message: `Output directory? ${cli.colors.gray(
+			message: `Output directory? ${colors.gray(
 				'leave blank to use current working directory'
 			)}`,
 			default: './',
@@ -24,7 +25,7 @@ const promptOutDir = async (): Promise<string> => {
  *
  */
 const promptGeneratorUpdate = async (): Promise<boolean> => {
-	const { update } = await cli.prompt([
+	const { update } = await inquirer.prompt([
 		{
 			type: 'confirm',
 			name: 'update',
@@ -40,7 +41,7 @@ const promptGeneratorUpdate = async (): Promise<boolean> => {
  *
  */
 const promptGeneratorRun = async (): Promise<boolean> => {
-	const { run } = await cli.prompt([
+	const { run } = await inquirer.prompt([
 		{
 			type: 'confirm',
 			name: 'run',
@@ -55,7 +56,7 @@ const promptGeneratorRun = async (): Promise<boolean> => {
 const promptConfirmAction = async (
 	confirmMessage: string
 ): Promise<boolean> => {
-	const { run } = await cli.prompt([
+	const { run } = await inquirer.prompt([
 		{
 			type: 'confirm',
 			name: 'run',

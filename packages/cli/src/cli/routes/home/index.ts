@@ -1,24 +1,18 @@
 import { colors, logger } from 'swaglog'
-import { GritRoute } from '@/cli/config'
 import {
 	promptGeneratorRun,
 	promptGeneratorUpdate,
 	promptOutDir,
 } from '@/cli/prompts'
-import { UserFirstName } from '@/config'
-import { GeneratorChoiceValue, InquirerChoice } from '@/utils/generator'
+import { GeneratorChoiceValue, InquirerChoice, UserFirstName } from '@/config'
 import { spinner } from '@/utils/spinner'
-import { checkGeneratorForUpdates } from '@/utils/update'
-import { getWelcomeMessage } from '@/utils/welcome'
+import { getWelcomeMessage } from '@/cli/routes/home/welcome'
+import { exit, find, help, remove } from '@/cli/routes'
 import { getGenerator, store } from 'gritenv'
 import Choice from 'inquirer/lib/objects/choice'
-import {
-	FindChoice,
-	HelpChoice,
-	ExitChoice,
-	UpdateChoice,
-	RemoveChoice,
-} from '..'
+import { FindChoice, HelpChoice, ExitChoice, RemoveChoice } from '..'
+import inquirer from 'inquirer'
+import { checkGeneratorForUpdates } from '@/cli/routes/update/update'
 
 type GeneratorUpdateRunList = InquirerChoice<
 	GeneratorChoiceValue<'update' | 'run'>
@@ -58,15 +52,15 @@ export const generatorChoiceListUpdateRun = (): GeneratorUpdateRunList => {
 /**
  * This is the home route when users input just the `grit` keyword with no commands
  */
-export const home: GritRoute = async (app) => {
+export const home = async (): Promise<void> => {
 	// get the generators from store and present them as choices sorted my most used
-	const generatorList = (await generatorChoiceListUpdateRun()).slice(0, 100)
+	const generatorList = generatorChoiceListUpdateRun().slice(0, 100)
 	const RunGeneratorChoices =
 		generatorList.length > 0
 			? ([
-					new app.inquirer.Separator('Run Generator'),
+					new inquirer.Separator('Run Generator'),
 					...generatorList,
-					new app.inquirer.Separator(),
+					new inquirer.Separator(),
 			  ] as Choice[])
 			: []
 
@@ -81,10 +75,10 @@ export const home: GritRoute = async (app) => {
 	// Show welcome message
 	getWelcomeMessage(true)
 
-	const { answer } = await app.prompt({
+	const { answer } = await inquirer.prompt({
 		name: 'answer',
 		type: 'list',
-		message: `Hi ${app.colors.underline(
+		message: `Hi ${colors.underline(
 			UserFirstName
 		)}, What would you like to do?`,
 		choices,
@@ -98,7 +92,7 @@ export const home: GritRoute = async (app) => {
 		await (await getGenerator({ generator: answer.generator, outDir })).run()
 
 		// Go home after generation
-		return await app.navigate('home')
+		await home()
 	}
 
 	// Run when generators have an update available
@@ -117,11 +111,14 @@ export const home: GritRoute = async (app) => {
 		}
 
 		// Go home after generation
-		return await app.navigate('home')
+		await home()
 	}
 
 	// Route when generators are not selected
-	return await app.navigate(answer)
+	if (answer === 'find') await find()
+	if (answer === 'remove') await remove()
+	if (answer === 'help') await help()
+	if (answer === 'exit') exit()
 }
 
 /** Choice for navigating home */

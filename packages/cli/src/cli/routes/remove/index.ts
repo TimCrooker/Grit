@@ -1,10 +1,11 @@
 import { colors } from 'swaglog'
-import { GritRoute } from '@/cli/config'
 import { promptConfirmAction } from '@/cli/prompts'
-import { GeneratorChoiceValue, InquirerChoice } from '@/utils/generator'
 import { spinner } from '@/utils/spinner'
 import { parseGenerator, store } from 'gritenv'
-import { ExitChoice, HomeChoice } from '..'
+import { ExitChoice, home, HomeChoice } from '..'
+import { GeneratorChoiceValue, InquirerChoice } from '@/config'
+import inquirer from 'inquirer'
+import { Terror } from '@/utils/error'
 
 type GeneratorRemoveList = Array<InquirerChoice<GeneratorChoiceValue<'remove'>>>
 
@@ -30,23 +31,21 @@ export const generatorChoiceListRemove = (): GeneratorRemoveList => {
 /**
  * Remove installed generators
  */
-export const remove: GritRoute = async (app, { args, options }) => {
-	const generatorName = args[1]
-
+export const remove = async (generatorName?: string): Promise<void> => {
 	// if no generator name specified, list all installed generators
 	if (!generatorName) {
 		const generatorChoices = generatorChoiceListRemove()
 
 		const choices = [
 			...generatorChoices,
-			new app.inquirer.Separator(
+			new inquirer.Separator(
 				generatorChoices.length > 0 ? '' : 'No generators installed'
 			),
 			HomeChoice,
 			ExitChoice,
 		]
 
-		const { answer } = await app.prompt({
+		const { answer } = await inquirer.prompt({
 			name: 'answer',
 			type: 'list',
 			message: `Select a generator to remove`,
@@ -71,11 +70,12 @@ export const remove: GritRoute = async (app, { args, options }) => {
 					throw e
 				}
 			}
-
-			return await app.navigate('remove')
+			// go back to remove screen
+			await remove()
+			return
 		}
 
-		return await app.navigate(answer)
+		if (answer === 'home') await home()
 	}
 
 	// if there is a generator name specified, make sure it exists in the store then remove it
@@ -85,8 +85,8 @@ export const remove: GritRoute = async (app, { args, options }) => {
 		const generatorInstalled = store.generators.get(generator.hash)
 
 		if (!generatorInstalled) {
-			throw new app.error(
-				`There is no generator named ${app.colors.cyan(
+			throw new Terror(
+				`There is no generator named ${colors.cyan(
 					'grit-' + generatorName
 				)} installed on your machine`
 			)
@@ -94,17 +94,15 @@ export const remove: GritRoute = async (app, { args, options }) => {
 
 		// ensure they mean to remove the generators
 		const removeConfirmation = await promptConfirmAction(
-			'remove ' +
-				app.colors.cyan('grit-' + generatorName) +
-				' from your machine'
+			'remove ' + colors.cyan('grit-' + generatorName) + ' from your machine'
 		)
 
 		if (removeConfirmation) {
 			// remove the selected generator from the store
 			try {
-				spinner.start('Removing ' + app.colors.cyan('grit-' + generatorName))
+				spinner.start('Removing ' + colors.cyan('grit-' + generatorName))
 				store.generators.remove(generator)
-				spinner.succeed('Removed ' + app.colors.cyan('grit-' + generatorName))
+				spinner.succeed('Removed ' + colors.cyan('grit-' + generatorName))
 			} catch (e) {
 				spinner.stop()
 				throw e

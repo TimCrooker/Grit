@@ -1,8 +1,8 @@
-import { GritRoute } from '@/cli/config'
+import { logger } from 'swaglog'
 import Choice from 'inquirer/lib/objects/choice'
 
-export const exit: GritRoute = async (app, { args, options }) => {
-	app.logger.log('See ya next time there bud')
+export const exit = (): void => {
+	logger.log('See ya next time there bud')
 	return
 }
 

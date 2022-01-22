@@ -8,7 +8,7 @@
 		"test": "lerna run test --stream",
 		"lint": "lerna run lint",
 		"build": "lerna run build --stream",
-		"build:watch": "lerna run build:watch --stream",
+		"build:watch": "lerna run build:watch --parallel --stream",
 		"release": "lerna publish"
 	},
 	"devDependencies": {

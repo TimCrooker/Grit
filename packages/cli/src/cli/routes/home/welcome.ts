@@ -1,4 +1,4 @@
-import { cli } from '@/cli/config'
+import { colors } from 'swaglog'
 import figlet from 'figlet'
 
 export const bannerText = (text: string): void =>
@@ -10,7 +10,7 @@ export const bannerText = (text: string): void =>
 
 const welcomeMessage = (): void => {
 	console.log(
-		cli.colors.green('Welcome to the project scaffolding tool of the future!')
+		colors.green('Welcome to the project scaffolding tool of the future!')
 	)
 	console.log()
 	bannerText('Grit')

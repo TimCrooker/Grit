@@ -1,3 +1,4 @@
+import { StoreGenerator } from 'gritenv'
 import { getGitUser } from './utils/gitUser'
 
 // URLs
@@ -14,3 +15,15 @@ const gitUser = getGitUser()
 export const UserFullName = gitUser.name
 export const UserFirstName = UserFullName.split(' ')[0] || 'User'
 export const Username = gitUser.username || 'User'
+
+export const DEBUG = true
+
+export interface GeneratorChoiceValue<T = string> {
+	method: T
+	generator: StoreGenerator
+}
+
+export interface InquirerChoice<T = any> {
+	name: string
+	value: T
+}

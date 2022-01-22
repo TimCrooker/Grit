@@ -1,10 +1,10 @@
-import { GritRoute } from '@/cli/config'
 import { DOCS_URL, GITHUB_URL } from '@/config'
+import inquirer from 'inquirer'
 import Choice from 'inquirer/lib/objects/choice'
 import open from 'open'
-import { ExitChoice, HomeChoice } from '..'
+import { exit, ExitChoice, home, HomeChoice } from '..'
 
-export const help: GritRoute = async (app, { args, options }) => {
+export const help = async (): Promise<void> => {
 	const choices = [
 		{
 			name: 'Read the documentation (open in browser)',
@@ -14,12 +14,12 @@ export const help: GritRoute = async (app, { args, options }) => {
 			name: 'View the source code',
 			value: 'source',
 		},
-		new app.inquirer.Separator(),
+		new inquirer.Separator(),
 		HomeChoice,
 		ExitChoice,
 	] as Choice[]
 
-	const { answer } = await app.prompt([
+	const { answer } = await inquirer.prompt([
 		{
 			type: 'list',
 			name: 'answer',
@@ -36,11 +36,13 @@ export const help: GritRoute = async (app, { args, options }) => {
 		case 'source':
 			await open(GITHUB_URL)
 			break
-		default:
-			return await app.navigate(answer)
+		case 'home':
+			await home()
+			break
+		case 'exit':
+			exit()
+			break
 	}
-
-	return await app.navigate('exit')
 }
 
 export const HelpChoice = {
