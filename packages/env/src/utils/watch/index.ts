@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import { EventEmitter } from 'stream'
 import { pathExists } from 'youtill'
+import { logger } from '@/../../swaglog/dist'
 
 /**
  * watches supplied directories for changes and executes a function passing in the path to that file
@@ -15,6 +16,7 @@ export const watchDirectories = async (
 	e: EventEmitter
 ): Promise<void> => {
 	for (const directory of directories) {
+		logger.debug('Watching for changes in', directory)
 		// Get absolute system path
 		const trueDir = path.resolve(directory)
 
@@ -26,7 +28,6 @@ export const watchDirectories = async (
 			// 500ms delay between change detections
 			if (filename && event === 'change') {
 				if (fsWait) return
-				fswait = true
 				fsWait = setTimeout(() => {
 					fsWait = false
 				}, 500)

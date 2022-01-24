@@ -312,6 +312,7 @@ class Grit {
 		// Quiet down rebuild logging
 		logger.setOptions({
 			logLevel: 1,
+			mock: false,
 		})
 
 		// set injected answers to the automatically use the answers from the last run
