@@ -319,10 +319,11 @@ class Grit {
 			)
 		)
 
-		logger.info('watching for changes bitch...')
+		logger.info('watching for changes...')
 
 		// event triggered by file changes in plugins
 		event.on('Rebuild', async (dir, filename) => {
+			if (this.rebuilding) return
 			this.rebuilding = true
 
 			logger.info(
