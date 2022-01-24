@@ -339,7 +339,7 @@ class Grit {
 				await new Grit({
 					...this.opts,
 					answers: this.answers,
-					silent: true,
+					logLevel: 1,
 				}).runGenerator()
 
 				// install new packages if the package.json file was updated
