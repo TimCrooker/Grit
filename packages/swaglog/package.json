@@ -21,6 +21,7 @@
 	},
 	"scripts": {
 		"build": "npm run clean && tsup src/index.ts --dts",
+		"build:watch": "nodemon --watch src -e ts --ignore dist --exec npm run build",
 		"clean": "rimraf ./dist",
 		"test": "jest",
 		"lint": "eslint . --fix",

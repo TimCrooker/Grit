@@ -15,7 +15,6 @@ import { Prepare } from './prepare'
 import { Plugins } from './plugins'
 import { Answers } from './prompts/prompt'
 import pkg from '@/../package.json'
-import chokidar from 'chokidar'
 import {
 	getNpmClient,
 	InstallOptions,
@@ -35,6 +34,8 @@ import {
 	RepoGenerator,
 } from './parseGenerator'
 import { store } from '@/store'
+import EventEmitter from 'events'
+import { watchDirectories } from '@/utils/watch'
 
 export interface GritOptions {
 	/**
@@ -282,10 +283,10 @@ class Grit {
 			)
 		}
 
+		await this.runGenerator()
+
 		if (this.opts.hotRebuild === true) {
 			await this.runHotRebuild()
-		} else {
-			await this.runGenerator()
 		}
 		return this
 	}
@@ -294,20 +295,26 @@ class Grit {
 	 * Run the generator in hot rebuild mode
 	 */
 	async runHotRebuild(): Promise<void> {
-		// run the project as normal one time
-		await this.runGenerator()
-
 		// exit if the generator is not local
 		if (this.generator.type !== 'local') {
-			logger.warn('Cannot run hot rebuild on a non-local generator')
+			logger.error('Cannot run hot rebuild on a non-local generator')
 			return
 		}
 
-		// set the watcher to the files in the generator
+		// Quiet down rebuild logging
+		logger.options.logLevel === 1
+
+		// set injected answers to the automatically use the answers from the last run
+		this.opts.answers = this.answers
+
 		const watchItems: string[] = []
+		const event = new EventEmitter()
+
+		// add plugin files to watcher
 		if (this.plugins && this.plugins.selectedPlugins.length > 0) {
 			watchItems.push(this.plugins.pluginsDir)
 		}
+		// add template files to watcher
 		watchItems.push(
 			path.resolve(
 				this.generator.path,
@@ -315,33 +322,24 @@ class Grit {
 			)
 		)
 
-		// silence logging on rebuild unless specifically in debug mode
-		if (!this.opts.debug) this.logger.options.logLevel = 1
+		logger.info('watching for changes...')
 
-		// watch the plugins directory for changes and run the generator again
-		logger.info('Watching for changes...')
-		const watcher = chokidar.watch(watchItems, {
-			persistent: true,
-			ignoreInitial: true,
-		})
-
-		watcher.on('all', async (event, filePath) => {
+		// event triggered by file changes in plugins
+		event.on('Rebuild', async (dir, filename) => {
 			this.rebuilding = true
 
-			logger.info('Changes detected... rebuilding generator')
-
-			// set injected answers to the automatically use the answers from the last run
-			this.opts.answers = this.answers
+			logger.info(
+				'Changes detected in',
+				colors.cyan(dir),
+				'plugin, now rebuilding'
+			)
 
 			try {
 				// run the generator again
 				await this.runGenerator()
 
 				// install new packages if the package.json file was updated
-				if (
-					path.basename(filePath) === 'package.json' ||
-					path.basename(filePath) === '_package.json'
-				) {
+				if (filename === 'package.json' || filename === '_package.json') {
 					await this.npmInstall()
 				}
 
@@ -350,8 +348,12 @@ class Grit {
 				logger.error('\nRebuild failed:', err)
 			}
 
+			this.rebuilding = false
 			logger.info('watching for changes...')
 		})
+
+		// watch for changes in the generator
+		await watchDirectories(watchItems, true, event)
 	}
 
 	/**
@@ -505,7 +507,6 @@ class Grit {
 	 * 	Run `git init` in output directly
 	 */
 	gitInit(): void {
-		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug || this.opts.hotRebuild) {
 			logger.debug('Skipping git init')
 			return
@@ -526,7 +527,6 @@ class Grit {
 	 * Run a git commit with a custom commit message in output directory
 	 */
 	async gitCommit(commitMessage?: string): Promise<void> {
-		this.setPermissions('gitInit', [], [COMPLETE])
 		if (this.opts.mock || this.opts.debug || this.opts.hotRebuild) {
 			logger.debug('Skipping git commit')
 			return
@@ -555,8 +555,7 @@ class Grit {
 	async npmInstall(
 		opts?: Omit<InstallOptions, 'cwd' | 'registry'>
 	): Promise<{ code: number }> {
-		this.setPermissions('gitInit', [], [COMPLETE])
-		if (this.opts.mock || this.opts.debug) {
+		if (this.opts.mock || (this.opts.debug && !this.rebuilding)) {
 			logger.debug('npm install skipped')
 			return { code: 0 }
 		}
