@@ -316,10 +316,10 @@ class Grit {
 		)
 
 		// silence logging on rebuild unless specifically in debug mode
-		if (this.opts.debug) this.logger.options.logLevel = 1
+		if (!this.opts.debug) this.logger.options.logLevel = 1
 
 		// watch the plugins directory for changes and run the generator again
-		logger.info('Watching for changes...')
+		logger.info('Watching for changes...\n')
 		const watcher = chokidar.watch(watchItems, {
 			persistent: true,
 			ignoreInitial: true,
@@ -338,14 +338,17 @@ class Grit {
 				await this.runGenerator()
 
 				// install new packages if the package.json file was updated
-				if (path.basename(filePath) === 'package.json') {
+				if (
+					path.basename(filePath) === 'package.json' ||
+					path.basename(filePath) === '_package.json'
+				) {
 					await this.npmInstall()
 				}
 
 				spinner.succeed('generator rebuilt')
 			} catch (err) {
 				spinner.fail('generator rebuild failed')
-				logger.error('Rebuild encountered the following error:', err)
+				logger.error('\nRebuild encountered the following error:', err)
 			}
 
 			logger.info('watching for changes...')
