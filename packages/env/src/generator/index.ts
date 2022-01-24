@@ -216,6 +216,14 @@ class Grit {
 
 	/*********************INTERNAL METHODS**********************/
 
+	instantiateRuntimes(): void {
+		this.prepare = new Prepare(this)
+		this._prompts = new Prompts(this)
+		this._data = new Data(this)
+		this._actions = new Actions(this)
+		this.completed = new Completed(this)
+	}
+
 	/**
 	 * Run the generator with the configured options
 	 * Execures the prepare, prompt, data, actions, and completed sections of a generator config file
@@ -326,10 +334,12 @@ class Grit {
 			)
 		)
 
-		logger.info('watching for changes...')
+		logger.info('watching for changes bitch...')
 
 		// event triggered by file changes in plugins
 		event.on('Rebuild', async (dir, filename) => {
+			this.instantiateRuntimes()
+
 			this.rebuilding = true
 
 			logger.info(

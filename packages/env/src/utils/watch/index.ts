@@ -26,6 +26,7 @@ export const watchDirectories = async (
 			// 500ms delay between change detections
 			if (filename && event === 'change') {
 				if (fsWait) return
+				fswait = true
 				fsWait = setTimeout(() => {
 					fsWait = false
 				}, 500)
