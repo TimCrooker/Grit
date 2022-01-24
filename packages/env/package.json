@@ -1,6 +1,6 @@
 {
 	"name": "gritenv",
-	"version": "0.5.5",
+	"version": "0.5.6",
 	"description": "Generator runtime logic and parsing",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -58,9 +58,9 @@
 		"parse-package-name": "^1.0.0",
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"swaglog": "^1.0.5",
+		"swaglog": "^1.0.6",
 		"update-notifier": "^5.1.0",
-		"youtill": "^0.2.6"
+		"youtill": "^0.2.7"
 	},
 	"config": {
 		"commitizen": {
