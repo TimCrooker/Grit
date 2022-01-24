@@ -178,7 +178,8 @@ class Grit {
 		// Set log level from run mode
 		if (opts.debug && !opts.logLevel) {
 			this.opts.logLevel = 4
-		} else if (opts.silent && !opts.logLevel) {
+		}
+		if (opts.silent && !opts.logLevel) {
 			this.opts.logLevel = 1
 		}
 
@@ -215,14 +216,6 @@ class Grit {
 	}
 
 	/*********************INTERNAL METHODS**********************/
-
-	instantiateRuntimes(): void {
-		this.prepare = new Prepare(this)
-		this._prompts = new Prompts(this)
-		this._data = new Data(this)
-		this._actions = new Actions(this)
-		this.completed = new Completed(this)
-	}
 
 	/**
 	 * Run the generator with the configured options
@@ -343,7 +336,7 @@ class Grit {
 				await new Grit({
 					...this.opts,
 					answers: this.answers,
-					logLevel: 1,
+					silent: true,
 				}).runGenerator()
 
 				// install new packages if the package.json file was updated
