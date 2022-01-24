@@ -179,7 +179,8 @@ class Grit {
 		if (!opts.logLevel) {
 			if (opts.debug) {
 				this.opts.logLevel = 4
-			} else if (opts.silent) {
+			}
+			if (opts.silent) {
 				this.opts.logLevel = 1
 			}
 		}
