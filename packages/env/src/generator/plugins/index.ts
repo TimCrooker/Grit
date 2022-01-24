@@ -15,6 +15,7 @@ import { hasPluginConfig, loadPluginConfig } from './pluginFile/getPluginFile'
 import { PluginFileConfig } from './pluginFile/pluginFileConfig'
 import { mergeObjects, pathExists, pathExistsSync } from 'youtill'
 import { defaultPluginFile } from './pluginFile'
+import { logger } from '@/../../swaglog/dist'
 
 /*********************TYPES**********************/
 
@@ -137,6 +138,8 @@ class Plugins {
 			}, [])
 			.filter((value: string) => value !== 'none')
 
+		logger.debug('selcted plugins', plugins)
+
 		return plugins
 	}
 
@@ -173,6 +176,7 @@ class Plugins {
 			})
 		}
 
+		logger.debug('plugin data', pluginData)
 		this.pluginData = pluginData
 
 		return this
