@@ -15,7 +15,7 @@ import { hasPluginConfig, loadPluginConfig } from './pluginFile/getPluginFile'
 import { PluginFileConfig } from './pluginFile/pluginFileConfig'
 import { mergeObjects, pathExists, pathExistsSync } from 'youtill'
 import { defaultPluginFile } from './pluginFile'
-import { logger } from '@/../../swaglog/dist'
+import { logger } from 'swaglog'
 
 /*********************TYPES**********************/
 
