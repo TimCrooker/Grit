@@ -319,7 +319,7 @@ class Grit {
 		if (!this.opts.debug) this.logger.options.logLevel = 1
 
 		// watch the plugins directory for changes and run the generator again
-		logger.info('Watching for changes...\n')
+		logger.info('Watching for changes...')
 		const watcher = chokidar.watch(watchItems, {
 			persistent: true,
 			ignoreInitial: true,
@@ -328,7 +328,7 @@ class Grit {
 		watcher.on('all', async (event, filePath) => {
 			this.rebuilding = true
 
-			spinner.start('changes detected... rebuilding generator')
+			logger.info('Changes detected... rebuilding generator')
 
 			// set injected answers to the automatically use the answers from the last run
 			this.opts.answers = this.answers
@@ -345,10 +345,9 @@ class Grit {
 					await this.npmInstall()
 				}
 
-				spinner.succeed('generator rebuilt')
+				logger.success('generator rebuilt')
 			} catch (err) {
-				spinner.fail('generator rebuild failed')
-				logger.error('\nRebuild encountered the following error:', err)
+				logger.error('\nRebuild failed:', err)
 			}
 
 			logger.info('watching for changes...')
