@@ -302,7 +302,9 @@ class Grit {
 		}
 
 		// Quiet down rebuild logging
-		logger.options.logLevel === 1
+		logger.setOptions({
+			logLevel: 1,
+		})
 
 		// set injected answers to the automatically use the answers from the last run
 		this.opts.answers = this.answers
@@ -312,7 +314,9 @@ class Grit {
 
 		// add plugin files to watcher
 		if (this.plugins && this.plugins.selectedPlugins.length > 0) {
-			watchItems.push(this.plugins.pluginsDir)
+			this.plugins.pluginData.map((plugin) => {
+				watchItems.push(plugin.dirPath)
+			})
 		}
 		// add template files to watcher
 		watchItems.push(
