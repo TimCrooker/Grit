@@ -309,15 +309,6 @@ class Grit {
 			return
 		}
 
-		// Quiet down rebuild logging
-		logger.setOptions({
-			logLevel: 1,
-			mock: false,
-		})
-
-		// set injected answers to the automatically use the answers from the last run
-		this.opts.answers = this.answers
-
 		const watchItems: string[] = []
 		const event = new EventEmitter()
 
@@ -339,8 +330,6 @@ class Grit {
 
 		// event triggered by file changes in plugins
 		event.on('Rebuild', async (dir, filename) => {
-			this.instantiateRuntimes()
-
 			this.rebuilding = true
 
 			logger.info(
@@ -351,7 +340,11 @@ class Grit {
 
 			try {
 				// run the generator again
-				await this.runGenerator()
+				await new Grit({
+					...this.opts,
+					answers: this.answers,
+					logLevel: 1,
+				}).runGenerator()
 
 				// install new packages if the package.json file was updated
 				if (filename === 'package.json' || filename === '_package.json') {
