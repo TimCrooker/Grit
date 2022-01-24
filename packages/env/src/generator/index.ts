@@ -176,9 +176,9 @@ class Grit {
 		}
 
 		// Set log level from run mode
-		if (opts.debug && !this.opts.logLevel) {
+		if (opts.debug && !opts.logLevel) {
 			this.opts.logLevel = 4
-		} else if (opts.silent && !this.opts.logLevel) {
+		} else if (opts.silent && !opts.logLevel) {
 			this.opts.logLevel = 1
 		}
 
