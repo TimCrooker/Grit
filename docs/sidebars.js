@@ -5,6 +5,7 @@ const sidebars = {
   docs: [
 		'introduction',
 		'getting-started',
+		'product-problem',
 		{
 			type: 'category',
 			label: 'Usage',

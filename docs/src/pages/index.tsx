@@ -3,6 +3,7 @@ import '@/fonts/Axiforma/stylesheet.css'
 import Layout from '@theme/Layout'
 import HeaderHero from '@/components/Home/HeaderHero'
 import BuildStack from '@/components/Home/BuildStack'
+import GetStarted from '@/components/Home/GetStarted'
 
 
 function HomeWrapper(): React.ReactElement {
@@ -14,8 +15,7 @@ function HomeWrapper(): React.ReactElement {
 			<HeaderHero />
 			<main>
 				<BuildStack />
-				{/* <BestPractices /> */}
-				{/* <GetStarted /> */}
+				<GetStarted />
 			</main>
 		</Layout>
 	)

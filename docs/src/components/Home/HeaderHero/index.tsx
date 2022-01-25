@@ -11,8 +11,7 @@ function HeaderHero(): React.ReactElement {
 					{' Not'} <span className="boilerplate-text">Boilerplate</span>
 				</h1>
 				<p className="subtitle">
-					Perfectplate is a simple, modular project generation CLI that builds
-					and configures your web application infrestructure in seconds.
+					Grit is a simple, code scaffolding framework and CLI empowers developers with the ability to build out their application's infrastructure in seconds.
 				</p>
 				<div className="buttons">
 					<HomeCallToAction />

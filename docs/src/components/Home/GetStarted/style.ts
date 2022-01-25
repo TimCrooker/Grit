@@ -2,14 +2,9 @@ import styled from 'styled-components'
 import { Section } from '../../core'
 
 export const GetStartedWrapper = styled(Section)`
-	color: white;
-
-	p: {
-		color: white;
-	}
+	padding: 100px 24px 50px 24px;
 
 	.Heading {
-		color: var(--brand);
 		text-align: center;
 	}
 
@@ -56,7 +51,6 @@ export const GetStartedWrapper = styled(Section)`
 	}
 
 	code {
-		color: white;
 		font-size: 18px;
 		position: relative;
 		background: none;

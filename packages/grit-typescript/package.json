@@ -19,7 +19,7 @@
 	"scripts": {
 		"start": "grit . output",
 		"build": "tsc",
-		"test": "yarn build && jest",
+		"test": "jest",
 		"prepublishOnly": "yarn build"
 	},
 	"dependencies": {},

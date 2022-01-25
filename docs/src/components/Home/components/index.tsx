@@ -7,7 +7,7 @@ export function HomeCallToAction(): React.ReactElement {
 		<>
 			<ActionButton
 				type="primary"
-				href={useBaseUrl('docs/getting-started/introduction')}
+				href={useBaseUrl('docs/getting-started')}
 				target="_self"
 			>
 				Get started
