@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generator variations Should render with plugins 1`] = `
+Array [
+  ".gitignore",
+  "LICENSE",
+  "README.md",
+  "babel.config.js",
+  "generator.ts",
+  "jest.config.js",
+  "package.json",
+  "plugins/plugin1/foo.txt",
+  "plugins/plugin1/pluginFile.ts",
+  "plugins/plugin2/bar.json",
+  "plugins/plugin2/pluginFile.ts",
+  "template/LICENSE",
+  "template/README.md",
+  "template/_package.json",
+  "template/gitignore",
+  "test/index.spec.ts",
+  "tsconfig.json",
+]
+`;
+
+exports[`Generator variations Should render without plugins 1`] = `
+Array [
+  ".gitignore",
+  "LICENSE",
+  "README.md",
+  "babel.config.js",
+  "generator.ts",
+  "jest.config.js",
+  "package.json",
+  "plugins/plugin1/foo.txt",
+  "plugins/plugin1/pluginFile.ts",
+  "plugins/plugin2/bar.json",
+  "plugins/plugin2/pluginFile.ts",
+  "template/LICENSE",
+  "template/README.md",
+  "template/_package.json",
+  "template/gitignore",
+  "test/index.spec.ts",
+  "tsconfig.json",
+]
+`;

@@ -1,0 +1,13 @@
+{
+		"scripts": {
+			"docker:init": "npm run docker:build && npm run docker:run",
+			"docker:build": "docker build -t perfectplate .",
+			"docker:run": "docker run --name perfectplate -dp 8005:8080/tcp perfectplate && start http://localhost:8005"
+		},
+    "dependencies": {
+        "axios": "^0.21.1"
+    },
+    "devDependencies": {
+        "nock":"^13.0.11"
+    }
+}

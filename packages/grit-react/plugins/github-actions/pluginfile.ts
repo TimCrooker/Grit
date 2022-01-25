@@ -1,0 +1,10 @@
+import { PluginConfig } from 'plugins'
+
+const config: PluginConfig = {
+	name: 'Github Actions',
+	description:
+		'GitHub Actions makes it easy to automate all your software workflows, now with world-class CI/CD. Build, test, and deploy your code right from GitHub.',
+	url: 'https://docs.github.com/en/actions',
+}
+
+module.exports = config

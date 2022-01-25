@@ -1,0 +1,36 @@
+{
+  "name": "grit-nm",
+  "version": "0.1.0",
+  "description": "Scaffold out a new node package",
+  "repository": {
+    "url": "github.com/timcrooker/grit-nm",
+    "type": "git"
+  },
+  "author": "timcrooker <timothycrooker@gmail.com> (github.com/timcrooker)",
+  "license": "MIT",
+  "keywords": [
+    "grit-generator",
+    "grit"
+  ],
+  "files": [
+    "generator.js",
+    "template/**",
+    "plugins/**"
+  ],
+  "scripts": {
+    "start": "grit ./ output -d",
+    "test": "jest",
+    "update:grit": "yarn add grit-cli@latest"
+  },
+  "dependencies": {
+    "grit-cli": "^0.5.8",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "typescript": "^4.4.4"
+  }
+}

@@ -1,0 +1,12 @@
+{
+	"name": "<%= name %>",
+	"plugins": [],
+	"urls": {
+		"linkedin": "https://www.linkedin.com",
+		"docs": "https://www.linkedin.com",
+		"botsea": "https://www.linkedin.com",
+		"twitter": "https://www.linkedin.com",
+		"youtube": "https://www.linkedin.com",
+		"github": "https://www.linkedin.com"
+	}
+}

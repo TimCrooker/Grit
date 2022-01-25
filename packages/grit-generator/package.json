@@ -1,0 +1,35 @@
+{
+	"name": "grit-generator",
+	"version": "0.4.4",
+	"description": "Scaffold out a new generator",
+	"main": "lib/grit-generator.js",
+	"license": "MIT",
+	"keywords": [
+		"grit-generator",
+		"grit"
+	],
+	"files": [
+		"generator.js",
+		"generator.ts",
+		"template/**",
+		"plugins/**"
+	],
+	"scripts": {
+		"start": "grit . output",
+		"test": "jest",
+		"prepublishOnly": "yarn test",
+		"release": "release-it"
+	},
+	"dependencies": {
+		"gritenv": "^0.3.9",
+		"validate-npm-package-name": "^3.0.0"
+	},
+	"devDependencies": {
+		"@babel/preset-env": "^7.16.0",
+		"@babel/preset-typescript": "^7.16.0",
+		"@types/jest": "^27.0.2",
+		"jest": "^27.3.1",
+		"release-it": "^14.11.8",
+		"typescript": "^4.4.4"
+	}
+}

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "before:init": [
+      "npm run test"
+    ]
+  },
+  "npm": {
+    "publish": true
+  },
+  "git": {
+    "push": true
+  },
+  "github": {
+    "release": true
+  }
+}
