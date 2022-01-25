@@ -19,7 +19,6 @@
   ],
   "scripts": {
     "start": "grit . output",
-    "build": "tsc",
     "test": "jest"
   },
   "dependencies": {
