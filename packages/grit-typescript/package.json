@@ -14,7 +14,8 @@
 	],
 	"files": [
 		"generator.js",
-		"template/**"
+		"template/**",
+		"plugins/**"
 	],
 	"scripts": {
 		"start": "grit run . output",
