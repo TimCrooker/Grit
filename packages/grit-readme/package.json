@@ -1,6 +1,6 @@
 {
 	"name": "grit-readme",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "my awesome new Grit generator",
 	"repository": {
 		"url": "TimCrooker/grit-readme",
@@ -20,7 +20,5 @@
 		"start": "grit . output",
 		"test": "jest",
 		"prepublishOnly": "yarn build"
-	},
-	"dependencies": {}
-
+	}
 }

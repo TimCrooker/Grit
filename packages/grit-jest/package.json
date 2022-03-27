@@ -1,6 +1,6 @@
 {
   "name": "grit-jest",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Add jest testing to any node project",
   "repository": {
     "url": "timcrooker/grit-jest",
@@ -20,7 +20,5 @@
   "scripts": {
     "start": "grit . output",
     "test": "jest"
-  },
-  "dependencies": {
   }
 }
