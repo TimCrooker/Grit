@@ -1,17 +1,9 @@
 {
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"target": "es2018",
-		"module": "commonjs",
-		"resolveJsonModule": true,
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"baseUrl": "./",
-		"moduleResolution": "node",
-		"noImplicitAny": false,
+		"outDir": "dist"
 	},
-	"include": [
-		"generator.ts"
-	]
+"include": [
+	"generator.ts"
+]
 }

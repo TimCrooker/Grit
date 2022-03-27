@@ -22,5 +22,7 @@
 		"test": "jest",
 		"prepublishOnly": "yarn build"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"gritenv": "^0.5.20"
+	}
 }
