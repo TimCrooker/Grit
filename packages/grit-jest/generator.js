@@ -1,7 +1,6 @@
 "use strict";
 const gritenv_1 = require("gritenv");
 const config = {
-    prompts(grit) { },
     plugins: {
         mergeFiles: [],
     },

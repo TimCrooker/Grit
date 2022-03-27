@@ -21,7 +21,6 @@
     "start": "grit run ./ output -d",
     "build": "tsc",
     "test": "jest",
-    "update:grit": "yarn add gritenv@latest",
     "prepublishOnly": "yarn test && yarn build"
   },
   "dependencies": {

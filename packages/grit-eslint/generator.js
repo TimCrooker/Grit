@@ -1,5 +1,6 @@
 "use strict";
-module.exports = {
+const gritenv_1 = require("gritenv");
+const config = {
     prepare(grit) {
     },
     prompts(grit) {
@@ -64,3 +65,4 @@ module.exports = {
         grit.showProjectTips();
     }
 };
+module.exports = new gritenv_1.Generator(config);

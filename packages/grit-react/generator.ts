@@ -1,5 +1,30 @@
-import { Generator, GeneratorConfig } from 'gritenv'
-import { App, Base, Docs, TestSetup } from 'plugins'
+import { Generator, GeneratorConfig, PluginFileConfig } from 'gritenv'
+
+type App = {
+	import: Array<string>
+	inner: Array<string>
+	wrapper: Array<string>[]
+}
+
+type Docs = {
+	import: Array<string>
+	inner: Array<string>
+	wrapper: Array<string>[]
+}
+
+type TestSetup = {
+	import: Array<string>
+	inner: Array<string>
+	wrapper: Array<string>[]
+}
+
+type Base = {
+	_app: Partial<App>
+	_docs: Partial<Docs>
+	testSetup: Partial<TestSetup>
+}
+
+type PluginConfig = PluginFileConfig<Base>
 
 const config = {
 	plugins: {
