@@ -20,5 +20,6 @@
   "scripts": {
     "start": "grit . output",
     "test": "jest"
-  }
+  },
+  "gitHead": "d0ce56472d1aeb6a8b7d8110d5dfe3089a268060"
 }

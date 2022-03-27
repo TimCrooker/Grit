@@ -23,5 +23,6 @@
 	},
 	"dependencies": {
 		"gritenv": "^0.3.8"
-	}
+	},
+	"gitHead": "d0ce56472d1aeb6a8b7d8110d5dfe3089a268060"
 }
