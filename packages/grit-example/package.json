@@ -17,12 +17,14 @@
 		"template/**"
 	],
 	"scripts": {
-		"start": "grit . output",
+		"start": "grit run . output -d",
+		"build": "tsc",
 		"test": "jest",
-		"update:grit": "yarn add gritenv@latest"
+		"update:grit": "yarn add grit-cli@latest",
+		"prepublishonly": "yarn test && yarn build"
 	},
 	"dependencies": {
-		"gritenv": "^0.3.8"
+		"gritenv": "^0.5.20"
 	},
-	"gitHead": "d0ce56472d1aeb6a8b7d8110d5dfe3089a268060"
+	"gitHead": "7c06778b32dc1996316a02aed25225520ccdb9d7"
 }

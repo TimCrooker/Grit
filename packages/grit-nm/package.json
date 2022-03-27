@@ -18,12 +18,15 @@
     "plugins/**"
   ],
   "scripts": {
-    "start": "grit ./ output -d",
+    "start": "grit run ./ output -d",
+    "build": "tsc",
     "test": "jest",
-    "update:grit": "yarn add grit-cli@latest"
+    "update:grit": "yarn add gritenv@latest",
+    "prepublishOnly": "yarn test && yarn build"
   },
   "dependencies": {
+    "gritenv": "^0.5.20",
     "validate-npm-package-name": "^3.0.0"
   },
-  "gitHead": "d0ce56472d1aeb6a8b7d8110d5dfe3089a268060"
+  "gitHead": "7c06778b32dc1996316a02aed25225520ccdb9d7"
 }

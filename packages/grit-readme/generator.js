@@ -3,35 +3,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const path_1 = __importDefault(require("path"));
-module.exports = {
-    prompts() {
+const gritenv_1 = require("gritenv");
+const config = {
+    prompts(grit) {
         return [
             {
                 name: 'name',
                 type: 'input',
                 message: 'What is the name of the project',
-                default: `${path_1.default.basename(this.outDir)}`,
+                default: `${path_1.default.basename(grit.outDir)}`,
             },
             {
                 name: 'description',
                 type: 'input',
                 message: 'How would you describe the new template',
-                default: `my awesome NEW generator`
+                default: `my awesome NEW generator`,
             },
             {
                 name: 'username',
                 type: 'input',
                 message: 'What is your GitHub username',
-                default: this.gitUser.username || this.gitUser.name,
-                filter: val => val.toLowerCase(),
-                store: true
+                default: grit.gitUser.username || grit.gitUser.name,
+                filter: (val) => val.toLowerCase(),
+                store: true,
             },
             {
                 name: 'email',
                 type: 'input',
                 message: 'What is your email?',
-                default: this.gitUser.email,
-                store: true
+                default: grit.gitUser.email,
+                store: true,
             },
             {
                 name: 'website',
@@ -40,26 +41,27 @@ module.exports = {
                 default(answers) {
                     return `github.com/${answers.username}`;
                 },
-                store: true
-            }
+                store: true,
+            },
         ];
     },
     actions: [
         {
             type: 'add',
-            files: '**'
+            files: '**',
         },
         {
             type: 'move',
             patterns: {
                 gitignore: '.gitignore',
-                '_package.json': 'package.json'
-            }
-        }
+                '_package.json': 'package.json',
+            },
+        },
     ],
-    async completed() {
-        this.gitInit();
-        await this.npmInstall();
-        this.showProjectTips();
-    }
+    async completed(grit) {
+        grit.gitInit();
+        await grit.npmInstall();
+        grit.showProjectTips();
+    },
 };
+module.exports = new gritenv_1.Generator(config);

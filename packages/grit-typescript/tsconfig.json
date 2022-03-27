@@ -1,9 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"outDir": "dist"
-	},
-"include": [
-	"generator.ts"
-]
+	"include": [
+		"generator.ts"
+	],
+	"exclude": ["node_modules", "__tests__", "plugins", "template"]
 }

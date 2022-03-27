@@ -1,9 +1,9 @@
-import { GeneratorConfig } from 'grit-cli'
+import { GeneratorConfig, Generator } from 'gritenv'
 import path from 'path'
 
-export = { 
+const config = {
 	prepare(grit) {
-		
+
 	},
 	prompts(grit) {
 		this.list({
@@ -51,7 +51,7 @@ export = {
 		mergeFiles: []
 	},
 	actions() {
-		this.add({ 
+		this.add({
 			files: '**',
 		})
 		this.move({
@@ -67,3 +67,5 @@ export = {
 		grit.showProjectTips()
 	}
 } as GeneratorConfig
+
+export = new Generator(config)

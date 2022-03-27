@@ -2680,7 +2680,7 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-alias-hq@^5.3.0, alias-hq@^5.3.2:
+alias-hq@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/alias-hq/-/alias-hq-5.3.2.tgz#880a6bc0db4a3f740728711ba25d3211df8f75fd"
   integrity sha512-g2q1f7/NUhbgMWg+3efGr5oya/4UmNhRKU6C+93DkFwDkza0KDOrTogJrYN1Av0IGnUcOWWOV/AVK+aGqxPqQQ==
@@ -5234,60 +5234,6 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   version "4.2.9"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz#041b05df45755e587a24942279b9d113146e1c96"
   integrity sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==
-
-grit-cli@^0.5.5:
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/grit-cli/-/grit-cli-0.5.11.tgz#f5c4b38f380a60c3c0044dcaef85ba1fd0b57185"
-  integrity sha512-gYZmL2n/ITV7+s/7ORNmrMH9sBKBfNzZWSd24TMjwmehJXoktx0Muyo04+hbw+8dTZUxTiXiuvpXoJRQiV9r5g==
-  dependencies:
-    alias-hq "^5.3.0"
-    axios "^0.24.0"
-    clifi "^1.2.8"
-    commander "^8.3.0"
-    dot-prop "^5.3.0"
-    figlet "^1.5.2"
-    fs-extra "^9.1.0"
-    gritenv "^0.3.3"
-    ini "^2.0.0"
-    inquirer "^8.2.0"
-    ora "4.1.1"
-    resolve-from "^5.0.0"
-    rimraf "^3.0.2"
-    swaglog "^1.0.3"
-    update-notifier "^5.1.0"
-
-gritenv@^0.3.3, gritenv@^0.3.8, gritenv@^0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/gritenv/-/gritenv-0.3.9.tgz#8d3bdd6b9e73b3da56183acac48a89af1ff95fc6"
-  integrity sha512-CO+mu8caaMNfegn4wMeGxIinD3d6bTNqISmjU0MwclnfRexjimW0OUIeH4WfaC2gnPahWmjXek9+/qPZ0U+6aA==
-  dependencies:
-    axios "^0.24.0"
-    chalk "^4.1.2"
-    chokidar "^3.5.2"
-    commander "^8.3.0"
-    cp-file "^9.1.0"
-    cross-spawn "^7.0.3"
-    dot-prop "^5.3.0"
-    ejs "^3.1.6"
-    figlet "^1.5.2"
-    fs-extra "^9.1.0"
-    hash-sum "^2.0.0"
-    inquirer "^8.2.0"
-    inquirer-autocomplete-prompt "^1.4.0"
-    is-binary-path "^2.1.0"
-    joycon "^2.2.5"
-    lodash "^4.17.21"
-    log-update "^4.0.0"
-    majo "^0.10.1"
-    micromatch "4.0.4"
-    move-file "2.1.0"
-    open "^8.4.0"
-    ora "4.1.1"
-    parse-package-name "^1.0.0"
-    resolve-from "^5.0.0"
-    rimraf "^3.0.2"
-    update-notifier "^5.1.0"
-    youtill "^0.2.6"
 
 handlebars@^4.7.7:
   version "4.7.7"
