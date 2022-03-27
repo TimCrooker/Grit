@@ -16,5 +16,5 @@ test('defaults', async () => {
 	// await grit.run()
 
 	// expect(await grit.getOutputFiles()).toMatchSnapshot()
-	expect(true)
+	expect(true).toBe(true)
 })

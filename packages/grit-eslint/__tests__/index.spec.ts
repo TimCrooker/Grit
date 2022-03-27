@@ -18,11 +18,11 @@ test('Name of the group', () => {
 	// 		}
 	// 	})
 	// 	await grit.run()
-	
+
 	// 	expect(await grit.getOutputFiles()).toMatchSnapshot()
 	// })
-	
-expect(true)
+
+	expect(true)
 });
 
 

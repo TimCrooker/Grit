@@ -25,8 +25,10 @@ test('defaults', async () => {
       "README.md",
       "__tests__/index.spec.ts",
       "babel.config.js",
+      "index.ts",
       "jest.config.js",
       "package.json",
+      "tsconfig.json",
     ]
   `)
 })

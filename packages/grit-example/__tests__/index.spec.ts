@@ -19,6 +19,13 @@ describe('Name of the group', () => {
 		})
 		await grit.run()
 
-		expect(await grit.getOutputFiles()).toMatchSnapshot()
+		expect(await grit.getOutputFiles()).toMatchInlineSnapshot(`
+      Array [
+        ".gitignore",
+        "LICENSE",
+        "README.md",
+        "package.json",
+      ]
+    `)
 	})
 })
