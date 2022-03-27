@@ -1,6 +1,6 @@
 {
   "name": "grit-nm",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Scaffold out a new node package",
   "repository": {
     "url": "github.com/timcrooker/grit-nm",

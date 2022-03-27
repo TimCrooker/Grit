@@ -1,6 +1,6 @@
 {
 	"name": "grit-example",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "The example generator for learning grit",
 	"repository": {
 		"url": "timcrooker/grit-example",

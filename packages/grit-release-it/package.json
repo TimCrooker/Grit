@@ -1,6 +1,6 @@
 {
   "name": "grit-release-it",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Add release scripts and automation to your existing project",
   "repository": {
     "url": "TimCrooker/grit-release-it",
