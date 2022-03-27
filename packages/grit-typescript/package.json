@@ -1,6 +1,6 @@
 {
 	"name": "grit-typescript",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "my awesome new Grit generator",
 	"repository": {
 		"url": "TimCrooker/grit-typescript",

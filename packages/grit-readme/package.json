@@ -1,6 +1,6 @@
 {
 	"name": "grit-readme",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "my awesome new Grit generator",
 	"repository": {
 		"url": "TimCrooker/grit-readme",
