@@ -1,10 +1,10 @@
 # grit-typescript
 
-> my awesome new Grit generator
+> Create a brand new typscript project
 
 ## Usage
 
-Install [Grit](https://github.com/TimCrooker/projenerator) first.
+Install [Grit](https://github.com/TimCrooker/grit) first.
 
 ```bash
 yarn global add grit-cli
@@ -15,13 +15,13 @@ npm i -g grit-cli
 ### From npm
 
 ```bash
-grit typescript my-project
+grit run typescript my-project
 ```
 
 ### From git
 
 ```bash
-grit TimCrooker/grit-typescript my-project
+grit run TimCrooker/grit-typescript my-project
 ```
 
 ## License

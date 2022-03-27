@@ -1,4 +1,4 @@
-import { getGenerator } from 'gritenv';
+import { getGenerator } from 'gritenv'
 import path from 'path'
 
 const generator = path.join(__dirname, '..')
@@ -15,14 +15,10 @@ describe('Name of the group', () => {
 				username: 'test',
 				email: 'test',
 				website: 'test',
-			}
+			},
 		})
 		await grit.run()
-	
+
 		expect(await grit.getOutputFiles()).toMatchSnapshot()
 	})
-	
-
-});
-
-
+})

@@ -17,8 +17,8 @@
 		"template/**"
 	],
 	"scripts": {
-		"start": "grit . output",
-
+		"start": "grit run . output",
+		"build": "tsc",
 		"test": "jest",
 		"prepublishOnly": "yarn build"
 	},
@@ -28,7 +28,7 @@
 		"@babel/preset-typescript": "^7.16.0",
 		"@types/jest": "^27.0.2",
 		"jest": "^27.3.1",
-		"grit-cli": "^0.0.2",
+		"release-it": "^14.11.8",
 		"typescript": "^4.4.4"
 	}
 }
