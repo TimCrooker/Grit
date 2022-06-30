@@ -13,7 +13,7 @@ function GetStarted(): React.ReactElement {
 					<li>
 						<p>Run this</p>
 						<div className="terminal">
-							<code>npx grit-cli run example</code>
+							<code style={{whiteSpace: 'nowrap'}}>npx grit-cli run example</code>
 						</div>
 					</li>
 					<li>
