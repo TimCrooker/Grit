@@ -47,11 +47,6 @@ export const frameworks: Feature[] = [
 		title: 'Express',
 		link: 'https://expressjs.com/',
 	},
-	{
-		publicId: GetFrameworkLogoId('koa'),
-		title: 'KOA',
-		link: 'https://koajs.com/',
-	},
 ]
 
 export const databases: Feature[] = [
