@@ -39,7 +39,7 @@
 		"inquirer": "^8.2.0",
 		"ora": "4.1.1",
 		"swaglog": "^1.0.6",
-		"update-notifier": "^5.1.0"
+		"update-notifier": "^6.0.0"
 	},
 	"config": {
 		"commitizen": {
