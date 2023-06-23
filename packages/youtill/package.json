@@ -37,7 +37,7 @@
 		"axios": "^0.24.0",
 		"chalk": "^4.1.2",
 		"chokidar": "^3.5.2",
-		"cp-file": "^9.1.0",
+		"cp-file": "^10.0.0",
 		"cross-spawn": "^7.0.3",
 		"fs-extra": "^9.1.0",
 		"is-binary-path": "^2.1.0",
