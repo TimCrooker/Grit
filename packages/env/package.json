@@ -37,7 +37,7 @@
 		"chalk": "^4.1.2",
 		"chokidar": "^3.5.2",
 		"commander": "^8.3.0",
-		"cp-file": "^9.1.0",
+		"cp-file": "^10.0.0",
 		"cross-spawn": "^7.0.3",
 		"dot-prop": "^5.3.0",
 		"ejs": "^3.1.6",
@@ -59,7 +59,7 @@
 		"resolve-from": "^5.0.0",
 		"rimraf": "^3.0.2",
 		"swaglog": "^1.0.6",
-		"update-notifier": "^5.1.0",
+		"update-notifier": "^6.0.0",
 		"youtill": "^0.2.7"
 	},
 	"config": {
