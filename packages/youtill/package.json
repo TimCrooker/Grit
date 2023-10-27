@@ -34,7 +34,7 @@
 		"node": ">=12"
 	},
 	"dependencies": {
-		"axios": "^0.24.0",
+		"axios": "^1.6.0",
 		"chalk": "^4.1.2",
 		"chokidar": "^3.5.2",
 		"cp-file": "^9.1.0",
