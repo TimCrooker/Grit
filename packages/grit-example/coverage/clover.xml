@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1708539646400" clover="3.2.0">
+  <project timestamp="1708539646400" name="All files">
+    <metrics statements="19" coveredstatements="13" conditionals="9" coveredconditionals="7" methods="7" coveredmethods="3" elements="35" coveredelements="23" complexity="0" loc="19" ncloc="19" packages="1" files="1" classes="1"/>
+    <file name="temp.js" path="/Users/Timothy/Documents/development/Grit-1/packages/grit-example/temp.js">
+      <metrics statements="19" coveredstatements="13" conditionals="9" coveredconditionals="7" methods="7" coveredmethods="3"/>
+      <line num="2" count="1" type="cond" truecount="2" falsecount="1"/>
+      <line num="3" count="1" type="cond" truecount="3" falsecount="1"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="13" count="0" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="24" count="0" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="33" count="1" type="stmt"/>
+      <line num="37" count="0" type="stmt"/>
+      <line num="43" count="1" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="54" count="0" type="stmt"/>
+      <line num="55" count="0" type="stmt"/>
+      <line num="56" count="0" type="stmt"/>
+      <line num="59" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

@@ -227,7 +227,7 @@ class Grit {
 		config: GeneratorConfig = this.opts.config
 	): Promise<void> {
 		if (config.description) {
-			logger.status('green', 'Generator', config.description)
+			logger.info(colors.green('Generator'), config.description)
 		}
 
 		// Run generator prepare

@@ -1,2 +1,2 @@
 export { CLIOptions, CLI } from './cli'
-export { BackChoice, Route } from './cli/router'
+export { BackChoice, Route } from './router'

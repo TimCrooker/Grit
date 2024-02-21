@@ -3,7 +3,7 @@ export const evaluate = (exp: string, data: any): any => {
 	const fn = new Function('data', `with (data) { return ${exp} }`)
 	try {
 		return fn(data)
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err.stack)
 		console.error(`Error when evaluating filter condition: ${exp}`)
 	}

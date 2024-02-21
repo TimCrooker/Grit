@@ -11,12 +11,12 @@ const config = {
             name: 'name',
             message: 'What is the name of the project',
             default: path_1.default.basename(grit.outDir),
-            filter: val => val.toLowerCase(),
+            filter: (val) => val.toLowerCase(),
             validate: (input) => {
                 if (!(0, validate_npm_package_name_1.default)(input).validForNewPackages)
                     return 'Invalid npm package name';
                 return true;
-            }
+            },
         }),
             this.input({
                 name: 'description',
@@ -33,14 +33,14 @@ const config = {
             name: 'username',
             message: 'What is your GitHub username',
             default: grit.gitUser.username || grit.gitUser.name,
-            filter: val => val.toLowerCase(),
-            store: true
+            filter: (val) => val.toLowerCase(),
+            store: true,
         }),
             this.input({
                 name: 'email',
                 message: 'What is your email?',
                 default: grit.gitUser.email,
-                store: true
+                store: true,
             }),
             this.input({
                 name: 'website',
@@ -48,25 +48,25 @@ const config = {
                 default(answers) {
                     return `github.com/${answers.username}`;
                 },
-                store: true
+                store: true,
             });
     },
     actions() {
         this.add({
             files: '**',
-            transformExclude: ['template/**']
+            transformExclude: ['template/**'],
         }),
             this.move({
                 patterns: {
                     gitignore: '.gitignore',
-                    '_package.json': 'package.json'
-                }
+                    '_package.json': 'package.json',
+                },
             });
     },
     async completed(grit) {
         grit.gitInit();
         await grit.npmInstall();
         grit.showProjectTips();
-    }
+    },
 };
 module.exports = new gritenv_1.Generator(config);

@@ -5,10 +5,10 @@ import { handleError, Terror } from '@/utils/error'
 import { DEBUG } from '@/config'
 
 export const runCLI = async (): Promise<void> => {
-	logger.options = {
+	logger.setOptions({
 		logLevel: DEBUG ? 4 : 1,
 		mock: false,
-	}
+	})
 
 	logger.debug('CLI running...')
 

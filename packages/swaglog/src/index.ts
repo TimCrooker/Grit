@@ -1,120 +1,136 @@
-import colors, { Color } from 'chalk'
-import path from 'path'
+import { format } from 'date-fns'
+import colors from 'chalk'
 
-export type ColorType = typeof Color
-
-export type LogLevel = 1 | 2 | 3 | 4
-
-export interface LoggerOptions {
-	logLevel?: number
-	mock?: boolean
+enum LogLevel {
+	ERROR = 1,
+	WARN = 2,
+	INFO = 3,
+	DEBUG = 4,
 }
 
-export class Logger {
-	options: Required<LoggerOptions>
-	lines: string[]
+interface LoggerOptions {
+	logLevel?: LogLevel
+	mock?: boolean
+	logTargets?: LogTarget[]
+	structuredLogging?: boolean
+	timestampFormat?: string
+}
+
+export interface LogTarget {
+	log(level: LogLevel, message: string): void
+}
+
+class ConsoleLogTarget implements LogTarget {
+	log(level: LogLevel, message: string): void {
+		console.log(message)
+	}
+}
+
+class Logger {
+	private options: Required<LoggerOptions>
+	private logTargets: LogTarget[] = []
 
 	constructor(options?: LoggerOptions) {
 		this.options = {
-			...options,
-			logLevel: 3,
+			logLevel: LogLevel.INFO,
 			mock: false,
+			logTargets: [new ConsoleLogTarget()],
+			structuredLogging: false,
+			timestampFormat: 'yyyy-MM-dd HH:mm:ss',
+			...options,
 		}
-		this.lines = []
+
+		if (options?.logTargets) {
+			this.logTargets = options.logTargets
+		}
 	}
 
 	setOptions(options: LoggerOptions): void {
-		Object.assign(this.options, options)
+		this.options = { ...this.options, ...options }
 	}
 
-	// level: 4
+	private formatMessage(level: LogLevel, ...args: any[]): string {
+		const timestamp = format(new Date(), this.options.timestampFormat)
+		const levelString = LogLevel[level]
+		const message = args.join(' ')
+
+		if (this.options.structuredLogging) {
+			return JSON.stringify({ timestamp, level: levelString, message })
+		}
+
+		return `${timestamp} [${levelString}] ${message}`
+	}
+
+	log(level: LogLevel, ...args: any[]): void {
+		if (level < this.options.logLevel) {
+			return
+		}
+
+		const message = this.formatMessage(level, ...args)
+		this.logTargets.forEach((target) => target.log(level, message))
+	}
+
 	debug(...args: any[]): void {
-		if (this.options.logLevel < 4) {
-			return
-		}
-
-		this.status('magenta', 'debug', ...args)
-	}
-
-	//level: 3
-
-	status(color: ColorType, label: string, ...args: any[]): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.log(colors[color](label), ...args)
-	}
-
-	fileAction(color: ColorType, type: string, fp: string): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.info(
-			`${colors[color](type)} ${colors.green(path.relative(process.cwd(), fp))}`
-		)
-	}
-
-	fileMoveAction(from: string, to: string): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.info(
-			`${colors.blue('Moved')} ${colors.green(
-				path.relative(process.cwd(), from)
-			)} ${colors.dim('->')} ${colors.green(path.relative(process.cwd(), to))}`
-		)
-	}
-
-	fileCopyAction(from: string, to: string): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.info(
-			`${colors.blue('Copied')} ${colors.green(
-				path.relative(process.cwd(), from)
-			)} ${colors.dim('->')} ${colors.green(path.relative(process.cwd(), to))}`
-		)
-	}
-
-	// level: 2
-	warn(...args: any[]): void {
-		if (this.options.logLevel < 2) {
-			return
-		}
-		this.log(colors.yellow('warning'), ...args)
-	}
-
-	// level: 1
-	error(...args: any[]): void {
-		if (this.options.logLevel < 1) {
-			return
-		}
-		process.exitCode = process.exitCode || 1
-		this.log(colors.red('error'), ...args)
-	}
-
-	// level: any
-	log(...args: any[]): void {
-		if (this.options.mock) {
-			this.lines.push(args.join(' '))
-		} else {
-			console.log(...args)
-		}
-	}
-
-	success(...args: any[]): void {
-		this.status('green', 'success', ...args)
-	}
-
-	tip(...args: any[]): void {
-		this.status('blue', 'tip', ...args)
+		this.log(LogLevel.DEBUG, ...args)
 	}
 
 	info(...args: any[]): void {
-		this.status('cyan', 'info', ...args)
+		this.log(LogLevel.INFO, ...args)
+	}
+
+	warn(...args: any[]): void {
+		this.log(LogLevel.WARN, ...args)
+	}
+
+	error(...args: any[]): void {
+		this.log(LogLevel.ERROR, ...args)
+	}
+
+	// additional utility loggers
+
+	tip(...args: any[]): void {
+		this.info(colors.blue('Tip:'), ...args)
+	}
+
+	success(...args: any[]): void {
+		this.info(colors.green('Success:'), ...args)
+	}
+
+	important(...args: any[]): void {
+		this.info(colors.yellow('Important:'), ...args)
+	}
+
+	// file action loggers
+
+	fileAction(action: string, filePath: string, extraPath?: string): void {
+		const actionMessage = `${colors.magenta(
+			action.toUpperCase()
+		)}: ${colors.green(filePath)}`
+		const extraMessage = extraPath ? ` -> ${colors.green(extraPath)}` : ''
+		this.info(actionMessage + extraMessage)
+	}
+
+	fileRenamed(oldPath: string, newPath: string): void {
+		this.fileAction('renamed', oldPath, newPath)
+	}
+
+	fileMoved(oldPath: string, newPath: string): void {
+		this.fileAction('moved', oldPath, newPath)
+	}
+
+	fileDeleted(filePath: string): void {
+		this.fileAction('deleted', filePath)
+	}
+
+	fileCreated(filePath: string): void {
+		this.fileAction('created', filePath)
+	}
+
+	fileCopied(filePath: string, newPath: string): void {
+		this.fileAction('copied', filePath, newPath)
 	}
 }
 
-export { colors }
+const logger = new Logger({})
 
-export const logger = new Logger()
+export { logger, Logger, colors, LogLevel, LoggerOptions, ConsoleLogTarget }

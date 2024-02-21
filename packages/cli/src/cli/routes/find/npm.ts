@@ -25,10 +25,13 @@ export type NpmSearchFn<T = any> = (
 ) => Promise<Array<NpmSearchModule> | T>
 
 export const NpmSearch: NpmSearchFn = async ({ keywords, resultCount }) => {
-	const result: NpmSearchResult = await axios.get(
-		`http://registry.npmjs.com/-/v1/search?text=keywords:${keywords.join(
-			','
-		)}&size=${resultCount || 20}`
-	)
+	const url = new URL('http://registry.npmjs.com/-/v1/search')
+	const params = new URLSearchParams({
+		text: `keywords:${keywords.join(',')}`,
+		size: `${resultCount || 20}`,
+	})
+	url.search = params.toString()
+
+	const result: NpmSearchResult = await axios.get(url.toString())
 	return result.data.objects
 }
