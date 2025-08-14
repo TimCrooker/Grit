@@ -44,7 +44,7 @@
     "fs-extra": "^9.1.0",
     "gritenv": "^0.5.20",
     "ini": "^2.0.0",
-    "inquirer": "^8.2.0",
+    "inquirer": "^8.2.7",
     "ora": "4.1.1",
     "parse-package-name": "^1.0.0",
     "resolve-from": "^5.0.0",
